@@ -1,9 +1,10 @@
-import { useSession } from "next-auth/react";
+import { signIn, useSession } from "next-auth/react";
 import Image from "next/image";
 import Messages from "./icons/Messages";
 import Notifications from "./icons/Notifications";
 import Settings from "./icons/Settings";
 import Chevron from "./icons/Chevron";
+// import Link from "next/link";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -11,22 +12,26 @@ const Nav = () => {
   return (
     <nav className="flex h-20 items-center justify-between border-b border-b-neutral-700/50 bg-neutral-900/50 px-10">
       <Logo />
-      <div className="flex items-center space-x-8">
-        <div className="flex space-x-4">
-          <NavBtn>
-            <Messages />
-          </NavBtn>
-          <NavBtn>
-            <Notifications />
-          </NavBtn>
-          <NavBtn>
-            <Settings />
-          </NavBtn>
+      {session ? (
+        <div className="flex items-center space-x-8">
+          <div className="flex space-x-4">
+            <NavBtn>
+              <Messages />
+            </NavBtn>
+            <NavBtn>
+              <Notifications />
+            </NavBtn>
+            <NavBtn>
+              <Settings />
+            </NavBtn>
+          </div>
+          <div className="flex items-center justify-center space-x-2">
+            <Profile />
+          </div>
         </div>
-        <div className="flex items-center justify-center space-x-2">
-          <Profile />
-        </div>
-      </div>
+      ) : (
+        <LoginBtn />
+      )}
     </nav>
   );
 };
@@ -66,6 +71,17 @@ const Profile = () => {
         </span>
       </div>
     </>
+  );
+};
+
+const LoginBtn = () => {
+  return (
+    <button
+      className="rounded-md border border-neutral-700/50 bg-neutral-900/50 px-4 py-2 outline-none duration-150 hover:bg-neutral-800 focus-visible:bg-neutral-800 focus-visible:ring-1 focus-visible:ring-blue-500"
+      onClick={() => void signIn()}
+    >
+      Login
+    </button>
   );
 };
 
