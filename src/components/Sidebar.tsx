@@ -4,11 +4,8 @@ import Messages from "./icons/Messages";
 import Notifications from "./icons/Notifications";
 import Settings from "./icons/Settings";
 import Link from "next/link";
-import { useSession } from "next-auth/react";
 
 const Sidebar = () => {
-  const { data: session } = useSession();
-
   return (
     <div className="min-h-screen w-full border-r border-r-neutral-700/50 bg-neutral-900/50 p-8">
       <SearchBar />
