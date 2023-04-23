@@ -7,10 +7,9 @@ import Chevron from "./icons/Chevron";
 
 const Nav = () => {
   const { data: session } = useSession();
-  console.log(session);
 
   return (
-    <div className="flex h-20 items-center justify-between border-b border-b-neutral-700/50 bg-neutral-900/50 px-10">
+    <nav className="flex h-20 items-center justify-between border-b border-b-neutral-700/50 bg-neutral-900/50 px-10">
       <Logo />
       <div className="flex items-center space-x-8">
         <div className="flex space-x-4">
@@ -28,7 +27,7 @@ const Nav = () => {
           <Profile />
         </div>
       </div>
-    </div>
+    </nav>
   );
 };
 

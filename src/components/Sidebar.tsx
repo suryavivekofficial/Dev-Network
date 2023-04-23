@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const Sidebar = () => {
   return (
-    <div className="min-h-screen w-1/4 border-r border-r-neutral-700/50 bg-neutral-900/50 p-8">
+    <div className="min-h-screen w-full border-r border-r-neutral-700/50 bg-neutral-900/50 p-8">
       <SearchBar />
       <div className="py-8">
         <SidebarItem key={"Home"} title={"Home"} href="/">
