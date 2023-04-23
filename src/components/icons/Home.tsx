@@ -1,4 +1,4 @@
-export const Home = () => {
+export default function Home() {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -13,4 +13,4 @@ export const Home = () => {
       />
     </svg>
   );
-};
+}

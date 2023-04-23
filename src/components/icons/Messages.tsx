@@ -1,4 +1,4 @@
-export const Messages = () => {
+const Messages = () => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,3 +14,5 @@ export const Messages = () => {
     </svg>
   );
 };
+
+export default Messages;

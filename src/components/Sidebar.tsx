@@ -1,24 +1,30 @@
 import { useState } from "react";
-import { Home } from "./icons/Home";
-import { Messages } from "./icons/Messages";
-import { Notifications } from "./icons/Notifications";
+import Home from "./icons/Home";
+import Messages from "./icons/Messages";
+import Notifications from "./icons/Notifications";
+import Settings from "./icons/Settings";
+import Link from "next/link";
 
 const Sidebar = () => {
   return (
     <div className="min-h-screen w-1/4 border-r border-r-neutral-700/50 bg-neutral-900/50 p-8">
       <SearchBar />
       <div className="py-8">
-        <SidebarItem key={"Home"} title={"Home"}>
+        <SidebarItem key={"Home"} title={"Home"} href="/">
           <Home />
         </SidebarItem>
-        <SidebarItem key={"Messages"} title={"Home"}>
+        <SidebarItem key={"Messages"} title={"Messages"} href="/messages">
           <Messages />
         </SidebarItem>
-        <SidebarItem key={"Notifications"} title={"Home"}>
+        <SidebarItem
+          key={"Notifications"}
+          title={"Notifications"}
+          href="notifications"
+        >
           <Notifications />
         </SidebarItem>
-        <SidebarItem key={"Settings"} title={"Home"}>
-          <Home />
+        <SidebarItem key={"Settings"} title={"Settings"} href="settings">
+          <Settings />
         </SidebarItem>
       </div>
     </div>
@@ -43,9 +49,9 @@ const SearchBar = () => {
             xmlns="http://www.w3.org/2000/svg"
           >
             <path
-              fill-rule="evenodd"
+              fillRule="evenodd"
               d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
-              clip-rule="evenodd"
+              clipRule="evenodd"
             ></path>
           </svg>
         </div>
@@ -56,7 +62,7 @@ const SearchBar = () => {
           }}
           type="text"
           id="simple-search"
-          className="block w-full rounded-lg border border-neutral-600 bg-neutral-800 p-2.5 pl-10 text-sm outline-none placeholder:text-neutral-200 focus:border-blue-500 focus:ring-blue-500"
+          className="block w-full rounded-lg border border-neutral-600 bg-neutral-800 p-2.5 pl-10 text-sm outline-none placeholder:text-neutral-200 focus:ring-1 focus:ring-blue-500"
           placeholder="Search"
           required
         />
@@ -87,16 +93,20 @@ const SearchBar = () => {
 
 const SidebarItem = ({
   title,
+  href,
   children,
 }: {
   title: string;
+  href: string;
   children: JSX.Element;
 }) => {
   return (
-    <div className="flex items-center space-x-2 rounded-md p-4 hover:bg-red-900">
-      {children}
-      <span className="text-base">{title}</span>
-    </div>
+    <Link href={href}>
+      <div className="flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-100 hover:bg-blue-500/80">
+        {children}
+        <span className="text-base">{title}</span>
+      </div>
+    </Link>
   );
 };
 
