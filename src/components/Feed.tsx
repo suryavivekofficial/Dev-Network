@@ -7,6 +7,11 @@ import { useSession } from "next-auth/react";
 import type { Session } from "next-auth";
 import { useState } from "react";
 
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
+
+dayjs.extend(relativeTime);
+
 const Feed = () => {
   const { data: session } = useSession();
   const { data, isLoading } = api.post.getAll.useQuery();
@@ -52,7 +57,7 @@ const Post = ({
         </div>
         <span className="flex items-center space-x-2 text-sm opacity-80">
           <Clock />
-          <span>2 minutes ago</span>
+          <span className="font-thin">{dayjs(post.createdAt).fromNow()}</span>
         </span>
       </div>
       <p>{post.content}</p>

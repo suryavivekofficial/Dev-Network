@@ -1,16 +1,18 @@
-import { signIn, useSession } from "next-auth/react";
+import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Messages from "./icons/Messages";
 import Notifications from "./icons/Notifications";
 import Settings from "./icons/Settings";
 import Chevron from "./icons/Chevron";
+import { useState } from "react";
+import { type Session } from "next-auth";
 // import Link from "next/link";
 
 const Nav = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="flex h-20 items-center justify-between border-b border-b-neutral-700/50 bg-neutral-900/50 px-10">
+    <nav className="relative flex h-20 items-center justify-between border-b border-b-neutral-700/50 bg-neutral-900/50 px-10">
       <Logo />
       {session ? (
         <div className="flex items-center space-x-8">
@@ -57,11 +59,16 @@ const Logo = () => {
 const Profile = () => {
   const { data: session } = useSession();
 
+  const [openDropdown, setOpenDropdown] = useState(false);
+
   return (
     <>
       <span className="capitalize">{session?.user.name}</span>
       <div className="relative">
-        <button className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-neutral-700">
+        <button
+          onClick={() => setOpenDropdown(!openDropdown)}
+          className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-neutral-700"
+        >
           {session && session.user.image && (
             <Image src={session?.user.image} alt="User photo" fill={true} />
           )}
@@ -69,6 +76,7 @@ const Profile = () => {
         <span className="absolute bottom-0 left-7 flex h-4 w-4 items-center justify-center rounded-full border-2 border-neutral-700 bg-neutral-200 text-neutral-950">
           <Chevron />
         </span>
+        {openDropdown && <Dropdown session={session} />}
       </div>
     </>
   );
@@ -90,6 +98,34 @@ const NavBtn = ({ children }: { children: JSX.Element }) => {
     <button className="flex h-10 w-10 items-center justify-center rounded-full bg-neutral-800">
       {children}
     </button>
+  );
+};
+
+const Dropdown = ({ session }: { session: Session | null }) => {
+  if (!session) {
+    return <></>;
+  }
+
+  return (
+    <div className="absolute right-0 mt-2 w-56 origin-top-left rounded-md bg-neutral-600 p-4">
+      <div className="flex justify-between">
+        <div className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-neutral-700">
+          {session.user.image && (
+            <Image
+              src={session.user.image}
+              alt="User profile pic"
+              fill={true}
+            />
+          )}
+        </div>
+        <button
+          onClick={() => void signOut()}
+          className="rounded-md bg-blue-500 px-4"
+        >
+          Sign Out
+        </button>
+      </div>
+    </div>
   );
 };
 
