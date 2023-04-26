@@ -9,6 +9,7 @@ import { useState } from "react";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Like from "./icons/LIke";
 
 dayjs.extend(relativeTime);
 
@@ -61,6 +62,7 @@ const Post = ({
         </span>
       </div>
       <p>{post.content}</p>
+      <Like />
     </div>
   );
 };

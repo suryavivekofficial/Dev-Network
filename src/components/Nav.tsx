@@ -109,7 +109,7 @@ const Dropdown = ({ session }: { session: Session | null }) => {
   return (
     <div className="absolute right-0 mt-2 w-56 origin-top-left rounded-md bg-neutral-600 p-4">
       <div className="flex justify-between">
-        <div className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-neutral-700">
+        <div className="relative h-10 w-10 overflow-hidden rounded-full border border-neutral-700">
           {session.user.image && (
             <Image
               src={session.user.image}
