@@ -6,7 +6,7 @@ const Like = () => {
   return (
     <button
       onClick={() => setIsLiked(!isLiked)}
-      className="flex items-center space-x-2"
+      className="flex items-center space-x-2 rounded-md px-4 py-2 hover:bg-neutral-800"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

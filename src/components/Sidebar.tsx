@@ -7,7 +7,7 @@ import Link from "next/link";
 
 const Sidebar = () => {
   return (
-    <div className="min-h-screen w-full border-r border-r-neutral-700/50 bg-neutral-900/50 p-8">
+    <div className="min-h-screen w-full border-r border-r-neutral-700/50 bg-[#0a0a0a] p-8">
       <SearchBar />
       <div className="py-8">
         <SidebarItem key={"Home"} title={"Home"} href="/">
@@ -102,7 +102,7 @@ const SidebarItem = ({
 }) => {
   return (
     <Link href={href}>
-      <div className="flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-100 hover:bg-blue-500/80">
+      <div className="flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-100 hover:bg-[#0a0a0a]">
         {children}
         <span className="text-base">{title}</span>
       </div>
