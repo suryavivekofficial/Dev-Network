@@ -4,7 +4,7 @@ export default {
   content: ["./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
     colors: {
-      // odd numbered accent for dark mode and vice-versa
+      // even numbered accent for dark mode and vice-versa
       black: "#000",
       "accent-1": "#111",
       "accent-2": "#333",

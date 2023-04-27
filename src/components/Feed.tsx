@@ -43,7 +43,7 @@ const Post = ({
   };
 }) => {
   return (
-    <div className="space-y-4 rounded-md border border-neutral-800 bg-neutral-900 p-6">
+    <div className="space-y-4 rounded-md border border-accent-6 bg-black p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
@@ -83,7 +83,7 @@ const NewPost = ({ session }: { session: Session }) => {
   };
 
   return (
-    <div className="space-y-4 rounded-md border border-neutral-800 bg-neutral-900 p-4">
+    <div className="space-y-4 rounded-md border border-accent-6 bg-black p-4">
       <div className="flex items-center space-x-4 ">
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           {session.user.image && (
@@ -101,7 +101,7 @@ const NewPost = ({ session }: { session: Session }) => {
           }}
           type="text"
           placeholder="What's on your mind?"
-          className="grow rounded-md bg-neutral-800 p-4 outline-none focus:ring-1 focus:ring-blue-500"
+          className="grow rounded-md border border-accent-6 bg-black p-4 outline-none placeholder:text-accent-6 focus:ring-1 focus:ring-accent-8"
         />
       </div>
       <div className="flex">
@@ -109,7 +109,7 @@ const NewPost = ({ session }: { session: Session }) => {
           onClick={handleSubmit}
           disabled={isLoading}
           type="submit"
-          className="ml-auto rounded-md border border-neutral-700/50 bg-neutral-900/50 px-4 py-2 outline-none duration-150 hover:bg-neutral-800 focus-visible:bg-neutral-800 focus-visible:ring-1 focus-visible:ring-blue-500"
+          className="ml-auto rounded-md border border-white bg-accent-8 px-4 py-2 text-accent-2 outline-none duration-150 hover:bg-black hover:text-white focus-visible:ring-1"
         >
           Post
         </button>
