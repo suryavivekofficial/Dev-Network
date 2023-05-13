@@ -9,7 +9,7 @@ import { useState } from "react";
 
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Like from "./icons/LIke";
+import Like from "./icons/Like";
 
 dayjs.extend(relativeTime);
 
