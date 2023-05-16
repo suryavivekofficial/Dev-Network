@@ -5,3 +5,22 @@
 body {
   @apply bg-accent-1 text-accent-8;
 }
+
+::-webkit-scrollbar {
+  width: 0.3em;
+  margin-block: 1em;
+}
+
+::-webkit-scrollbar-track {
+  background: black;
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+  border-radius: 100vw;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: white;
+}

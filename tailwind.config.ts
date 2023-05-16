@@ -21,5 +21,5 @@ export default {
       "blue-4": "#0761d1",
     },
   },
-  plugins: [],
+  plugins: [require("tailwind-scrollbar")],
 } satisfies Config;
