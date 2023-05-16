@@ -8,23 +8,23 @@ import { useRouter } from "next/router";
 
 const Sidebar = () => {
   return (
-    <div className="min-h-screen w-full border-r border-r-accent-6 bg-black p-8">
+    <aside className="w-1/4 border-r border-r-accent-6 bg-black p-8">
       <SearchBar />
       <div className="py-8">
-        <SidebarItem key={"Home"} href="">
+        <SidebarItem href="">
           <Home />
         </SidebarItem>
-        <SidebarItem key={"Messages"} href="messages">
+        <SidebarItem href="messages">
           <Messages />
         </SidebarItem>
-        <SidebarItem key={"notifications"} href="notifications">
+        <SidebarItem href="notifications">
           <Notifications />
         </SidebarItem>
-        <SidebarItem key={"Settings"} href="settings">
+        <SidebarItem href="settings">
           <Settings />
         </SidebarItem>
       </div>
-    </div>
+    </aside>
   );
 };
 
@@ -84,11 +84,15 @@ const SidebarItem = ({
     <Link href={`/${href}`}>
       <div
         className={`${
-          pathname === `/${href}` ? `bg-accent-2` : ``
-        } flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-100 hover:bg-accent-2`}
+          pathname === `/${href}`
+            ? `relative bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-white before:content-['']`
+            : ``
+        } my-4 flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-200 hover:bg-accent-2`}
       >
         {children}
-        <span className="text-base capitalize">{href}</span>
+        <span className="text-base capitalize">
+          {href === "" ? "home" : href}
+        </span>
       </div>
     </Link>
   );

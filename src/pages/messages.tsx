@@ -2,9 +2,8 @@ import type { NextPage } from "next";
 
 import Head from "next/head";
 import Layout from "~/components/Layout";
-import Feed from "~/components/Feed";
 
-const Home: NextPage = () => {
+const Messages: NextPage = () => {
   return (
     <>
       <Head>
@@ -20,4 +19,4 @@ const Home: NextPage = () => {
   );
 };
 
-export default Home;
+export default Messages;

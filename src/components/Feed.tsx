@@ -1,41 +1,48 @@
-import { Post } from "@prisma/client";
-import type { User } from "@prisma/client";
-import { api } from "~/utils/api";
-import Image from "next/image";
-import Clock from "./icons/Clock";
-import { useSession } from "next-auth/react";
+import type { Post, User } from "@prisma/client";
 import type { Session } from "next-auth";
+import Image from "next/image";
+import { useSession } from "next-auth/react";
 import { useState } from "react";
-
+import Clock from "./icons/Clock";
+import Like from "./icons/Like";
+import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
-import Like from "./icons/Like";
 
 dayjs.extend(relativeTime);
 
 const Feed = () => {
   const { data: session } = useSession();
-  const { data, isLoading } = api.post.getAll.useQuery();
+  const { data, isLoading, isError, error } = api.post.getAll.useQuery();
 
   if (isLoading) {
     return <div>loading...</div>;
   }
 
+  if (isError) {
+    return (
+      <div>
+        <h2 className="text-2xl">Error occured!☹️</h2>
+        <p>This is due to {error.message} </p>
+      </div>
+    );
+  }
+
   return (
-    <div className="space-y-4 py-8">
+    <div className="h-screen space-y-4 py-8">
       {session && (
         <div>
           <NewPost session={session} />
         </div>
       )}
-      {data?.map((post) => {
-        return <Post post={post} key={post.id} />;
+      {[...data, ...data, ...data]?.map((post) => {
+        return <PostComponent post={post} key={post.id} />;
       })}
     </div>
   );
 };
 
-const Post = ({
+const PostComponent = ({
   post,
 }: {
   post: Post & {
@@ -95,7 +102,6 @@ const NewPost = ({ session }: { session: Session }) => {
           onChange={(e) => setNewPost(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              // console.log(e.key, "is pressed");
               handleSubmit();
             }
           }}

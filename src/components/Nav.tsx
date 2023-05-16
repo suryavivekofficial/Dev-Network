@@ -12,7 +12,7 @@ const Nav = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="relative flex h-20 items-center justify-between border-b border-b-accent-6 bg-black px-10">
+    <nav className="flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
       <Logo />
       {session ? (
         <div className="flex items-center space-x-8">
@@ -43,12 +43,12 @@ const Logo = () => {
     <div className="flex items-center justify-center space-x-2">
       <div className="flex h-8 w-8 gap-1">
         <div className="flex h-full w-1/2 flex-col gap-1">
-          <div className="bg-blue-500 h-2/5 w-full rounded-sm"></div>
-          <div className="bg-blue-200 h-3/5 w-full rounded-sm"></div>
+          <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
+          <div className="h-3/5 w-full rounded-sm bg-blue-2"></div>
         </div>
         <div className="flex h-full w-1/2 flex-col gap-1">
-          <div className="bg-blue-200 h-3/5 w-full rounded-sm"></div>
-          <div className="bg-blue-500 h-2/5 w-full rounded-sm"></div>
+          <div className="h-3/5 w-full rounded-sm bg-blue-2"></div>
+          <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
         </div>
       </div>
       <span className="text-xl font-bold">Dev Network</span>
@@ -85,7 +85,7 @@ const Profile = () => {
 const LoginBtn = () => {
   return (
     <button
-      className="border-neutral-700/50 bg-neutral-900/50 hover:bg-neutral-800 focus-visible:bg-neutral-800 focus-visible:ring-blue-500 rounded-md border px-4 py-2 outline-none duration-150 focus-visible:ring-1"
+      className="focus-visible:bg-neutral-800 focus-visible:ring-blue-500 rounded-md border border-accent-8 bg-black px-4 py-2 outline-none duration-150 hover:bg-accent-8 focus-visible:ring-1"
       onClick={() => void signIn()}
     >
       Login
@@ -103,7 +103,7 @@ const NavBtn = ({ children }: { children: JSX.Element }) => {
 
 const Dropdown = ({ session }: { session: Session | null }) => {
   if (!session) {
-    return <></>;
+    return null;
   }
 
   return (
