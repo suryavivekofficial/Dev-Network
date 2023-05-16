@@ -29,13 +29,13 @@ const Feed = () => {
   }
 
   return (
-    <div className="h-screen space-y-4 py-8">
+    <div className="space-y-4">
       {session && (
         <div>
           <NewPost session={session} />
         </div>
       )}
-      {[...data, ...data, ...data]?.map((post) => {
+      {[...data, ...data]?.map((post) => {
         return <PostComponent post={post} key={post.id} />;
       })}
     </div>

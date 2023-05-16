@@ -8,7 +8,7 @@ import { useRouter } from "next/router";
 
 const Sidebar = () => {
   return (
-    <aside className="w-1/4 border-r border-r-accent-6 bg-black p-8">
+    <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-accent-6 bg-black p-8">
       <SearchBar />
       <div className="py-8">
         <SidebarItem href="">

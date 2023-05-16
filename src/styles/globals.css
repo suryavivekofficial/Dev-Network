@@ -3,5 +3,5 @@
 @tailwind utilities;
 
 body {
-  @apply overflow-hidden bg-accent-1 text-accent-8;
+  @apply bg-accent-1 text-accent-8;
 }

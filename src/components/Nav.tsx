@@ -12,7 +12,7 @@ const Nav = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
+    <nav className="fixed z-10 flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
       <Logo />
       {session ? (
         <div className="flex items-center space-x-8">
