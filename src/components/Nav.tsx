@@ -67,13 +67,13 @@ const Profile = () => {
       <div className="relative">
         <button
           onClick={() => setOpenDropdown(!openDropdown)}
-          className="border-neutral-700 relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border"
+          className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-accent-6"
         >
           {session && session.user.image && (
             <Image src={session?.user.image} alt="User photo" fill={true} />
           )}
         </button>
-        <span className="border-neutral-700 bg-neutral-200 text-neutral-950 absolute bottom-0 left-7 flex h-4 w-4 items-center justify-center rounded-full border-2">
+        <span className="absolute bottom-0 left-7 flex h-4 w-4 items-center justify-center rounded-full border-2 border-accent-6 bg-blue-1 text-accent-6">
           <Chevron />
         </span>
         {openDropdown && <Dropdown session={session} />}

@@ -23,4 +23,29 @@ export const postRouter = createTRPCRouter({
       });
       return { newPost };
     }),
+  updateLikeCount: protectedProcedure
+    .input(z.object({ postId: z.string(), inc: z.boolean() }))
+    .mutation(async ({ ctx, input }) => {
+      input.inc
+        ? await ctx.prisma.post.update({
+            where: {
+              id: input.postId,
+            },
+            data: {
+              likes: {
+                increment: 1,
+              },
+            },
+          })
+        : await ctx.prisma.post.update({
+            where: {
+              id: input.postId,
+            },
+            data: {
+              likes: {
+                decrement: 1,
+              },
+            },
+          });
+    }),
 });

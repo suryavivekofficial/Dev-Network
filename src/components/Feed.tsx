@@ -35,7 +35,7 @@ const Feed = () => {
           <NewPost session={session} />
         </div>
       )}
-      {[...data, ...data]?.map((post) => {
+      {data?.map((post) => {
         return <PostComponent post={post} key={post.id} />;
       })}
     </div>
@@ -69,7 +69,7 @@ const PostComponent = ({
         </span>
       </div>
       <p>{post.content}</p>
-      <Like />
+      <Like likeCount={post.likes} postId={post.id} />
     </div>
   );
 };

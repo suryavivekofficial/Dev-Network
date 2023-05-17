@@ -1,12 +1,40 @@
 import { useState } from "react";
+import { api } from "~/utils/api";
 
-const Like = () => {
+const Like = ({ likeCount, postId }: { likeCount: number; postId: string }) => {
+  const formatLikes = (likes: number) => {
+    const formatter = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+    });
+
+    return formatter.format(likes);
+  };
+
+  const [likes, setLikes] = useState(formatLikes(likeCount));
   const [isLiked, setIsLiked] = useState(false);
+
+  const ctx = api.useContext();
+  const { mutate } = api.post.updateLikeCount.useMutation({
+    onSuccess: async () => await ctx.post.invalidate(),
+  });
+
+  const updateLikeCount = () => {
+    setIsLiked(!isLiked);
+    if (isLiked) {
+      setLikes(formatLikes(likeCount - 1));
+      mutate({ postId, inc: false });
+    } else {
+      setLikes(formatLikes(likeCount + 1));
+      mutate({ postId, inc: true });
+    }
+  };
 
   return (
     <button
-      onClick={() => setIsLiked(!isLiked)}
-      className="flex items-center space-x-2 rounded-md px-4 py-2 hover:bg-accent-2"
+      onClick={updateLikeCount}
+      className={`flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2 ${
+        isLiked ? `text-blue-2` : ``
+      }`}
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"
@@ -25,6 +53,13 @@ const Like = () => {
         />
       </svg>
       <span>Like</span>
+      <span
+        className={`h-full rounded-full bg-accent-4 px-2 text-sm ${
+          isLiked ? "bg-blue-1" : ""
+        }`}
+      >
+        {likes}
+      </span>
     </button>
   );
 };
