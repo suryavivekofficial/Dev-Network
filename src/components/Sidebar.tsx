@@ -1,8 +1,8 @@
 import { useState } from "react";
-import Home from "./icons/Home";
-import Messages from "./icons/Messages";
-import Notifications from "./icons/Notifications";
-import Settings from "./icons/Settings";
+import Home from "./icons/HomeIcon";
+import Messages from "./icons/MessagesIcon";
+import Notifications from "./icons/NotificationsIcon";
+import Settings from "./icons/SettingsIcon";
 import Link from "next/link";
 import { useRouter } from "next/router";
 

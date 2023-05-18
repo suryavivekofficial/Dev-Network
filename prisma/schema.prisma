@@ -12,12 +12,23 @@ model Post {
     id             String    @id @default(cuid())
     createdAt      DateTime  @default(now())
     content        String    @db.Text
-    likes          Int       @default(0)
+    likes          Like[]
     comments       Comment[]
     authorUsername String
     author         User      @relation(fields: [authorUsername], references: [username])
 
     @@index([authorUsername])
+}
+
+model Like {
+    post   Post   @relation(fields: [postId], references: [id])
+    postId String
+    user   User   @relation(fields: [userId], references: [id])
+    userId String
+
+    @@id([postId, userId])
+    @@index([userId])
+    @@index([postId])
 }
 
 model Comment {
@@ -69,6 +80,7 @@ model User {
     accounts      Account[]
     sessions      Session[]
     post          Post[]
+    like          Like[]
 }
 
 model VerificationToken {

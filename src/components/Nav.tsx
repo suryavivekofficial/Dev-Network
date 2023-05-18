@@ -1,9 +1,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
-import Messages from "./icons/Messages";
-import Notifications from "./icons/Notifications";
-import Settings from "./icons/Settings";
-import Chevron from "./icons/Chevron";
+import Messages from "./icons/MessagesIcon";
+import Notifications from "./icons/NotificationsIcon";
+import Settings from "./icons/SettingsIcon";
+import Chevron from "./icons/ChevronIcon";
 import { useState } from "react";
 import { type Session } from "next-auth";
 // import Link from "next/link";

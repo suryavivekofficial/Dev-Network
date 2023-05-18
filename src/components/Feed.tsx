@@ -1,10 +1,10 @@
-import type { Post, User } from "@prisma/client";
+import type { Like, Post, User } from "@prisma/client";
 import type { Session } from "next-auth";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
-import Clock from "./icons/Clock";
-import Like from "./icons/Like";
+import Clock from "./icons/ClockIcon";
+import LikeIcon from "./icons/LikeIcon";
 import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
@@ -14,7 +14,6 @@ dayjs.extend(relativeTime);
 const Feed = () => {
   const { data: session } = useSession();
   const { data, isLoading, isError, error } = api.post.getAll.useQuery();
-
   if (isLoading) {
     return <div>loading...</div>;
   }
@@ -45,9 +44,7 @@ const Feed = () => {
 const PostComponent = ({
   post,
 }: {
-  post: Post & {
-    author: User;
-  };
+  post: Post & { likes: Like[]; author: User };
 }) => {
   return (
     <div className="space-y-4 rounded-md border border-accent-6 bg-black p-6">
@@ -69,7 +66,7 @@ const PostComponent = ({
         </span>
       </div>
       <p>{post.content}</p>
-      <Like likeCount={post.likes} postId={post.id} />
+      <LikeIcon likes={post.likes} />
     </div>
   );
 };

@@ -2,15 +2,17 @@ import { z } from "zod";
 import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
 
 export const postRouter = createTRPCRouter({
-  getAll: publicProcedure.query(({ ctx }) =>
-    ctx.prisma.post.findMany({
-      include: {
-        author: true,
-      },
-      orderBy: {
-        createdAt: "desc",
-      },
-    })
+  getAll: publicProcedure.query(
+    async ({ ctx }) =>
+      await ctx.prisma.post.findMany({
+        include: {
+          author: true,
+          likes: true,
+        },
+        orderBy: {
+          createdAt: "desc",
+        },
+      })
   ),
   createPost: protectedProcedure
     .input(z.object({ authorUsername: z.string(), postContent: z.string() }))
@@ -24,28 +26,8 @@ export const postRouter = createTRPCRouter({
       return { newPost };
     }),
   updateLikeCount: protectedProcedure
-    .input(z.object({ postId: z.string(), inc: z.boolean() }))
+    .input(z.object({ postId: z.string(), userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      input.inc
-        ? await ctx.prisma.post.update({
-            where: {
-              id: input.postId,
-            },
-            data: {
-              likes: {
-                increment: 1,
-              },
-            },
-          })
-        : await ctx.prisma.post.update({
-            where: {
-              id: input.postId,
-            },
-            data: {
-              likes: {
-                decrement: 1,
-              },
-            },
-          });
+      // await
     }),
 });
