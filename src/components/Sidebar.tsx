@@ -21,7 +21,7 @@ const Sidebar = () => {
           <Notifications />
         </SidebarItem>
         <SidebarItem href="settings">
-          <Settings />
+          <Settings size={5} />
         </SidebarItem>
       </div>
     </aside>
