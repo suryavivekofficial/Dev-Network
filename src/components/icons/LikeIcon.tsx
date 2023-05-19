@@ -64,13 +64,13 @@ const LikeIcon = ({
   });
 
   const updateLikeCount = () => {
-    setIsLiked(!isLiked);
-    isLiked ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
-
     if (!session) {
       alert("You need to be logged in");
       return;
     }
+    setIsLiked(!isLiked);
+    isLiked ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
+
     mutate({ postId, userId: session?.user.id });
   };
 
