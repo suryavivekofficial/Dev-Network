@@ -85,7 +85,7 @@ const Profile = () => {
 const LoginBtn = () => {
   return (
     <button
-      className="focus-visible:bg-neutral-800 focus-visible:ring-blue-500 rounded-md border border-accent-8 bg-black px-4 py-2 outline-none duration-150 hover:bg-accent-8 focus-visible:ring-1"
+      className="rounded-md border border-accent-8 bg-black px-4 py-2 outline-none duration-150 hover:bg-accent-8 hover:text-black focus-visible:bg-accent-8 focus-visible:text-black focus-visible:ring-2 focus-visible:ring-blue-4"
       onClick={() => void signIn()}
     >
       Login
