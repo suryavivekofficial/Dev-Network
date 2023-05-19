@@ -40,7 +40,6 @@ export const postRouter = createTRPCRouter({
           },
         },
       });
-      console.log({ isLiked });
       if (isLiked) {
         //remove like
         await ctx.prisma.like.delete({

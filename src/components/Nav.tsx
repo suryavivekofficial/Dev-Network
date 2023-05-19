@@ -2,7 +2,6 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
-import Settings from "./icons/SettingsIcon";
 import Chevron from "./icons/ChevronIcon";
 import { useState } from "react";
 import { type Session } from "next-auth";
@@ -15,16 +14,13 @@ const Nav = () => {
     <nav className="fixed z-10 flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
       <Logo />
       {session ? (
-        <div className="flex items-center space-x-8">
+        <div className="flex items-center space-x-6">
           <div className="flex space-x-4">
             <NavBtn>
               <Messages />
             </NavBtn>
             <NavBtn>
               <Notifications />
-            </NavBtn>
-            <NavBtn>
-              <Settings />
             </NavBtn>
           </div>
           <div className="flex items-center justify-center space-x-2">
@@ -67,13 +63,13 @@ const Profile = () => {
       <div className="relative">
         <button
           onClick={() => setOpenDropdown(!openDropdown)}
-          className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-accent-6"
+          className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-blue-2"
         >
           {session && session.user.image && (
             <Image src={session?.user.image} alt="User photo" fill={true} />
           )}
         </button>
-        <span className="absolute bottom-0 left-7 flex h-4 w-4 items-center justify-center rounded-full border-2 border-accent-6 bg-blue-1 text-accent-6">
+        <span className="pointer-events-none absolute bottom-0 left-7 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 border-blue-2 bg-blue-1 text-accent-2">
           <Chevron />
         </span>
         {openDropdown && <Dropdown session={session} />}
@@ -95,7 +91,7 @@ const LoginBtn = () => {
 
 const NavBtn = ({ children }: { children: JSX.Element }) => {
   return (
-    <button className="bg-neutral-800 flex h-10 w-10 items-center justify-center rounded-full">
+    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-2 hover:bg-accent-4">
       {children}
     </button>
   );

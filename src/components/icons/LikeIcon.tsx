@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
+import { formatNums } from "~/utils/frontend/formatNums";
 
 const LikeIcon = ({
   likes,
@@ -18,14 +19,6 @@ const LikeIcon = ({
       initialLikedState = true;
     }
   }
-
-  const formatLikes = (likes: number) => {
-    const formatter = new Intl.NumberFormat("en-US", {
-      notation: "compact",
-    });
-
-    return formatter.format(likes);
-  };
 
   const [isLiked, setIsLiked] = useState(initialLikedState);
   const [likeCount, setLikeCount] = useState(likes.length);
@@ -103,7 +96,7 @@ const LikeIcon = ({
           isLiked ? "bg-blue-1" : ""
         }`}
       >
-        {formatLikes(likeCount)}
+        {formatNums(likeCount)}
       </span>
     </button>
   );
