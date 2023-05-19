@@ -3,11 +3,10 @@ import Image from "next/image";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
 import Chevron from "./icons/ChevronIcon";
-import { useEffect, useRef, useState } from "react";
 import { type Session } from "next-auth";
 import SettingsIcon from "./icons/SettingsIcon";
 import Link from "next/link";
-import type { Dispatch, SetStateAction } from "react";
+import { useEffect, useRef, useState } from "react";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -57,13 +56,23 @@ const Logo = () => {
 const Profile = () => {
   const { data: session } = useSession();
   const [openDropdown, setOpenDropdown] = useState(false);
+  const dropdownBtnRef = useRef<HTMLButtonElement>(null);
+
+  const toggleDropdown = (eventTarget: EventTarget) => {
+    if (dropdownBtnRef.current?.contains(eventTarget as Node)) {
+      return;
+    } else {
+      setOpenDropdown(!openDropdown);
+    }
+  };
 
   return (
     <>
       <span className="capitalize">{session?.user.name}</span>
       <div className="relative">
         <button
-          onClick={() => setOpenDropdown((prevState) => !prevState)}
+          ref={dropdownBtnRef}
+          onClick={() => setOpenDropdown(!openDropdown)}
           className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-blue-2"
         >
           {session && session.user.image && (
@@ -74,7 +83,7 @@ const Profile = () => {
           <Chevron />
         </span>
         {openDropdown && session && (
-          <Dropdown session={session} setOpenDropdown={setOpenDropdown} />
+          <Dropdown session={session} toggleDropdown={toggleDropdown} />
         )}
       </div>
     </>
@@ -102,10 +111,10 @@ const NavBtn = ({ children }: { children: JSX.Element }) => {
 
 const Dropdown = ({
   session,
-  setOpenDropdown,
+  toggleDropdown,
 }: {
   session: Session;
-  setOpenDropdown: Dispatch<SetStateAction<boolean>>;
+  toggleDropdown: (eventTarget: EventTarget) => void;
 }) => {
   const dropdownRef = useRef<HTMLDivElement>(null);
 
@@ -114,7 +123,7 @@ const Dropdown = ({
       dropdownRef.current &&
       !dropdownRef.current.contains(e.target as Node)
     ) {
-      setOpenDropdown(false);
+      e.target && toggleDropdown(e.target);
     }
   };
 
@@ -124,7 +133,8 @@ const Dropdown = ({
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div
@@ -132,7 +142,7 @@ const Dropdown = ({
       className="absolute right-0 mt-2 w-56 origin-top-left space-y-4 rounded-md border border-accent-6 bg-accent-1 p-4"
     >
       <div className="flex space-x-2">
-        <div className="border-neutral-700 relative h-16 w-16 overflow-hidden rounded-full border">
+        <div className="relative h-16 w-16 overflow-hidden rounded-full border border-blue-2">
           {session.user.image && (
             <Image
               src={session.user.image}
