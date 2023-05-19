@@ -1,3 +1,4 @@
+import FollowingListCard from "./FollowingListCard";
 import Nav from "./Nav";
 import ProfileCard from "./ProfileCard";
 import Sidebar from "./Sidebar";
@@ -12,6 +13,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
           <main className="w-2/3 py-8">{children}</main>
           <div className="w-1/3">
             <ProfileCard />
+            <FollowingListCard />
           </div>
         </div>
       </div>

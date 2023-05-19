@@ -3,9 +3,11 @@ import Image from "next/image";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
 import Chevron from "./icons/ChevronIcon";
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { type Session } from "next-auth";
-// import Link from "next/link";
+import SettingsIcon from "./icons/SettingsIcon";
+import Link from "next/link";
+import type { Dispatch, SetStateAction } from "react";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -54,7 +56,6 @@ const Logo = () => {
 
 const Profile = () => {
   const { data: session } = useSession();
-
   const [openDropdown, setOpenDropdown] = useState(false);
 
   return (
@@ -62,7 +63,7 @@ const Profile = () => {
       <span className="capitalize">{session?.user.name}</span>
       <div className="relative">
         <button
-          onClick={() => setOpenDropdown(!openDropdown)}
+          onClick={() => setOpenDropdown((prevState) => !prevState)}
           className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-blue-2"
         >
           {session && session.user.image && (
@@ -72,7 +73,9 @@ const Profile = () => {
         <span className="pointer-events-none absolute bottom-0 left-7 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 border-blue-2 bg-blue-1 text-accent-2">
           <Chevron />
         </span>
-        {openDropdown && <Dropdown session={session} />}
+        {openDropdown && session && (
+          <Dropdown session={session} setOpenDropdown={setOpenDropdown} />
+        )}
       </div>
     </>
   );
@@ -97,15 +100,39 @@ const NavBtn = ({ children }: { children: JSX.Element }) => {
   );
 };
 
-const Dropdown = ({ session }: { session: Session | null }) => {
-  if (!session) {
-    return null;
-  }
+const Dropdown = ({
+  session,
+  setOpenDropdown,
+}: {
+  session: Session;
+  setOpenDropdown: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const dropdownRef = useRef<HTMLDivElement>(null);
+
+  const handleClickOutside = (e: MouseEvent) => {
+    if (
+      dropdownRef.current &&
+      !dropdownRef.current.contains(e.target as Node)
+    ) {
+      setOpenDropdown(false);
+    }
+  };
+
+  useEffect(() => {
+    document.addEventListener("mousedown", handleClickOutside);
+
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  });
 
   return (
-    <div className="bg-neutral-600 absolute right-0 mt-2 w-56 origin-top-left rounded-md p-4">
-      <div className="flex justify-between">
-        <div className="border-neutral-700 relative h-10 w-10 overflow-hidden rounded-full border">
+    <div
+      ref={dropdownRef}
+      className="absolute right-0 mt-2 w-56 origin-top-left space-y-4 rounded-md border border-accent-6 bg-accent-1 p-4"
+    >
+      <div className="flex space-x-2">
+        <div className="border-neutral-700 relative h-16 w-16 overflow-hidden rounded-full border">
           {session.user.image && (
             <Image
               src={session.user.image}
@@ -114,9 +141,23 @@ const Dropdown = ({ session }: { session: Session | null }) => {
             />
           )}
         </div>
+        <span className="flex flex-col items-start justify-center">
+          <h5 className="capitalize">{session.user.name}</h5>
+          <small>@{session.user.username}</small>
+        </span>
+      </div>
+      <Link
+        href="/settings"
+        className="flex items-center justify-center space-x-2 rounded-md border border-accent-6 border-opacity-50 p-2 duration-200 hover:bg-accent-2"
+      >
+        <SettingsIcon size={4} />
+        <span className="text-xs">Manage your Account</span>
+      </Link>
+      <hr className="text-accent-6 text-opacity-50" />
+      <div className="flex w-full items-center justify-center">
         <button
           onClick={() => void signOut()}
-          className="bg-blue-500 rounded-md px-4"
+          className="rounded-md bg-blue-4 px-4 py-2 duration-200 hover:bg-blue-3"
         >
           Sign Out
         </button>
