@@ -7,7 +7,11 @@ export const postRouter = createTRPCRouter({
       await ctx.prisma.post.findMany({
         include: {
           author: true,
-          likes: true,
+          likes: {
+            select: {
+              userId: true,
+            },
+          },
         },
         orderBy: {
           createdAt: "desc",
@@ -25,9 +29,36 @@ export const postRouter = createTRPCRouter({
       });
       return { newPost };
     }),
-  updateLikeCount: protectedProcedure
+  updateLikes: protectedProcedure
     .input(z.object({ postId: z.string(), userId: z.string() }))
     .mutation(async ({ ctx, input }) => {
-      // await
+      const isLiked = await ctx.prisma.like.findUnique({
+        where: {
+          postId_userId: {
+            postId: input.postId,
+            userId: input.userId,
+          },
+        },
+      });
+      console.log({ isLiked });
+      if (isLiked) {
+        //remove like
+        await ctx.prisma.like.delete({
+          where: {
+            postId_userId: {
+              postId: input.postId,
+              userId: input.userId,
+            },
+          },
+        });
+      } else {
+        // add like
+        await ctx.prisma.like.create({
+          data: {
+            postId: input.postId,
+            userId: input.userId,
+          },
+        });
+      }
     }),
 });

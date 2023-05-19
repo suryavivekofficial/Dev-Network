@@ -1,4 +1,4 @@
-import type { Like, Post, User } from "@prisma/client";
+import type { Post, User } from "@prisma/client";
 import type { Session } from "next-auth";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
@@ -44,7 +44,7 @@ const Feed = () => {
 const PostComponent = ({
   post,
 }: {
-  post: Post & { likes: Like[]; author: User };
+  post: Post & { likes: { userId: string }[]; author: User };
 }) => {
   return (
     <div className="space-y-4 rounded-md border border-accent-6 bg-black p-6">
@@ -66,7 +66,7 @@ const PostComponent = ({
         </span>
       </div>
       <p>{post.content}</p>
-      <LikeIcon likes={post.likes} />
+      <LikeIcon likes={post.likes} postId={post.id} />
     </div>
   );
 };

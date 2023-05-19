@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { type Like } from "@prisma/client";
 import { useSession } from "next-auth/react";
 
-const LikeIcon = ({ likes }: { likes: Like[] }) => {
+const LikeIcon = ({
+  likes,
+  postId,
+}: {
+  likes: { userId: string }[];
+  postId: string;
+}) => {
   const { data: session } = useSession();
 
   let initialLikedState = false;
@@ -15,6 +20,7 @@ const LikeIcon = ({ likes }: { likes: Like[] }) => {
   }
 
   const [isLiked, setIsLiked] = useState(initialLikedState);
+  const [likeCount, setLikeCount] = useState(likes.length);
 
   // const formatLikes = (likes: number) => {
   //   const formatter = new Intl.NumberFormat("en-US", {
@@ -23,12 +29,9 @@ const LikeIcon = ({ likes }: { likes: Like[] }) => {
 
   //   return formatter.format(likes);
   // };
-  // console.log({ likeCount });
-  // const [likes, setLikes] = useState(formatLikes(likeCount));
-  // const [isLiked, setIsLiked] = useState(false);
 
   const ctx = api.useContext();
-  const { mutate } = api.post.updateLikeCount.useMutation({
+  const { mutate } = api.post.updateLikes.useMutation({
     onMutate: async ({ postId, userId }) => {
       // cancel any outgoing queries
       await ctx.post.getAll.cancel();
@@ -37,40 +40,38 @@ const LikeIcon = ({ likes }: { likes: Like[] }) => {
       const prevPostsSnapshot = ctx.post.getAll.getData();
 
       // Modify the cache
-      // ctx.post.getAll.setData(undefined, (oldPosts) =>
-      //   oldPosts?.map((post) => {
-      //     if (post.id === postId) {
-      //       post.likes.push({ postId, userId });
-      //       return {
-      //         post,
-      //       };
-      //     }
-      //   })
-      // );
+      ctx.post.getAll.setData(undefined, (oldPosts) =>
+        oldPosts?.map((post) => {
+          if (post.id === postId) {
+            post.likes.push({
+              userId,
+            });
+          }
+          return post;
+        })
+      );
+      console.log("after modifying cache ", ctx.post.getAll.getData());
 
-      console.log(prevPostsSnapshot);
-
-      return { prevPostsSnapshot };
+      return prevPostsSnapshot;
     },
-    // onError(err, newLikeCount, ctx) {
-    //   ctx.post.getAll.setData(undefined, ctx?.prevLikeCount)
-    // },
-    // async onSettled() {
-    //   await utils.post.getAll.invalidate()
-    // }
+    onError(error, _, prevPostsSnapshot) {
+      ctx.post.getAll.setData(undefined, prevPostsSnapshot);
+    },
+
+    onSettled() {
+      void ctx.post.getAll.invalidate();
+    },
   });
 
   const updateLikeCount = () => {
     setIsLiked(!isLiked);
-    if (!likes[0] || !session) return;
-    mutate({ postId: likes[0]?.postId, userId: session?.user.id });
-    // if (isLiked) {
-    //   setLikes(formatLikes(likeCount - 1));
-    //   mutate({ postId });
-    // } else {
-    //   setLikes(formatLikes(likeCount + 1));
-    //   mutate({ postId });
-    // }
+    isLiked ? setLikeCount(likeCount - 1) : setLikeCount(likeCount + 1);
+
+    if (!session) {
+      alert("You need to be logged in");
+      return;
+    }
+    mutate({ postId, userId: session?.user.id });
   };
 
   return (
@@ -102,7 +103,7 @@ const LikeIcon = ({ likes }: { likes: Like[] }) => {
           isLiked ? "bg-blue-1" : ""
         }`}
       >
-        {likes.length}
+        {likeCount}
       </span>
     </button>
   );
