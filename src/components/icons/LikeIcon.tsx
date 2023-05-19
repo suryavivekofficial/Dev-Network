@@ -19,16 +19,16 @@ const LikeIcon = ({
     }
   }
 
+  const formatLikes = (likes: number) => {
+    const formatter = new Intl.NumberFormat("en-US", {
+      notation: "compact",
+    });
+
+    return formatter.format(likes);
+  };
+
   const [isLiked, setIsLiked] = useState(initialLikedState);
   const [likeCount, setLikeCount] = useState(likes.length);
-
-  // const formatLikes = (likes: number) => {
-  //   const formatter = new Intl.NumberFormat("en-US", {
-  //     notation: "compact",
-  //   });
-
-  //   return formatter.format(likes);
-  // };
 
   const ctx = api.useContext();
   const { mutate } = api.post.updateLikes.useMutation({
@@ -103,7 +103,7 @@ const LikeIcon = ({
           isLiked ? "bg-blue-1" : ""
         }`}
       >
-        {likeCount}
+        {formatLikes(likeCount)}
       </span>
     </button>
   );
