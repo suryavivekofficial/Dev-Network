@@ -17,9 +17,7 @@ const ProfileCard = () => {
       </div>
       <div className="py-2 text-center">
         <h3 className="text-xl font-bold capitalize">{session.user.name}</h3>
-        <small>
-          @{session.user.username || session.user.email?.split("@")[0]}
-        </small>
+        <small>@{session.user.username}</small>
         <p className="mt-2 text-sm">
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </p>
