@@ -27,3 +27,5 @@ env:
   NEXTAUTH_URL: "https://fake.com"
   DISCORD_CLIENT_ID: "https://fake.com"
   DISCORD_CLIENT_SECRET: "https://fake.com"
+  GOOGLE_CLIENT_ID: "https://fake.com"
+  GOOGLE_CLIENT_SECRET: "https:fake.com"
