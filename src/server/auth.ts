@@ -5,6 +5,7 @@ import {
   type DefaultSession,
 } from "next-auth";
 import DiscordProvider from "next-auth/providers/discord";
+import GoogleProvider, { type GoogleProfile } from "next-auth/providers/google";
 import { PrismaAdapter } from "@next-auth/prisma-adapter";
 import { env } from "~/env.mjs";
 import { prisma } from "~/server/db";
@@ -47,12 +48,74 @@ export const authOptions: NextAuthOptions = {
         username: user.username,
       },
     }),
+    //   async signIn({ user, account, profile }) {
+    //     if (user.email && account?.provider === "google") {
+    //       const userInDB = await prisma.user.findUnique({
+    //         where: {
+    //           email: user.email,
+    //         },
+    //       });
+    //       if (!userInDB) {
+    //         await prisma.user.create({
+    //           data: {
+    //             name: profile?.name,
+    //             email: profile?.email,
+    //             image: user.image,
+    //             username: profile?.email?.split("@")[0],
+    //             accounts: {
+    //               create: [
+    //                 {
+    //                   type: 'oauth',
+    //                   provider: 'google'
+    //                 }
+    //               ]
+    //             }
+    //           },
+    //         });
+    //       }
+    //     }
+    //     return true;
+    //   },
   },
+
   adapter: PrismaAdapter(prisma),
+
+  events: {
+    async signIn({ isNewUser, user, profile }) {
+      if (!isNewUser) return;
+
+      console.log("updating username");
+      const updatedUsername = await prisma.user.update({
+        data: {
+          username: user.email?.split("@")[0],
+        },
+        where: {
+          email: profile?.email,
+        },
+      });
+      console.log({ updatedUsername });
+    },
+  },
+
   providers: [
     DiscordProvider({
       clientId: env.DISCORD_CLIENT_ID,
       clientSecret: env.DISCORD_CLIENT_SECRET,
+    }),
+    GoogleProvider({
+      clientId: env.GOOGLE_CLIENT_ID,
+      clientSecret: env.GOOGLE_CLIENT_SECRET,
+      // profile(profile: GoogleProfile): any {
+      //   const username = profile.email.split("@")[0];
+      //   console.log("from auth");
+      //   console.log({ ...profile, username });
+
+      //   return {
+      //     ...profile,
+      //     id: profile.sub,
+      //     username,
+      //   };
+      // },
     }),
     /**
      * ...add more providers here.

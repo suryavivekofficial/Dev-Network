@@ -19,7 +19,16 @@ const config = {
     defaultLocale: "en",
   },
   images: {
-    domains: ["cdn.discordapp.com"],
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "*.discordapp.com",
+      },
+      {
+        protocol: "https",
+        hostname: "*.googleusercontent.com",
+      },
+    ],
   },
   typescript: {
     ignoreBuildErrors: true,
@@ -29,4 +38,5 @@ const config = {
   },
   swcMinify: true,
 };
+
 export default config;
