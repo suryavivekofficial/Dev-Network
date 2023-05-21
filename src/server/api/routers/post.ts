@@ -6,7 +6,13 @@ export const postRouter = createTRPCRouter({
     async ({ ctx }) =>
       await ctx.prisma.post.findMany({
         include: {
-          author: true,
+          author: {
+            select: {
+              name: true,
+              username: true,
+              image: true,
+            },
+          },
           likes: {
             select: {
               userId: true,
@@ -18,6 +24,26 @@ export const postRouter = createTRPCRouter({
         },
       })
   ),
+  getPostsByUser: publicProcedure
+    .input(z.object({ username: z.string() }))
+    .query(
+      async ({ ctx, input }) =>
+        await ctx.prisma.post.findMany({
+          where: {
+            authorUsername: input.username,
+          },
+          include: {
+            likes: {
+              select: {
+                userId: true,
+              },
+            },
+          },
+          orderBy: {
+            createdAt: "desc",
+          },
+        })
+    ),
   createPost: protectedProcedure
     .input(z.object({ authorUsername: z.string(), postContent: z.string() }))
     .mutation(async ({ ctx, input }) => {

@@ -1,14 +1,11 @@
 import { useSession } from "next-auth/react";
-import { useState, type FC } from "react";
+import { useState } from "react";
 import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
 import Image from "next/image";
-import LikeIcon from "./icons/LikeIcon";
-import Clock from "./icons/ClockIcon";
-
-import type { Post, User } from "@prisma/client";
+import PostComponent from "./Post";
 
 dayjs.extend(relativeTime);
 
@@ -31,38 +28,12 @@ const Feed = () => {
     <div className="space-y-4">
       <NewPost />
       {data?.map((post) => {
-        return <PostComponent post={post} key={post.id} />;
+        return (
+          <div key={post.id} className="rounded-md border border-accent-6">
+            <PostComponent post={post} />
+          </div>
+        );
       })}
-    </div>
-  );
-};
-
-type TPostComponent = {
-  post: Post & { likes: { userId: string }[]; author: User };
-};
-
-const PostComponent: FC<TPostComponent> = ({ post }) => {
-  return (
-    <div className="space-y-4 rounded-md border border-accent-6 bg-black p-6">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
-          <div className="relative h-10 w-10 overflow-hidden rounded-full">
-            {post.author.image && (
-              <Image src={post?.author.image} fill={true} alt="Author photo" />
-            )}
-          </div>
-          <div className="flex flex-col">
-            <span className="font-bold capitalize">{post.author.name}</span>
-            <span className="text-sm">@{post.author.username}</span>
-          </div>
-        </div>
-        <span className="flex items-center space-x-2 text-sm opacity-80">
-          <Clock />
-          <span className="font-thin">{dayjs(post.createdAt).fromNow()}</span>
-        </span>
-      </div>
-      <p>{post.content}</p>
-      <LikeIcon likes={post.likes} postId={post.id} />
     </div>
   );
 };

@@ -20,7 +20,7 @@ const Home: NextPage = () => {
           <div className="flex-grow">
             <Feed />
           </div>
-          <div className="h-full w-1/3">
+          <div className="w-1/3">
             <ProfileCard />
             <FollowingListCard />
           </div>
