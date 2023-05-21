@@ -14,8 +14,9 @@ const Nav = () => {
   return (
     <nav className="fixed z-10 flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
       <Logo />
+      <Tabs />
       {session ? (
-        <div className="flex items-center space-x-6">
+        <div className="flex w-1/3 items-center justify-end space-x-6">
           <div className="flex space-x-4">
             <NavBtn>
               <Messages />
@@ -35,9 +36,27 @@ const Nav = () => {
   );
 };
 
+const Tabs = () => {
+  const { data: session } = useSession();
+  if (!session) return null;
+
+  return (
+    <div className="flex h-10 w-1/3 items-center justify-center">
+      <div className="flex h-full w-48 items-center justify-between rounded-md border border-accent-6 px-2">
+        <button className="rounded px-4 py-1 text-sm hover:bg-accent-2">
+          For You
+        </button>
+        <button className="rounded px-4 py-1 text-sm hover:bg-accent-2">
+          Following
+        </button>
+      </div>
+    </div>
+  );
+};
+
 const Logo = () => {
   return (
-    <div className="flex items-center justify-center space-x-2">
+    <div className="flex w-1/3 items-center justify-start space-x-2">
       <div className="flex h-8 w-8 gap-1">
         <div className="flex h-full w-1/2 flex-col gap-1">
           <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
@@ -68,7 +87,7 @@ const Profile = () => {
 
   return (
     <>
-      <span className="capitalize">{session?.user.name}</span>
+      <span className="whitespace-nowrap capitalize">{session?.user.name}</span>
       <div className="relative">
         <button
           ref={dropdownBtnRef}

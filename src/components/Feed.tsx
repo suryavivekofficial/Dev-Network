@@ -2,7 +2,7 @@ import type { Post, User } from "@prisma/client";
 import type { Session } from "next-auth";
 import Image from "next/image";
 import { useSession } from "next-auth/react";
-import { useState } from "react";
+import { useState, type FC } from "react";
 import Clock from "./icons/ClockIcon";
 import LikeIcon from "./icons/LikeIcon";
 import { api } from "~/utils/api";
@@ -29,11 +29,7 @@ const Feed = () => {
 
   return (
     <div className="space-y-4">
-      {session && (
-        <div>
-          <NewPost session={session} />
-        </div>
-      )}
+      <NewPost />
       {data?.map((post) => {
         return <PostComponent post={post} key={post.id} />;
       })}
@@ -41,11 +37,11 @@ const Feed = () => {
   );
 };
 
-const PostComponent = ({
-  post,
-}: {
+type TPostComponent = {
   post: Post & { likes: { userId: string }[]; author: User };
-}) => {
+};
+
+const PostComponent: FC<TPostComponent> = ({ post }) => {
   return (
     <div className="space-y-4 rounded-md border border-accent-6 bg-black p-6">
       <div className="flex items-center justify-between">
@@ -71,7 +67,8 @@ const PostComponent = ({
   );
 };
 
-const NewPost = ({ session }: { session: Session }) => {
+const NewPost = () => {
+  const { data: session } = useSession();
   const [newPost, setNewPost] = useState("");
   const ctx = api.useContext();
 
@@ -81,6 +78,8 @@ const NewPost = ({ session }: { session: Session }) => {
       await ctx.post.invalidate();
     },
   });
+
+  if (!session) return null;
 
   const handleSubmit = () => {
     mutate({ authorUsername: session.user.username, postContent: newPost });
