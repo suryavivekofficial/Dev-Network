@@ -1,18 +1,18 @@
-import type { Post, User } from "@prisma/client";
-import type { Session } from "next-auth";
-import Image from "next/image";
 import { useSession } from "next-auth/react";
 import { useState, type FC } from "react";
-import Clock from "./icons/ClockIcon";
-import LikeIcon from "./icons/LikeIcon";
 import { api } from "~/utils/api";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 
+import Image from "next/image";
+import LikeIcon from "./icons/LikeIcon";
+import Clock from "./icons/ClockIcon";
+
+import type { Post, User } from "@prisma/client";
+
 dayjs.extend(relativeTime);
 
 const Feed = () => {
-  const { data: session } = useSession();
   const { data, isLoading, isError, error } = api.post.getAll.useQuery();
   if (isLoading) {
     return <div>loading...</div>;

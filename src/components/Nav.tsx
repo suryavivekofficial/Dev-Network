@@ -7,6 +7,7 @@ import { type Session } from "next-auth";
 import SettingsIcon from "./icons/SettingsIcon";
 import Link from "next/link";
 import { useEffect, useRef, useState } from "react";
+import { useRouter } from "next/router";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -38,7 +39,9 @@ const Nav = () => {
 
 const Tabs = () => {
   const { data: session } = useSession();
-  if (!session) return null;
+  const { pathname } = useRouter();
+
+  if (!session || pathname !== "/") return null;
 
   return (
     <div className="flex h-10 w-1/3 items-center justify-center">

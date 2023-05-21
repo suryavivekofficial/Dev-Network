@@ -1,6 +1,4 @@
-import FollowingListCard from "./FollowingListCard";
 import Nav from "./Nav";
-import ProfileCard from "./ProfileCard";
 import Sidebar from "./Sidebar";
 
 const Layout = ({ children }: { children: JSX.Element }) => {
@@ -10,11 +8,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       <div className="flex justify-between gap-8">
         <Sidebar />
         <div className="ml-[calc(25vw+2rem)] mt-20 flex w-3/4 gap-8">
-          <main className="w-2/3 py-8">{children}</main>
-          <div className="w-1/3">
-            <ProfileCard />
-            <FollowingListCard />
-          </div>
+          <main className="flex w-full gap-8 py-8">{children}</main>
         </div>
       </div>
     </div>

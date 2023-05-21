@@ -1,5 +1,6 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 
 const ProfileCard = () => {
   const { data: session } = useSession();
@@ -9,7 +10,7 @@ const ProfileCard = () => {
   }
 
   return (
-    <div className="min-h-1/2 mr-8 mt-8 flex flex-col items-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
+    <div className="min-h-1/2 mr-8 flex flex-col items-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
       <div className="relative h-20 w-20 overflow-hidden rounded-full">
         {session.user.image && (
           <Image src={session.user.image} alt="profile photo" fill={true} />
@@ -17,7 +18,9 @@ const ProfileCard = () => {
       </div>
       <div className="py-2 text-center">
         <h3 className="text-xl font-bold capitalize">{session.user.name}</h3>
-        <small>@{session.user.username}</small>
+        <Link href={session.user.username} className="text-sm">
+          @{session.user.username}
+        </Link>
         <p className="mt-2 text-sm">
           Lorem ipsum dolor sit amet consectetur adipisicing elit.
         </p>

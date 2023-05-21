@@ -3,6 +3,8 @@ import type { NextPage } from "next";
 import Head from "next/head";
 import Layout from "~/components/Layout";
 import Feed from "~/components/Feed";
+import ProfileCard from "~/components/ProfileCard";
+import FollowingListCard from "~/components/FollowingListCard";
 
 const Home: NextPage = () => {
   return (
@@ -14,7 +16,15 @@ const Home: NextPage = () => {
       </Head>
 
       <Layout>
-        <Feed />
+        <>
+          <div className="flex-grow">
+            <Feed />
+          </div>
+          <div className="h-full w-1/3">
+            <ProfileCard />
+            <FollowingListCard />
+          </div>
+        </>
       </Layout>
     </>
   );
