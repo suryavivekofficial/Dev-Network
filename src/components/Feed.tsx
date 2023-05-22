@@ -10,7 +10,7 @@ import PostComponent from "./Post";
 dayjs.extend(relativeTime);
 
 const Feed = () => {
-  const { data, isLoading, isError, error } = api.post.getAll.useQuery();
+  const { data, isLoading, isError, error } = api.post.getPosts.useQuery();
   if (isLoading) {
     return <div>loading...</div>;
   }

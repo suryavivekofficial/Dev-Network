@@ -26,7 +26,7 @@ export const getServerSideProps: GetServerSideProps<{
     },
   });
 
-  if (!user) {
+  if (!user || !user.username) {
     return {
       notFound: true,
     };
@@ -152,19 +152,10 @@ const FollowBtn: FC<FollowBtnProps> = ({ isFollowed }) => {
 const UserPosts = ({ user }: { user: User }) => {
   if (!user.username) return null;
 
-  const { data, isLoading, isError, error } = api.post.getPostsByUser.useQuery({
+  const { data, isLoading, isError, error } = api.post.getPosts.useQuery({
     username: user.username,
   });
 
-  const postsWithUserDetails = data?.map((post) => ({
-    ...post,
-    author: {
-      username: user.username,
-      image: user.image,
-      name: user.name,
-    },
-  }));
-  console.log(postsWithUserDetails);
   if (isLoading) {
     return <div>loading...</div>;
   }
@@ -173,14 +164,14 @@ const UserPosts = ({ user }: { user: User }) => {
     return <div>{error.message}</div>;
   }
 
-  if (postsWithUserDetails?.length === 0) {
-    return <div>no posts to show</div>;
+  if (data?.length === 0) {
+    return <div>no data to show</div>;
   }
 
   return (
     <div>
-      {postsWithUserDetails &&
-        postsWithUserDetails.map((post) => {
+      {data &&
+        data.map((post) => {
           return (
             <div key={post.id} className="border-t border-accent-6">
               <PostComponent post={post} />

@@ -28,13 +28,13 @@ const LikeIcon: FC<TLikeIcon> = ({
   const { mutate } = api.post.updateLikes.useMutation({
     onMutate: async ({ postId, userId }) => {
       // cancel any outgoing queries
-      await ctx.post.getAll.cancel();
+      await ctx.post.getPosts.cancel();
 
       // get the data from query cache
-      const prevPostsSnapshot = ctx.post.getAll.getData();
+      const prevPostsSnapshot = ctx.post.getPosts.getData();
 
       // Modify the cache
-      ctx.post.getAll.setData(undefined, (oldPosts) =>
+      ctx.post.getPosts.setData(undefined, (oldPosts) =>
         oldPosts?.map((post) => {
           if (post.id === postId) {
             post.likes.push({
@@ -48,11 +48,11 @@ const LikeIcon: FC<TLikeIcon> = ({
       return prevPostsSnapshot;
     },
     onError(error, _, prevPostsSnapshot) {
-      ctx.post.getAll.setData(undefined, prevPostsSnapshot);
+      ctx.post.getPosts.setData(undefined, prevPostsSnapshot);
     },
 
     onSettled() {
-      void ctx.post.getAll.invalidate();
+      void ctx.post.getPosts.invalidate();
     },
   });
 
