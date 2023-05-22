@@ -2,26 +2,27 @@ import { useState } from "react";
 import { api } from "~/utils/api";
 import { useSession } from "next-auth/react";
 import { formatNums } from "~/utils/frontend/formatNums";
+import type { FC } from "react";
 
-const LikeIcon = ({
-  likes,
-  postId,
-}: {
-  likes: { userId: string }[];
+type TLikeIcon = {
+  isLikedFromServer: boolean;
   postId: string;
+  likeCountFromServer: number;
+};
+
+const LikeIcon: FC<TLikeIcon> = ({
+  isLikedFromServer,
+  postId,
+  likeCountFromServer,
 }) => {
   const { data: session } = useSession();
 
-  let initialLikedState = false;
-  if (session) {
-    const singleLike = likes.find((like) => like.userId === session.user.id);
-    if (singleLike) {
-      initialLikedState = true;
-    }
+  if (!session) {
+    isLikedFromServer = false;
   }
 
-  const [isLiked, setIsLiked] = useState(initialLikedState);
-  const [likeCount, setLikeCount] = useState(likes.length);
+  const [isLiked, setIsLiked] = useState(isLikedFromServer);
+  const [likeCount, setLikeCount] = useState(likeCountFromServer);
 
   const ctx = api.useContext();
   const { mutate } = api.post.updateLikes.useMutation({
@@ -43,7 +44,6 @@ const LikeIcon = ({
           return post;
         })
       );
-      console.log("after modifying cache ", ctx.post.getAll.getData());
 
       return prevPostsSnapshot;
     },

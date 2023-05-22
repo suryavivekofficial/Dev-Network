@@ -10,6 +10,9 @@ dayjs.extend(relativeTime);
 
 type TPostComponent = {
   post: Post & {
+    _count: {
+      likes: number;
+    };
     likes: {
       userId: string;
     }[];
@@ -22,6 +25,9 @@ type TPostComponent = {
 };
 
 const PostComponent: FC<TPostComponent> = ({ post }) => {
+  // const likeFromServer = post.likes.length > 0 ? true : false
+  // const [isLiked, setIsLiked] = useState(likeFromServer)
+
   return (
     <div className="space-y-4 rounded-md bg-black p-6">
       <div className="flex items-center justify-between">
@@ -42,7 +48,11 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
         </span>
       </div>
       <p>{post.content}</p>
-      <LikeIcon likes={post.likes} postId={post.id} />
+      <LikeIcon
+        isLikedFromServer={post.likes.length === 0 ? false : true}
+        postId={post.id}
+        likeCountFromServer={post._count.likes}
+      />
     </div>
   );
 };
