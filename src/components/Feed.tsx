@@ -80,9 +80,9 @@ const NewPost = () => {
       <div className="flex">
         <button
           onClick={handleSubmit}
-          disabled={isLoading}
+          disabled={isLoading || newPost.trim() === ""}
           type="submit"
-          className="ml-auto rounded-md border border-white bg-accent-8 px-4 py-2 text-accent-2 outline-none duration-150 hover:bg-black hover:text-white focus-visible:ring-1"
+          className="ml-auto rounded-md border border-accent-8 bg-accent-8 px-4 py-2 font-bold text-accent-2 outline-none duration-150 focus-visible:ring-1 hover:enabled:bg-black hover:enabled:text-white disabled:cursor-not-allowed"
         >
           Post
         </button>
