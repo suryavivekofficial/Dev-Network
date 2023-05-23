@@ -96,11 +96,12 @@ type FollowBtnProps = {
 
 const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
   const { data: session } = useSession();
+  console.log({ isFollowedFromServer });
   const [isFollowed, setisFollowed] = useState(isFollowedFromServer);
 
   const ctx = api.useContext();
 
-  const { mutate, isLoading, data } = api.user.updateFollow.useMutation({
+  const { mutate } = api.user.updateFollow.useMutation({
     onMutate: async ({ username }) => {
       await ctx.user.getUser.cancel();
 
@@ -131,8 +132,6 @@ const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
     },
   });
 
-  console.log(data);
-
   const handleClick = () => {
     if (!session) {
       alert("You need to be logged in");
@@ -144,9 +143,8 @@ const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
 
   return (
     <button
-      disabled={isLoading}
       onClick={handleClick}
-      className="rounded-md bg-accent-8 px-4 py-2 font-bold text-accent-2 hover:brightness-75"
+      className="rounded-md bg-accent-8 px-4 py-2 font-bold text-accent-2 hover:brightness-75 disabled:cursor-not-allowed"
     >
       {isFollowed ? "Unfollow" : "Follow"}
     </button>

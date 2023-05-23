@@ -11,6 +11,9 @@ export const userRouter = createTRPCRouter({
         },
         include: {
           followedBy: {
+            where: {
+              followerUsername: ctx.session?.user.username,
+            },
             select: {
               followerUsername: true,
             },
@@ -34,11 +37,7 @@ export const userRouter = createTRPCRouter({
 
       let isFollow = false;
 
-      if (
-        user?.followedBy.includes({
-          followerUsername: ctx.session?.user?.username,
-        })
-      ) {
+      if (user?.followedBy[0]?.followerUsername === ctx.session.user.username) {
         isFollow = true;
       }
 
