@@ -1,13 +1,13 @@
-import Layout from "~/components/Layout";
 import type { User } from "@prisma/client";
-import ProfileCard from "~/components/ProfileCard";
-import FollowingListCard from "~/components/FollowingListCard";
-import Image from "next/image";
-import { api } from "~/utils/api";
-import PostComponent from "~/components/Post";
-import { useState, type FC } from "react";
-import { useRouter } from "next/router";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
+import { useRouter } from "next/router";
+import { useState, type FC } from "react";
+import FollowingListCard from "~/components/FollowingListCard";
+import Layout from "~/components/Layout";
+import PostComponent from "~/components/Post";
+import ProfileCard from "~/components/ProfileCard";
+import { api } from "~/utils/api";
 
 const ProfilePage = () => {
   return (
@@ -71,8 +71,14 @@ const Profile = () => {
           nihil?
         </p>
         <div className="space-x-4">
-          <span>100k Followers</span>
-          <span>219 Following</span>
+          <span>
+            <span className="font-bold">{user._count.followedBy} </span>
+            Followers
+          </span>
+          <span>
+            <span className="font-bold">{user._count.following} </span>
+            Following
+          </span>
         </div>
       </div>
 
@@ -83,7 +89,7 @@ const Profile = () => {
 
 const EditProfileBtn = () => {
   return (
-    <button className="rounded-md bg-accent-8 px-4 py-2 font-bold text-accent-2 hover:brightness-75">
+    <button className="rounded-md border border-accent-8 px-4 py-2 font-bold text-accent-8 duration-200 hover:border-blue-2 hover:text-blue-2">
       Edit profile
     </button>
   );

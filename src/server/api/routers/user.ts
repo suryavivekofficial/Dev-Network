@@ -18,6 +18,12 @@ export const userRouter = createTRPCRouter({
               followerUsername: true,
             },
           },
+          _count: {
+            select: {
+              followedBy: true,
+              following: true,
+            },
+          },
         },
       });
 
@@ -46,6 +52,24 @@ export const userRouter = createTRPCRouter({
         isFollow,
       };
     }),
+  getFollowAndFollowingCount: protectedProcedure
+    // .input(z.object({username: z.string()}))
+    .query(
+      async ({ ctx }) =>
+        await ctx.prisma.user.findUnique({
+          where: {
+            username: ctx.session.user.username,
+          },
+          select: {
+            _count: {
+              select: {
+                followedBy: true,
+                following: true,
+              },
+            },
+          },
+        })
+    ),
   updateFollow: protectedProcedure
     .input(z.object({ username: z.string() }))
     .mutation(async ({ ctx, input }) => {

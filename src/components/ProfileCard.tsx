@@ -1,9 +1,13 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { api } from "~/utils/api";
 
 const ProfileCard = () => {
   const { data: session } = useSession();
+  const { data } = api.user.getFollowAndFollowingCount.useQuery();
+
+  console.log({ data });
 
   if (!session) {
     return null;
@@ -27,11 +31,11 @@ const ProfileCard = () => {
       </div>
       <div className="flex space-x-8 text-center">
         <div>
-          <h3 className="text-xl font-bold">100k</h3>
+          <h3 className="text-xl font-bold">{data?._count.followedBy}</h3>
           <p>Followers</p>
         </div>
         <div>
-          <h3 className="text-xl font-bold">219</h3>
+          <h3 className="text-xl font-bold">{data?._count.following}</h3>
           <p>Following</p>
         </div>
       </div>

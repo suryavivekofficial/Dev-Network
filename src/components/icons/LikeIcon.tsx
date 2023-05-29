@@ -1,8 +1,8 @@
+import { useSession } from "next-auth/react";
+import type { FC } from "react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import { useSession } from "next-auth/react";
-import { formatNums } from "~/utils/frontend/formatNums";
-import type { FC } from "react";
+import { formatNums } from "~/utils/snippets/formatNums";
 
 type TLikeIcon = {
   isLikedFromServer: boolean;
