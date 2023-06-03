@@ -1,16 +1,22 @@
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
 import { useState } from "react";
 import { api } from "~/utils/api";
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 
 import Image from "next/image";
+import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
 
 dayjs.extend(relativeTime);
 
 const Feed = () => {
-  const { data, isLoading, isError, error } = api.post.getPosts.useQuery();
+  const { selected } = usePostStore();
+
+  const { data, isLoading, isError, error } =
+    selected === "for you"
+      ? api.post.getPosts.useQuery()
+      : api.post.getFollowingPosts.useQuery();
   if (isLoading) {
     return <div>loading...</div>;
   }

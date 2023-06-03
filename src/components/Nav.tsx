@@ -1,13 +1,14 @@
+import { type Session } from "next-auth";
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
+import { useRouter } from "next/router";
+import { useEffect, useRef, useState } from "react";
+import { usePostStore } from "~/utils/zustand/posts";
+import Chevron from "./icons/ChevronIcon";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
-import Chevron from "./icons/ChevronIcon";
-import { type Session } from "next-auth";
 import SettingsIcon from "./icons/SettingsIcon";
-import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { useRouter } from "next/router";
 
 const Nav = () => {
   const { data: session } = useSession();
@@ -40,16 +41,28 @@ const Nav = () => {
 const Tabs = () => {
   const { data: session } = useSession();
   const { pathname } = useRouter();
+  const { selected, changeSelectionToAll, changeSelectionToForYou } =
+    usePostStore();
 
   if (!session || pathname !== "/") return null;
 
   return (
     <div className="flex h-10 w-1/3 items-center justify-center">
-      <div className="flex h-full w-48 items-center justify-between rounded-md border border-accent-6 px-2">
-        <button className="rounded px-4 py-1 text-sm hover:bg-accent-2">
+      <div className="flex h-full min-w-max items-center justify-between rounded-md border border-accent-6 px-2">
+        <button
+          onClick={changeSelectionToForYou}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
+            selected === "for you" ? "bg-accent-2" : ""
+          }`}
+        >
           For You
         </button>
-        <button className="rounded px-4 py-1 text-sm hover:bg-accent-2">
+        <button
+          onClick={changeSelectionToAll}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
+            selected === "all posts" ? "bg-accent-2" : ""
+          }`}
+        >
           Following
         </button>
       </div>

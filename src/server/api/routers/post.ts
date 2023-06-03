@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { createTRPCRouter, publicProcedure, protectedProcedure } from "../trpc";
+import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const postRouter = createTRPCRouter({
   getPosts: publicProcedure
@@ -37,6 +37,59 @@ export const postRouter = createTRPCRouter({
           },
         })
     ),
+  getFollowingPosts: protectedProcedure.query(async ({ ctx }) => {
+    const following = await ctx.prisma.follows.findMany({
+      where: {
+        followerUsername: ctx.session.user.username,
+      },
+      select: {
+        followingUsername: true,
+      },
+    });
+    const followingUsernames = following.map((ele) => ele.followingUsername);
+    const username = ctx.session.user.username;
+    const posts = await ctx.prisma.post.findMany({
+      where: {
+        OR: [
+          {
+            authorUsername: {
+              in: followingUsernames,
+            },
+          },
+          {
+            authorUsername: username,
+          },
+        ],
+      },
+      include: {
+        author: {
+          select: {
+            name: true,
+            username: true,
+            image: true,
+          },
+        },
+        likes: {
+          where: {
+            userId: ctx.session?.user.id,
+          },
+          select: {
+            userId: true,
+          },
+        },
+        _count: {
+          select: {
+            likes: true,
+          },
+        },
+      },
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    return posts;
+  }),
   createPost: protectedProcedure
     .input(z.object({ authorUsername: z.string(), postContent: z.string() }))
     .mutation(async ({ ctx, input }) => {

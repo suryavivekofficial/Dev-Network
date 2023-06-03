@@ -1,10 +1,10 @@
-import { type FC } from "react";
 import type { Post } from "@prisma/client";
-import Image from "next/image";
-import Clock from "./icons/ClockIcon";
-import LikeIcon from "./icons/LikeIcon";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import Image from "next/image";
+import { type FC } from "react";
+import Clock from "./icons/ClockIcon";
+import LikeIcon from "./icons/LikeIcon";
 
 dayjs.extend(relativeTime);
 
