@@ -41,7 +41,7 @@ const Nav = () => {
 const Tabs = () => {
   const { data: session } = useSession();
   const { pathname } = useRouter();
-  const { selected, changeSelectionToAll, changeSelectionToForYou } =
+  const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
     usePostStore();
 
   if (!session || pathname !== "/") return null;
@@ -58,9 +58,9 @@ const Tabs = () => {
           For You
         </button>
         <button
-          onClick={changeSelectionToAll}
+          onClick={changeSelectionToFollowing}
           className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
-            selected === "all posts" ? "bg-accent-2" : ""
+            selected === "following" ? "bg-accent-2" : ""
           }`}
         >
           Following

@@ -1,10 +1,9 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
+import Image from "next/image";
 import { useState } from "react";
 import { api } from "~/utils/api";
-
-import Image from "next/image";
 import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
 

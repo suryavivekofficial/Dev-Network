@@ -1,9 +1,16 @@
+// import { useRouter } from "next/router";
 import Nav from "./Nav";
 import Sidebar from "./Sidebar";
+// import { useState } from "react";
 
 const Layout = ({ children }: { children: JSX.Element }) => {
+  // const router = useRouter()
+  // const [loader, setLoader] = useState(0)
+  // router.events.on("routeChangeStart", () => setLoader(loader))
+
   return (
     <div className="overflow-x-hidden">
+      {/* <div className="h-1 w-screen bg-white"></div> */}
       <Nav />
       <div className="flex justify-between gap-8">
         <Sidebar />
