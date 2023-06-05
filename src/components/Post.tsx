@@ -26,9 +26,6 @@ type TPostComponent = {
 };
 
 const PostComponent: FC<TPostComponent> = ({ post }) => {
-  // const likeFromServer = post.likes.length > 0 ? true : false
-  // const [isLiked, setIsLiked] = useState(likeFromServer)
-
   if (!post.author.username) return null;
 
   if (!post.author.image) {

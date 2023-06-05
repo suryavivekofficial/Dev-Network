@@ -51,17 +51,15 @@ const Tabs = () => {
       <div className="flex h-full min-w-max items-center justify-between rounded-md border border-accent-6 px-2">
         <button
           onClick={changeSelectionToForYou}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
-            selected === "for you" ? "bg-accent-2" : ""
-          }`}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${selected === "for you" ? "bg-accent-2" : ""
+            }`}
         >
           For You
         </button>
         <button
           onClick={changeSelectionToFollowing}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
-            selected === "following" ? "bg-accent-2" : ""
-          }`}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${selected === "following" ? "bg-accent-2" : ""
+            }`}
         >
           Following
         </button>
