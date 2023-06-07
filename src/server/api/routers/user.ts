@@ -77,15 +77,6 @@ export const userRouter = createTRPCRouter({
       const follower = ctx.session.user.username;
       const following = input.username;
 
-      // trigger a pusher notification
-      await pusherServer.trigger(
-        `notifications_channel_${following}`,
-        "followEvent",
-        {
-          message: `${follower} started following ${following}`,
-        }
-      );
-
       const isFollow = await ctx.prisma.follows.findUnique({
         where: {
           followerUsername_followingUsername: {
@@ -104,6 +95,16 @@ export const userRouter = createTRPCRouter({
           },
         });
       } else {
+        // trigger a pusher notification
+        await pusherServer.trigger(
+          `notifications_channel_${following}`,
+          "followEvent",
+          {
+            message: `${follower} started following you.`,
+            date: Date(),
+          }
+        );
+
         await ctx.prisma.follows.create({
           data: {
             followerUsername: follower,

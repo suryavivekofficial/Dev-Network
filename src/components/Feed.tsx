@@ -1,13 +1,9 @@
-import dayjs from "dayjs";
-import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
 import { useState } from "react";
 import { api } from "~/utils/api";
 import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
-
-dayjs.extend(relativeTime);
 
 const Feed = () => {
   const { selected } = usePostStore();

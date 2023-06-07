@@ -1,32 +1,22 @@
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
-
 import Head from "next/head";
 import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
 import { pusherClient } from "~/utils/pusher";
 
+dayjs.extend(relativeTime);
+
 interface TPusherMsg {
   message: string;
+  date: string;
 }
 
 const NotificationsPage: NextPage = () => {
   const { data: session } = useSession();
-
-  // useEffect(() => {
-  //   const channel = pusherClient.subscribe(`notifications_channel_${session.user.username}`);
-  //   const handlePusher = (data: TPusherMsg) =>
-  //   console.log("pusher success", data);
-  //   channel.bind(`follow`, (data: TPusherMsg) => handlePusher(data));
-
-  //   return () => {
-  //     pusherClient.unsubscribe("channelSomething");
-  //     pusherClient.unbind("eventSomethig", (data: TPusherMsg) =>
-  //       handlePusher(data)
-  //       );
-  //     };
-  //   }, []);
 
   if (!session) return null;
 
@@ -39,28 +29,28 @@ const NotificationsPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <main>
-          Notifications appear here
-          <div>
-            <NotificationsContainer session={session} />
-          </div>
-        </main>
+        <div className="w-full pr-8">
+          <h2 className="mb-4 ml-1 text-xl">Notifications For You</h2>
+          <NotificationsContainer session={session} />
+        </div>
       </Layout>
     </>
   );
 };
 
 const NotificationsContainer = ({ session }: { session: Session }) => {
-  const [notifications, setNotifications] = useState(["1st notification"]);
+  const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
 
   useEffect(() => {
     const channel = pusherClient.subscribe(
       `notifications_channel_${session.user.username}`
     );
+
     const handlePusher = (data: TPusherMsg) => {
       console.log("pusher success", data);
-      setNotifications((notifications) => [...notifications, data.message]);
+      setNotifications((notifications) => [...notifications, data]);
     };
+
     channel.bind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
 
     return () => {
@@ -71,14 +61,29 @@ const NotificationsContainer = ({ session }: { session: Session }) => {
         handlePusher(data)
       );
     };
-  });
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  if (notifications.length === 0) {
+    return (
+      <div className="flex w-full space-x-4 rounded-md border border-accent-6 bg-black p-4">
+        No new notifications for you.
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-2">
-      {notifications.map((notification) => {
+    <div className="w-full space-y-4">
+      {notifications.map((notification, i) => {
         return (
-          <div className="bg-black p-4" key={Date.now()}>
-            {notification}
+          <div
+            className="flex w-full items-center space-x-8 rounded-md border border-accent-6 bg-black p-4"
+            key={i}
+          >
+            <p className="flex-grow">{notification.message} </p>
+            <span className="whitespace-nowrap">
+              {dayjs(notification.date).fromNow()}
+            </span>
           </div>
         );
       })}

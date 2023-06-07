@@ -29,3 +29,7 @@ env:
   DISCORD_CLIENT_SECRET: "https://fake.com"
   GOOGLE_CLIENT_ID: "https://fake.com"
   GOOGLE_CLIENT_SECRET: "https:fake.com"
+  PUSHER_APP_ID: "fake-pusher-id"
+  PUSHER_SECRET: "fake-pusher-secret"
+  PUSHER_KEY: "fake-pusher-key"
+  PUSHER_CLUSTER: "fake-pusher-cluster"
