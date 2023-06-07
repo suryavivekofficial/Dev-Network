@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { pusherServer } from "~/server/pusher";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userRouter = createTRPCRouter({
@@ -75,6 +76,15 @@ export const userRouter = createTRPCRouter({
     .mutation(async ({ ctx, input }) => {
       const follower = ctx.session.user.username;
       const following = input.username;
+
+      // trigger a pusher notification
+      await pusherServer.trigger(
+        `notifications_channel_${following}`,
+        "followEvent",
+        {
+          message: `${follower} started following ${following}`,
+        }
+      );
 
       const isFollow = await ctx.prisma.follows.findUnique({
         where: {

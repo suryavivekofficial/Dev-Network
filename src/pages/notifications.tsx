@@ -1,9 +1,35 @@
 import type { NextPage } from "next";
+import type { Session } from "next-auth";
+import { useSession } from "next-auth/react";
 
 import Head from "next/head";
+import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
+import { pusherClient } from "~/utils/pusher";
 
-const Notifications: NextPage = () => {
+interface TPusherMsg {
+  message: string;
+}
+
+const NotificationsPage: NextPage = () => {
+  const { data: session } = useSession();
+
+  // useEffect(() => {
+  //   const channel = pusherClient.subscribe(`notifications_channel_${session.user.username}`);
+  //   const handlePusher = (data: TPusherMsg) =>
+  //   console.log("pusher success", data);
+  //   channel.bind(`follow`, (data: TPusherMsg) => handlePusher(data));
+
+  //   return () => {
+  //     pusherClient.unsubscribe("channelSomething");
+  //     pusherClient.unbind("eventSomethig", (data: TPusherMsg) =>
+  //       handlePusher(data)
+  //       );
+  //     };
+  //   }, []);
+
+  if (!session) return null;
+
   return (
     <>
       <Head>
@@ -13,10 +39,51 @@ const Notifications: NextPage = () => {
       </Head>
 
       <Layout>
-        <main>Notifications appear here</main>
+        <main>
+          Notifications appear here
+          <div>
+            <NotificationsContainer session={session} />
+          </div>
+        </main>
       </Layout>
     </>
   );
 };
 
-export default Notifications;
+const NotificationsContainer = ({ session }: { session: Session }) => {
+  const [notifications, setNotifications] = useState(["1st notification"]);
+
+  useEffect(() => {
+    const channel = pusherClient.subscribe(
+      `notifications_channel_${session.user.username}`
+    );
+    const handlePusher = (data: TPusherMsg) => {
+      console.log("pusher success", data);
+      setNotifications((notifications) => [...notifications, data.message]);
+    };
+    channel.bind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
+
+    return () => {
+      pusherClient.unsubscribe(
+        `notifications_channel_${session.user.username}`
+      );
+      pusherClient.unbind(`followEvent`, (data: TPusherMsg) =>
+        handlePusher(data)
+      );
+    };
+  });
+
+  return (
+    <div className="space-y-2">
+      {notifications.map((notification) => {
+        return (
+          <div className="bg-black p-4" key={Date.now()}>
+            {notification}
+          </div>
+        );
+      })}
+    </div>
+  );
+};
+
+export default NotificationsPage;

@@ -7,8 +7,6 @@ const ProfileCard = () => {
   const { data: session } = useSession();
   const { data } = api.user.getFollowAndFollowingCount.useQuery();
 
-  console.log({ data });
-
   if (!session) {
     return null;
   }

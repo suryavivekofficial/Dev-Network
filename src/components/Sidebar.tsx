@@ -1,10 +1,10 @@
+import Link from "next/link";
+import { useRouter } from "next/router";
 import { useState } from "react";
 import Home from "./icons/HomeIcon";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
 import Settings from "./icons/SettingsIcon";
-import Link from "next/link";
-import { useRouter } from "next/router";
 
 const Sidebar = () => {
   return (
@@ -79,6 +79,7 @@ const SidebarItem = ({
   children: JSX.Element;
 }) => {
   const { pathname } = useRouter();
+  const [count, setCount] = useState(0);
 
   return (
     <Link href={`/${href}`}>
@@ -87,12 +88,15 @@ const SidebarItem = ({
           pathname === `/${href}`
             ? `relative bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-white before:content-['']`
             : ``
-        } my-4 flex cursor-pointer items-center space-x-2 rounded-md p-4 duration-200 hover:bg-accent-2`}
+        } my-4 flex cursor-pointer items-center justify-between rounded-md p-4 duration-200 hover:bg-accent-2`}
       >
-        {children}
-        <span className="text-base capitalize">
-          {href === "" ? "home" : href}
-        </span>
+        <div className="flex items-center space-x-2">
+          {children}
+          <span className="text-base capitalize">
+            {href === "" ? "home" : href}
+          </span>
+        </div>
+        <span className="rounded-full bg-white px-2 text-black">{count}</span>
       </div>
     </Link>
   );

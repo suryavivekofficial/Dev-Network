@@ -41,8 +41,7 @@ const Nav = () => {
 const Tabs = () => {
   const { data: session } = useSession();
   const { pathname } = useRouter();
-  const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
-    usePostStore();
+  const { selected, changeSelectionToFollowing, changeSelectionToForYou } = usePostStore();
 
   if (!session || pathname !== "/") return null;
 

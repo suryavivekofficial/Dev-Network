@@ -22,6 +22,11 @@ const server = z.object({
   DISCORD_CLIENT_SECRET: z.string().min(1),
   GOOGLE_CLIENT_ID: z.string().min(1),
   GOOGLE_CLIENT_SECRET: z.string().min(1),
+
+  PUSHER_APP_ID: z.string(),
+  PUSHER_SECRET: z.string(),
+  PUSHER_KEY: z.string(),
+  PUSHER_CLUSTER: z.string(),
   // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
 });
 
@@ -48,6 +53,10 @@ const processEnv = {
   DISCORD_CLIENT_SECRET: process.env.DISCORD_CLIENT_SECRET,
   GOOGLE_CLIENT_ID: process.env.GOOGLE_CLIENT_ID,
   GOOGLE_CLIENT_SECRET: process.env.GOOGLE_CLIENT_SECRET,
+  PUSHER_APP_ID: process.env.PUSHER_APP_ID,
+  PUSHER_SECRET: process.env.PUSHER_SECRET,
+  PUSHER_KEY: process.env.PUSHER_KEY,
+  PUSHER_CLUSTER: process.env.PUSHER_CLUSTER,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
 };
 
