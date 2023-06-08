@@ -1,13 +1,16 @@
 import type { Messages } from "@prisma/client";
+import dayjs from "dayjs";
+import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
-
 import Head from "next/head";
 import { useState } from "react";
 import Layout from "~/components/Layout";
 import { api } from "~/utils/api";
 
-const Messages: NextPage = () => {
+dayjs.extend(relativeTime);
+
+const MessagesPage: NextPage = () => {
   return (
     <>
       <Head>
@@ -81,7 +84,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 
   console.log("chat data ", data);
   return (
-    <div className="w-full overflow-y-scroll p-4">
+    <div className="w-3/4 overflow-y-scroll rounded-md p-4">
       {data.map((msg, i) => {
         if (session.user.username === msg.senderUsername) {
           return <SentMsg key={i} msg={msg} />;
@@ -97,7 +100,8 @@ const SentMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
       <span className="max-w-3/4 my-2 ml-auto rounded-md bg-accent-2 px-4 py-2">
-        {msg.message}
+        <p>{msg.message}</p>
+        <span className="text-xs">{dayjs(msg.sentAt).fromNow()} </span>
       </span>
     </div>
   );
@@ -107,10 +111,13 @@ const RecievedMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
       <span className="max-w-3/4 my-2 mr-auto rounded-md bg-accent-2 px-4 py-2">
-        {msg.message}
+        <p>{msg.message}</p>
+        <span className="mr-auto h-1 w-full text-xs">
+          {dayjs(msg.sentAt).fromNow()}
+        </span>
       </span>
     </div>
   );
 };
 
-export default Messages;
+export default MessagesPage;
