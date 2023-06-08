@@ -83,7 +83,7 @@ const NewPost = () => {
           onClick={handleSubmit}
           disabled={isLoading || newPost.trim() === ""}
           type="submit"
-          className="ml-auto flex items-center space-x-2 rounded-md border border-accent-8 bg-accent-8 px-4 py-2 font-bold text-accent-2 outline-none duration-150 focus-visible:ring-1 hover:enabled:bg-black hover:enabled:text-white disabled:cursor-not-allowed"
+          className="ml-auto flex items-center space-x-2 rounded-md border border-accent-8 bg-accent-8 px-4 py-2 font-bold text-accent-2 outline-none duration-150 focus-visible:ring-1 hover:enabled:bg-black hover:enabled:text-white disabled:cursor-not-allowed disabled:hover:brightness-75"
         >
           {isLoading && (
             <div role="status">
