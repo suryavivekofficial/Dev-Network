@@ -12,4 +12,27 @@ export const chatRouter = createTRPCRouter({
         },
       })
   ),
+  getChat: protectedProcedure.query(async ({ ctx }) => {
+    const username = ctx.session.user.username;
+
+    //trigger pusher for msgs.
+
+    const chat = await ctx.prisma.messages.findMany({
+      orderBy: {
+        sentAt: "desc",
+      },
+      where: {
+        OR: [
+          {
+            senderUsername: username,
+          },
+          {
+            receiverUsername: username,
+          },
+        ],
+      },
+    });
+
+    return chat;
+  }),
 });

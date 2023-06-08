@@ -1,4 +1,6 @@
+import type { Messages } from "@prisma/client";
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 
 import Head from "next/head";
 import { useState } from "react";
@@ -30,38 +32,85 @@ const Chats = () => {
 
   // const temp = new Array<string>(45).fill("username");
 
+  if (isLoading) return <div>loading...</div>;
+
   if (!data) return <div>Follow someone to msg them.</div>;
 
   return (
     <div className="flex h-full w-full rounded-md border border-accent-6 bg-black">
       <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-accent-6 p-2">
         {isLoading && <div>loading</div>}
-        {[...data, ...data].map((chatUsername, i) => (
-          <button
-            onClick={() =>
-              setSelectedChat(
-                chatUsername.followerUsername || chatUsername.followingUsername
-              )
-            }
-            className="w-full cursor-pointer border-b border-accent-2 p-2 duration-300 hover:rounded-md hover:bg-accent-2"
-            key={i}
-          >
-            {chatUsername.followerUsername || chatUsername.followingUsername}
-          </button>
-        ))}
+        {data.map((chatUsername, i) => {
+          const username =
+            chatUsername.followerUsername || chatUsername.followingUsername;
+          return (
+            <button
+              onClick={() => setSelectedChat(username)}
+              className={`${
+                selectedChat === username
+                  ? "relative rounded-md bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-sm before:bg-white before:content-['']"
+                  : ""
+              } w-full cursor-pointer border-b border-accent-2 p-2 duration-300 hover:rounded-md hover:bg-accent-2`}
+              key={i}
+            >
+              {username}
+            </button>
+          );
+        })}
       </div>
-      <Msgs chat={selectedChat} />
+      <Msgs selectedChat={selectedChat} />
     </div>
   );
 };
 
-const Msgs = ({ chat }: { chat: string }) => {
+const Msgs = ({ selectedChat }: { selectedChat: string }) => {
+  const { data: session } = useSession();
+  if (!session) {
+    return <div>You need to sign in to message someone.</div>;
+  }
   //fetch the actual chat.
-  if (chat === "") {
+  const { data, isLoading } = api.chat.getChat.useQuery();
+
+  if (selectedChat === "") {
     return <div>Select a chat to view.</div>;
   }
 
-  return <div>Your msgs appear here for {chat}</div>;
+  if (isLoading) return <div>loading...</div>;
+
+  if (!data) return <div>Start sending msgs now.</div>;
+
+  console.log("chat data ", data);
+  return (
+    <div className="w-full overflow-y-scroll p-4">
+      {data.map((msg, i) => {
+        if (session.user.username === msg.senderUsername) {
+          return <SentMsg key={i} msg={msg} />;
+        } else if (session.user.username === msg.receiverUsername) {
+          return <RecievedMsg key={i} msg={msg} />;
+        }
+      })}
+    </div>
+  );
+};
+
+const SentMsg = ({ msg }: { msg: Messages }) => {
+  return (
+    <div className="flex w-full">
+      <span className="max-w-3/4 my-2 ml-auto rounded-md bg-accent-2 px-4 py-2">
+        {msg.message}
+      </span>
+    </div>
+  );
+};
+
+const RecievedMsg = ({ msg }: { msg: Messages }) => {
+  return (
+    <div className="flex w-full">
+      <span className="max-w-3/4 my-2 mr-auto rounded-md bg-accent-2 px-4 py-2">
+        {msg.message}
+      </span>
+    </div>
+  );
 };
 
 export default Messages;
