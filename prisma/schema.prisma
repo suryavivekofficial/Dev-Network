@@ -51,6 +51,19 @@ model Follows {
     @@index([followingUsername])
 }
 
+model Messages {
+    sender           User     @relation("sender", fields: [senderUsername], references: [username])
+    senderUsername   String
+    receiver         User     @relation("receiver", fields: [receiverUsername], references: [username])
+    receiverUsername String
+    message          String   @db.Text
+    sentAt           DateTime @default(now())
+
+    @@id([senderUsername, receiverUsername])
+    @@index([senderUsername])
+    @@index([receiverUsername])
+}
+
 // Necessary for Next auth
 model Account {
     id                String  @id @default(cuid())
@@ -82,18 +95,20 @@ model Session {
 }
 
 model User {
-    id            String    @id @default(cuid())
-    name          String?
-    email         String    @unique
-    username      String?    @unique
-    emailVerified DateTime?
-    image         String?
-    accounts      Account[]
-    sessions      Session[]
-    post          Post[]
-    like          Like[]
-    followedBy    Follows[] @relation("following")
-    following     Follows[] @relation("follower")
+    id             String     @id @default(cuid())
+    name           String?
+    email          String     @unique
+    username       String?    @unique
+    emailVerified  DateTime?
+    image          String?
+    accounts       Account[]
+    sessions       Session[]
+    post           Post[]
+    like           Like[]
+    followedBy     Follows[]  @relation("following")
+    following      Follows[]  @relation("follower")
+    MessageSender  Messages[] @relation("sender")
+    MessageReciver Messages[] @relation("receiver")
 }
 
 model VerificationToken {
