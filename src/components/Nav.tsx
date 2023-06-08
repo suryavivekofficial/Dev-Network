@@ -14,7 +14,7 @@ const Nav = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="fixed z-10 flex h-20 w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8">
+    <nav className="fixed z-10 flex min-h-max w-screen items-center justify-between border-b border-b-accent-6 bg-black px-8 py-5">
       <Logo />
       <Tabs />
       {session ? (
@@ -41,7 +41,8 @@ const Nav = () => {
 const Tabs = () => {
   const { data: session } = useSession();
   const { pathname } = useRouter();
-  const { selected, changeSelectionToFollowing, changeSelectionToForYou } = usePostStore();
+  const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
+    usePostStore();
 
   if (!session || pathname !== "/") return null;
 
@@ -50,15 +51,17 @@ const Tabs = () => {
       <div className="flex h-full min-w-max items-center justify-between rounded-md border border-accent-6 px-2">
         <button
           onClick={changeSelectionToForYou}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${selected === "for you" ? "bg-accent-2" : ""
-            }`}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
+            selected === "for you" ? "bg-accent-2" : ""
+          }`}
         >
           For You
         </button>
         <button
           onClick={changeSelectionToFollowing}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${selected === "following" ? "bg-accent-2" : ""
-            }`}
+          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
+            selected === "following" ? "bg-accent-2" : ""
+          }`}
         >
           Following
         </button>

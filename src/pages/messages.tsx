@@ -1,7 +1,9 @@
 import type { NextPage } from "next";
 
 import Head from "next/head";
+import { useState } from "react";
 import Layout from "~/components/Layout";
+import { api } from "~/utils/api";
 
 const Messages: NextPage = () => {
   return (
@@ -13,10 +15,53 @@ const Messages: NextPage = () => {
       </Head>
 
       <Layout>
-        <main>Messages appear here</main>
+        <div className="mr-8 h-[calc(100vh-10rem)] w-full space-y-2">
+          <h2 className="-mt-2 ml-1 text-xl">Your chats</h2>
+          <Chats />
+        </div>
       </Layout>
     </>
   );
+};
+
+const Chats = () => {
+  const { data, isLoading } = api.chat.getChatList.useQuery();
+  const [selectedChat, setSelectedChat] = useState("");
+
+  // const temp = new Array<string>(45).fill("username");
+
+  if (!data) return <div>Follow someone to msg them.</div>;
+
+  return (
+    <div className="flex h-full w-full rounded-md border border-accent-6 bg-black">
+      <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-accent-6 p-2">
+        {isLoading && <div>loading</div>}
+        {[...data, ...data].map((chatUsername, i) => (
+          <button
+            onClick={() =>
+              setSelectedChat(
+                chatUsername.followerUsername || chatUsername.followingUsername
+              )
+            }
+            className="w-full cursor-pointer border-b border-accent-2 p-2 duration-300 hover:rounded-md hover:bg-accent-2"
+            key={i}
+          >
+            {chatUsername.followerUsername || chatUsername.followingUsername}
+          </button>
+        ))}
+      </div>
+      <Msgs chat={selectedChat} />
+    </div>
+  );
+};
+
+const Msgs = ({ chat }: { chat: string }) => {
+  //fetch the actual chat.
+  if (chat === "") {
+    return <div>Select a chat to view.</div>;
+  }
+
+  return <div>Your msgs appear here for {chat}</div>;
 };
 
 export default Messages;
