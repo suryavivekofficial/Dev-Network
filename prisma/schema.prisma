@@ -52,6 +52,7 @@ model Follows {
 }
 
 model Messages {
+    id               String   @id @default(cuid())
     sender           User     @relation("sender", fields: [senderUsername], references: [username])
     senderUsername   String
     receiver         User     @relation("receiver", fields: [receiverUsername], references: [username])
@@ -59,7 +60,6 @@ model Messages {
     message          String   @db.Text
     sentAt           DateTime @default(now())
 
-    @@id([senderUsername, receiverUsername])
     @@index([senderUsername])
     @@index([receiverUsername])
 }

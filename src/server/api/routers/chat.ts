@@ -1,3 +1,4 @@
+import { z } from "zod";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const chatRouter = createTRPCRouter({
@@ -19,7 +20,7 @@ export const chatRouter = createTRPCRouter({
 
     const chat = await ctx.prisma.messages.findMany({
       orderBy: {
-        sentAt: "desc",
+        sentAt: "asc",
       },
       where: {
         OR: [
@@ -32,7 +33,20 @@ export const chatRouter = createTRPCRouter({
         ],
       },
     });
-
     return chat;
   }),
+  newMsg: protectedProcedure
+    .input(z.object({ msgContent: z.string(), msgReciever: z.string() }))
+    .mutation(async ({ ctx, input }) => {
+      // trigger pusher
+
+      const newChat = await ctx.prisma.messages.create({
+        data: {
+          message: input.msgContent,
+          receiverUsername: input.msgReciever,
+          senderUsername: ctx.session.user.username,
+        },
+      });
+      return newChat;
+    }),
 });
