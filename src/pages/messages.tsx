@@ -7,6 +7,7 @@ import Head from "next/head";
 import { useState } from "react";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
+import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import SendIcon from "~/components/icons/SendIcon";
 import { api } from "~/utils/api";
 
@@ -33,7 +34,8 @@ const MessagesPage: NextPage = () => {
 
 const Chats = () => {
   const { data: session } = useSession();
-  const { data, isLoading } = api.chat.getChatList.useQuery();
+  // const { data, isLoading } = api.chat.getChatList.useQuery();
+  const { data, isLoading } = api.user.getAllUsers.useQuery();
   const [selectedChat, setSelectedChat] = useState("");
 
   // const temp = new Array<string>(45).fill("username");
@@ -49,9 +51,8 @@ const Chats = () => {
     <div className="flex h-full w-full rounded-md border border-accent-6 bg-black">
       <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-accent-6 p-2">
         {isLoading && <div>loading</div>}
-        {data.map((chatUsername, i) => {
-          const username =
-            chatUsername.followerUsername || chatUsername.followingUsername;
+        {data.map((user, i) => {
+          const username = user.username || "Error";
           return (
             <button
               onClick={() => setSelectedChat(username)}
@@ -138,9 +139,10 @@ const RecievedMsg = ({ msg }: { msg: Messages }) => {
 
 const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   const [newMsg, setNewMsg] = useState("");
-  const { mutate } = api.chat.newMsg.useMutation();
+  const { mutate, isLoading } = api.chat.newMsg.useMutation();
 
   const handleSubmit = () => {
+    setNewMsg("");
     mutate({ msgContent: newMsg, msgReciever: receiverUsername });
   };
 
@@ -157,7 +159,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         onClick={handleSubmit}
         className="group rounded-md border border-accent-4 bg-accent-2 p-2"
       >
-        <SendIcon />
+        {isLoading ? <LoadingSpinner /> : <SendIcon />}
       </button>
     </div>
   );

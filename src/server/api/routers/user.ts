@@ -3,6 +3,16 @@ import { pusherServer } from "~/server/pusher";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userRouter = createTRPCRouter({
+  getAllUsers: protectedProcedure.query(
+    async ({ ctx }) =>
+      await ctx.prisma.user.findMany({
+        where: {
+          NOT: {
+            username: ctx.session.user.username,
+          },
+        },
+      })
+  ),
   getUser: publicProcedure
     .input(z.object({ username: z.string() }))
     .query(async ({ ctx, input }) => {
