@@ -4,39 +4,43 @@ import { formatChannelName } from "~/utils/snippets/formatPusher";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const chatRouter = createTRPCRouter({
-  getChatList: protectedProcedure.query(
-    async ({ ctx }) =>
-      await ctx.prisma.follows.findMany({
+  // getChatList: protectedProcedure.query(
+  //   async ({ ctx }) =>
+  //     await ctx.prisma.follows.findMany({
+  //       where: {
+  //         OR: [
+  //           { followerUsername: ctx.session.user.username },
+  //           { followingUsername: ctx.session.user.username },
+  //         ],
+  //       },
+  //     })
+  // ),
+  getChat: protectedProcedure
+    .input(z.object({ otherUsername: z.string() }))
+    .query(async ({ ctx, input }) => {
+      const username = ctx.session.user.username;
+
+      //trigger pusher for msgs.
+
+      const chat = await ctx.prisma.messages.findMany({
+        orderBy: {
+          sentAt: "asc",
+        },
         where: {
           OR: [
-            { followerUsername: ctx.session.user.username },
-            { followingUsername: ctx.session.user.username },
+            {
+              senderUsername: username,
+              receiverUsername: input.otherUsername,
+            },
+            {
+              receiverUsername: username,
+              senderUsername: input.otherUsername,
+            },
           ],
         },
-      })
-  ),
-  getChat: protectedProcedure.query(async ({ ctx }) => {
-    const username = ctx.session.user.username;
-
-    //trigger pusher for msgs.
-
-    const chat = await ctx.prisma.messages.findMany({
-      orderBy: {
-        sentAt: "asc",
-      },
-      where: {
-        OR: [
-          {
-            senderUsername: username,
-          },
-          {
-            receiverUsername: username,
-          },
-        ],
-      },
-    });
-    return chat;
-  }),
+      });
+      return chat;
+    }),
   newMsg: protectedProcedure
     .input(z.object({ msgContent: z.string(), msgReciever: z.string() }))
     .mutation(async ({ ctx, input }) => {

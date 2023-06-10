@@ -47,7 +47,6 @@ const NotificationsContainer = ({ session }: { session: Session }) => {
     );
 
     const handlePusher = (data: TPusherMsg) => {
-      console.log("pusher notification success", data);
       setNotifications((notifications) => [...notifications, data]);
     };
 

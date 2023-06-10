@@ -94,10 +94,11 @@ const Msgs = ({
   //   return <div>You need to sign in to message someone.</div>;
   // }
   //fetch the actual chat.
-  const { data, isLoading } = api.chat.getChat.useQuery();
+  const { data, isLoading } = api.chat.getChat.useQuery({
+    otherUsername: selectedChat,
+  });
 
   const ctx = api.useContext();
-  console.log("data returned from chat ", { data });
   useEffect(() => {
     if (!session) return;
 
@@ -105,25 +106,28 @@ const Msgs = ({
     const channel = pusherClient.subscribe(`newMsg_${channelName}`);
 
     const handlePusher = (newMsgFromPusher: Messages) => {
-      console.log(newMsgFromPusher);
       //modify the react query state.
-      ctx.chat.getChat.setData(undefined, (oldMsgs) => {
+      ctx.chat.getChat.setData({ otherUsername: selectedChat }, (oldMsgs) => {
         const newMsgsState = Array.isArray(oldMsgs)
           ? [...oldMsgs, newMsgFromPusher]
           : [newMsgFromPusher];
         return newMsgsState;
       });
-
-      console.log("in use effect ", ctx.chat.getChat.getData());
     };
 
     channel.bind("msgEvent", (data: Messages) => handlePusher(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedChat]);
+  }, []);
 
   if (isLoading) return <div>loading...</div>;
 
-  if (!data) return <div>Start sending msgs now.</div>;
+  if (data?.length === 0 || !data) {
+    return (
+      <div className="flex w-full flex-grow items-center justify-center">
+        Start sending msgs now.
+      </div>
+    );
+  }
 
   return (
     <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">

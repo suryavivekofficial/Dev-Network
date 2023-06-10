@@ -102,7 +102,6 @@ type FollowBtnProps = {
 
 const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
   const { data: session } = useSession();
-  console.log({ isFollowedFromServer });
   const [isFollowed, setisFollowed] = useState(isFollowedFromServer);
 
   const ctx = api.useContext();
@@ -130,7 +129,7 @@ const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
         { username: utils?.username },
         utils?.prevUserSnapshot
       );
-      console.log(error.message);
+      console.error(error.message);
     },
 
     onSettled() {
