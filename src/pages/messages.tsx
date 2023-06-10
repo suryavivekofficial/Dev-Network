@@ -2,16 +2,25 @@ import type { Messages } from "@prisma/client";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
+import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
 import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import SendIcon from "~/components/icons/SendIcon";
 import { api } from "~/utils/api";
+import { pusherClient } from "~/utils/pusher";
+import { formatChannelName } from "~/utils/snippets/formatPusher";
 
 dayjs.extend(relativeTime);
+
+interface TPusherMsg {
+  content: string;
+  sender: string;
+  receiver: string;
+}
 
 const MessagesPage: NextPage = () => {
   return (
@@ -69,20 +78,39 @@ const Chats = () => {
         })}
       </div>
       <div className="flex flex-grow flex-col">
-        <Msgs selectedChat={selectedChat} />
+        <Msgs selectedChat={selectedChat} session={session} />
         <NewMsgInput receiverUsername={selectedChat} />
       </div>
     </div>
   );
 };
 
-const Msgs = ({ selectedChat }: { selectedChat: string }) => {
-  const { data: session } = useSession();
-  if (!session) {
-    return <div>You need to sign in to message someone.</div>;
-  }
+const Msgs = ({
+  selectedChat,
+  session,
+}: {
+  selectedChat: string;
+  session: Session;
+}) => {
+  // const { data: session } = useSession();
+  // if (!session) {
+  //   return <div>You need to sign in to message someone.</div>;
+  // }
   //fetch the actual chat.
   const { data, isLoading } = api.chat.getChat.useQuery();
+
+  useEffect(() => {
+    const channelName = formatChannelName(session.user.username, selectedChat);
+    const channel = pusherClient.subscribe(`newMsg_${channelName}`);
+
+    const handlePusher = (newMsgFromPusher: TPusherMsg) => {
+      console.log(newMsgFromPusher);
+      //modify the react query state.
+    };
+
+    channel.bind("msgEvent", (data: TPusherMsg) => handlePusher(data));
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   if (selectedChat === "") {
     return <div>Select a chat to view.</div>;

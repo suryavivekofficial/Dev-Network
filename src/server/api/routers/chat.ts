@@ -1,4 +1,6 @@
 import { z } from "zod";
+import { pusherServer } from "~/server/pusher";
+import { formatChannelName } from "~/utils/snippets/formatPusher";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const chatRouter = createTRPCRouter({
@@ -39,6 +41,15 @@ export const chatRouter = createTRPCRouter({
     .input(z.object({ msgContent: z.string(), msgReciever: z.string() }))
     .mutation(async ({ ctx, input }) => {
       // trigger pusher
+      const channelName = formatChannelName(
+        ctx.session.user.username,
+        input.msgReciever
+      );
+      await pusherServer.trigger(`newMsg_${channelName}`, "msgEvent", {
+        content: input.msgContent,
+        sender: ctx.session.user.username,
+        receiver: input.msgReciever,
+      });
 
       const newChat = await ctx.prisma.messages.create({
         data: {
