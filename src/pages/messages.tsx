@@ -117,8 +117,7 @@ const Msgs = ({
     };
 
     channel.bind("msgEvent", (data: Messages) => handlePusher(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [ctx.chat.getChat, selectedChat, session.user.username]);
 
   if (isLoading) return <div>loading...</div>;
 
