@@ -68,7 +68,10 @@ const Chats = () => {
           );
         })}
       </div>
-      <Msgs selectedChat={selectedChat} />
+      <div className="flex flex-grow flex-col">
+        <Msgs selectedChat={selectedChat} />
+        <NewMsgInput receiverUsername={selectedChat} />
+      </div>
     </div>
   );
 };
@@ -91,7 +94,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 
   console.log("chat data ", data);
   return (
-    <div className="w-3/4 overflow-y-scroll rounded-md p-4">
+    <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
       {data.map((msg, i) => {
         if (session.user.username === msg.senderUsername) {
           return <SentMsg key={i} msg={msg} />;
@@ -99,8 +102,6 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
           return <RecievedMsg key={i} msg={msg} />;
         }
       })}
-
-      <NewMsgInput receiverUsername={selectedChat} />
     </div>
   );
 };
@@ -147,7 +148,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   };
 
   return (
-    <div className="mt-4 flex w-full space-x-4 border-t border-accent-4 px-2 py-4">
+    <div className="flex w-full space-x-4 border-t border-accent-4 p-4">
       <input
         onChange={(e) => setNewMsg(e.target.value)}
         value={newMsg}
