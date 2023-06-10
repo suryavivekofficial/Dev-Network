@@ -2,7 +2,6 @@ import type { Messages } from "@prisma/client";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
-import { type Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -73,7 +72,7 @@ const Chats = () => {
       </div>
       {selectedChat ? (
         <div className="flex flex-grow flex-col">
-          <Msgs selectedChat={selectedChat} session={session} />
+          <Msgs selectedChat={selectedChat} />
           <NewMsgInput receiverUsername={selectedChat} />
         </div>
       ) : (
@@ -85,12 +84,12 @@ const Chats = () => {
 
 const Msgs = ({
   selectedChat,
-  session,
-}: {
+}: // session,
+{
   selectedChat: string;
-  session: Session;
+  // session: Session;
 }) => {
-  // const { data: session } = useSession();
+  const { data: session } = useSession();
   // if (!session) {
   //   return <div>You need to sign in to message someone.</div>;
   // }
@@ -100,6 +99,8 @@ const Msgs = ({
   const ctx = api.useContext();
   console.log("data returned from chat ", { data });
   useEffect(() => {
+    if (!session) return;
+
     const channelName = formatChannelName(session.user.username, selectedChat);
     const channel = pusherClient.subscribe(`newMsg_${channelName}`);
 
@@ -117,7 +118,8 @@ const Msgs = ({
     };
 
     channel.bind("msgEvent", (data: Messages) => handlePusher(data));
-  }, [ctx.chat.getChat, selectedChat, session.user.username]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedChat]);
 
   if (isLoading) return <div>loading...</div>;
 
@@ -126,9 +128,9 @@ const Msgs = ({
   return (
     <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
       {data.map((msg) => {
-        if (session.user.username === msg.senderUsername) {
+        if (session?.user.username === msg.senderUsername) {
           return <SentMsg key={msg.id} msg={msg} />;
-        } else if (session.user.username === msg.receiverUsername) {
+        } else if (session?.user.username === msg.receiverUsername) {
           return <RecievedMsg key={msg.id} msg={msg} />;
         }
       })}
