@@ -16,12 +16,6 @@ import { formatChannelName } from "~/utils/snippets/formatPusher";
 
 dayjs.extend(relativeTime);
 
-interface TPusherMsg {
-  content: string;
-  sender: string;
-  receiver: string;
-}
-
 const MessagesPage: NextPage = () => {
   return (
     <>
@@ -45,7 +39,7 @@ const Chats = () => {
   const { data: session } = useSession();
   // const { data, isLoading } = api.chat.getChatList.useQuery();
   const { data, isLoading } = api.user.getAllUsers.useQuery();
-  const [selectedChat, setSelectedChat] = useState("");
+  const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
   // const temp = new Array<string>(45).fill("username");
   if (!session) {
@@ -77,10 +71,14 @@ const Chats = () => {
           );
         })}
       </div>
-      <div className="flex flex-grow flex-col">
-        <Msgs selectedChat={selectedChat} session={session} />
-        <NewMsgInput receiverUsername={selectedChat} />
-      </div>
+      {selectedChat ? (
+        <div className="flex flex-grow flex-col">
+          <Msgs selectedChat={selectedChat} session={session} />
+          <NewMsgInput receiverUsername={selectedChat} />
+        </div>
+      ) : (
+        <div>Select a chat to view.</div>
+      )}
     </div>
   );
 };
@@ -99,35 +97,40 @@ const Msgs = ({
   //fetch the actual chat.
   const { data, isLoading } = api.chat.getChat.useQuery();
 
+  const ctx = api.useContext();
+  console.log("data returned from chat ", { data });
   useEffect(() => {
     const channelName = formatChannelName(session.user.username, selectedChat);
     const channel = pusherClient.subscribe(`newMsg_${channelName}`);
 
-    const handlePusher = (newMsgFromPusher: TPusherMsg) => {
+    const handlePusher = (newMsgFromPusher: Messages) => {
       console.log(newMsgFromPusher);
       //modify the react query state.
+      ctx.chat.getChat.setData(undefined, (oldMsgs) => {
+        const newMsgsState = Array.isArray(oldMsgs)
+          ? [...oldMsgs, newMsgFromPusher]
+          : [newMsgFromPusher];
+        return newMsgsState;
+      });
+
+      console.log("in use effect ", ctx.chat.getChat.getData());
     };
 
-    channel.bind("msgEvent", (data: TPusherMsg) => handlePusher(data));
+    channel.bind("msgEvent", (data: Messages) => handlePusher(data));
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
-  if (selectedChat === "") {
-    return <div>Select a chat to view.</div>;
-  }
 
   if (isLoading) return <div>loading...</div>;
 
   if (!data) return <div>Start sending msgs now.</div>;
 
-  console.log("chat data ", data);
   return (
     <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
-      {data.map((msg, i) => {
+      {data.map((msg) => {
         if (session.user.username === msg.senderUsername) {
-          return <SentMsg key={i} msg={msg} />;
+          return <SentMsg key={msg.id} msg={msg} />;
         } else if (session.user.username === msg.receiverUsername) {
-          return <RecievedMsg key={i} msg={msg} />;
+          return <RecievedMsg key={msg.id} msg={msg} />;
         }
       })}
     </div>
@@ -182,6 +185,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         value={newMsg}
         type="text"
         name="new message"
+        autoComplete="off"
         className="flex-grow rounded-md border border-accent-4 bg-accent-2 px-4 py-2 outline-none drop-shadow-lg"
       />
       <button

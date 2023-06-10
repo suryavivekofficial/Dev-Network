@@ -46,9 +46,11 @@ export const chatRouter = createTRPCRouter({
         input.msgReciever
       );
       await pusherServer.trigger(`newMsg_${channelName}`, "msgEvent", {
-        content: input.msgContent,
-        sender: ctx.session.user.username,
-        receiver: input.msgReciever,
+        message: input.msgContent,
+        senderUsername: ctx.session.user.username,
+        receiverUsername: input.msgReciever,
+        sentAt: Date.now(),
+        id: (Math.random() * 10000).toString(),
       });
 
       const newChat = await ctx.prisma.messages.create({
