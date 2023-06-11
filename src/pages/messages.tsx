@@ -7,6 +7,7 @@ import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
+import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import SendIcon from "~/components/icons/SendIcon";
 import { api } from "~/utils/api";
 import { pusherClient } from "~/utils/pusher";
@@ -44,14 +45,23 @@ const ChatView = () => {
     return <div>You need to sign in.</div>;
   }
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading)
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
 
   if (!data) return <div>Follow someone to msg them.</div>;
 
   return (
     <div className="flex h-full w-full rounded-md border border-accent-6 bg-black">
       <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-accent-6 p-2">
-        {isLoading && <div>loading</div>}
+        {isLoading && (
+          <div>
+            <LoadingSpinner />
+          </div>
+        )}
         {data.map((user, i) => {
           const username = user.username || "Error";
           return (
@@ -75,7 +85,7 @@ const ChatView = () => {
           <NewMsgInput receiverUsername={selectedChat} />
         </div>
       ) : (
-        <div className="flex h-full w-full items-center justify-center">
+        <div className="flex flex-grow items-center justify-center">
           <div>Select a chat to view.</div>
         </div>
       )}
@@ -83,18 +93,9 @@ const ChatView = () => {
   );
 };
 
-const Msgs = ({
-  selectedChat,
-}: // session,
-{
-  selectedChat: string;
-  // session: Session;
-}) => {
+const Msgs = ({ selectedChat }: { selectedChat: string }) => {
   const { data: session } = useSession();
-  // if (!session) {
-  //   return <div>You need to sign in to message someone.</div>;
-  // }
-  //fetch the actual chat.
+
   const { data, isLoading } = api.chat.getChat.useQuery({
     otherUsername: selectedChat,
   });
@@ -108,7 +109,8 @@ const Msgs = ({
     const channel = pusherClient.subscribe(`newMsg_${channelName}`);
 
     const handlePusher = (newMsgFromPusher: Messages) => {
-      //modify the react query state.
+      // Modify the react query state (here) only if a msg is recieved.
+      // Because the sender state is modified in the new msg input component. (via optimistic updates)
       if (newMsgFromPusher.senderUsername === session.user.username) return;
 
       ctx.chat.getChat.setData({ otherUsername: selectedChat }, (oldMsgs) => {
@@ -123,16 +125,16 @@ const Msgs = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const msgsRef = useRef(null);
+  const msgsRef = useRef<HTMLDivElement>(null);
 
-  // useEffect(() => {
-  //   msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
-  // });
+  useEffect(() => {
+    msgsRef.current?.scrollIntoView();
+  }, [data]);
 
   if (isLoading)
     return (
       <div className="flex w-full flex-grow items-center justify-center">
-        loading...
+        <LoadingSpinner />
       </div>
     );
 
@@ -145,10 +147,7 @@ const Msgs = ({
   }
 
   return (
-    <div
-      ref={msgsRef}
-      className="w-full flex-grow overflow-y-scroll rounded-md p-4"
-    >
+    <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
       {data.map((msg) => {
         if (session?.user.username === msg.senderUsername) {
           return <SentMsg key={msg.id} msg={msg} />;
@@ -156,6 +155,7 @@ const Msgs = ({
           return <RecievedMsg key={msg.id} msg={msg} />;
         }
       })}
+      <div ref={msgsRef} />
     </div>
   );
 };
