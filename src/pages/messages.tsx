@@ -109,6 +109,8 @@ const Msgs = ({
 
     const handlePusher = (newMsgFromPusher: Messages) => {
       //modify the react query state.
+      if (newMsgFromPusher.senderUsername === session.user.username) return;
+
       ctx.chat.getChat.setData({ otherUsername: selectedChat }, (oldMsgs) => {
         const newMsgsState = Array.isArray(oldMsgs)
           ? [...oldMsgs, newMsgFromPusher]
