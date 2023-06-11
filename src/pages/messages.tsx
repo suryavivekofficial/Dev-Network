@@ -4,10 +4,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
-import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import SendIcon from "~/components/icons/SendIcon";
 import { api } from "~/utils/api";
 import { pusherClient } from "~/utils/pusher";
@@ -27,14 +26,14 @@ const MessagesPage: NextPage = () => {
       <Layout>
         <div className="mr-8 h-[calc(100vh-10rem)] w-full space-y-2">
           <h2 className="-mt-2 ml-1 text-xl">Your chats</h2>
-          <Chats />
+          <ChatView />
         </div>
       </Layout>
     </>
   );
 };
 
-const Chats = () => {
+const ChatView = () => {
   const { data: session } = useSession();
   // const { data, isLoading } = api.chat.getChatList.useQuery();
   const { data, isLoading } = api.user.getAllUsers.useQuery();
@@ -76,7 +75,9 @@ const Chats = () => {
           <NewMsgInput receiverUsername={selectedChat} />
         </div>
       ) : (
-        <div>Select a chat to view.</div>
+        <div className="flex h-full w-full items-center justify-center">
+          <div>Select a chat to view.</div>
+        </div>
       )}
     </div>
   );
@@ -99,6 +100,7 @@ const Msgs = ({
   });
 
   const ctx = api.useContext();
+
   useEffect(() => {
     if (!session) return;
 
@@ -119,7 +121,18 @@ const Msgs = ({
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  if (isLoading) return <div>loading...</div>;
+  const msgsRef = useRef(null);
+
+  // useEffect(() => {
+  //   msgsRef.current.scrollTop = msgsRef.current.scrollHeight;
+  // });
+
+  if (isLoading)
+    return (
+      <div className="flex w-full flex-grow items-center justify-center">
+        loading...
+      </div>
+    );
 
   if (data?.length === 0 || !data) {
     return (
@@ -130,7 +143,10 @@ const Msgs = ({
   }
 
   return (
-    <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
+    <div
+      ref={msgsRef}
+      className="w-full flex-grow overflow-y-scroll rounded-md p-4"
+    >
       {data.map((msg) => {
         if (session?.user.username === msg.senderUsername) {
           return <SentMsg key={msg.id} msg={msg} />;
@@ -176,7 +192,51 @@ const RecievedMsg = ({ msg }: { msg: Messages }) => {
 
 const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   const [newMsg, setNewMsg] = useState("");
-  const { mutate, isLoading } = api.chat.newMsg.useMutation();
+  const { data: session } = useSession();
+  if (!session) return null;
+
+  const ctx = api.useContext();
+  const { mutate } = api.chat.newMsg.useMutation({
+    onMutate: async ({ msgContent, msgReciever }) => {
+      // cancel any outgoing queries
+      // await ctx.post.getPosts.cancel();
+      await ctx.chat.getChat.cancel();
+
+      // get the data from query cache
+      const prevPostsSnapshot = ctx.chat.getChat.getData();
+
+      // Modify the cache
+      ctx.chat.getChat.setData(
+        { otherUsername: receiverUsername },
+        (oldMsgs) => {
+          const newMsg: Messages = {
+            message: msgContent,
+            senderUsername: session?.user.username,
+            receiverUsername: msgReciever,
+            sentAt: Date.now() as unknown as Date,
+            id: (Math.random() * 10000).toString(),
+          };
+
+          const newMsgsState = Array.isArray(oldMsgs)
+            ? [...oldMsgs, newMsg]
+            : [newMsg];
+          return newMsgsState;
+        }
+      );
+
+      return prevPostsSnapshot;
+    },
+    onError(error, _, prevPostsSnapshot) {
+      ctx.chat.getChat.setData(
+        { otherUsername: receiverUsername },
+        prevPostsSnapshot
+      );
+    },
+
+    onSettled() {
+      void ctx.chat.getChat.invalidate();
+    },
+  });
 
   const handleSubmit = () => {
     setNewMsg("");
@@ -188,6 +248,11 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
       <input
         onChange={(e) => setNewMsg(e.target.value)}
         value={newMsg}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSubmit();
+          }
+        }}
         type="text"
         name="new message"
         autoComplete="off"
@@ -197,7 +262,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         onClick={handleSubmit}
         className="group rounded-md border border-accent-4 bg-accent-2 p-2"
       >
-        {isLoading ? <LoadingSpinner /> : <SendIcon />}
+        <SendIcon />
       </button>
     </div>
   );
