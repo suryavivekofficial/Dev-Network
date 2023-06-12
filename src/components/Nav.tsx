@@ -6,8 +6,6 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { usePostStore } from "~/utils/zustand/posts";
 import Chevron from "./icons/ChevronIcon";
-import Messages from "./icons/MessagesIcon";
-import Notifications from "./icons/NotificationsIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Nav = () => {
@@ -18,18 +16,8 @@ const Nav = () => {
       <Logo />
       <Tabs />
       {session ? (
-        <div className="flex w-1/3 items-center justify-end space-x-6">
-          <div className="flex space-x-4">
-            <NavBtn>
-              <Messages />
-            </NavBtn>
-            <NavBtn>
-              <Notifications />
-            </NavBtn>
-          </div>
-          <div className="flex items-center justify-center space-x-2">
-            <Profile />
-          </div>
+        <div className="flex w-1/3 items-center justify-end space-x-2">
+          <Profile />
         </div>
       ) : (
         <LoginBtn />
@@ -132,14 +120,6 @@ const LoginBtn = () => {
       onClick={() => void signIn()}
     >
       Login
-    </button>
-  );
-};
-
-const NavBtn = ({ children }: { children: JSX.Element }) => {
-  return (
-    <button className="flex h-10 w-10 items-center justify-center rounded-full bg-accent-2 hover:bg-accent-4">
-      {children}
     </button>
   );
 };

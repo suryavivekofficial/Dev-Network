@@ -1,6 +1,8 @@
+import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { pusherClient } from "~/utils/pusher";
 import Home from "./icons/HomeIcon";
 import Messages from "./icons/MessagesIcon";
 import Notifications from "./icons/NotificationsIcon";
@@ -78,8 +80,30 @@ const SidebarItem = ({
   href: string;
   children: JSX.Element;
 }) => {
+  const { data: session } = useSession();
   const { pathname } = useRouter();
   const [count, setCount] = useState(0);
+
+  useEffect(() => {
+    if (!session) return;
+
+    const channel = pusherClient.subscribe(
+      `newUnseenMsg_${session.user.username}`
+    );
+
+    channel.bind("unseenMsgEvent", (data) => {
+      setCount(count + 1);
+      console.log(data);
+    });
+
+    return () => {
+      pusherClient.unsubscribe(`newUnseenMsg_${session.user.username}`);
+      pusherClient.unbind("unseenMsgEvent", (data) => {
+        setCount(count + 1);
+        console.log(data);
+      });
+    };
+  }, [count, session]);
 
   return (
     <Link href={`/${href}`}>
@@ -96,7 +120,9 @@ const SidebarItem = ({
             {href === "" ? "home" : href}
           </span>
         </div>
-        <span className="rounded-full bg-white px-2 text-black">{count}</span>
+        {href !== "" && (
+          <span className="rounded-full bg-white px-2 text-black">{count}</span>
+        )}
       </div>
     </Link>
   );

@@ -62,7 +62,7 @@ const ChatView = () => {
             <LoadingSpinner />
           </div>
         )}
-        {data.map((user, i) => {
+        {data.map((user) => {
           const username = user.username || "Error";
           return (
             <button
@@ -71,8 +71,8 @@ const ChatView = () => {
                 selectedChat === username
                   ? "relative rounded-md bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-sm before:bg-white before:content-['']"
                   : ""
-              } w-full cursor-pointer border-b border-accent-2 p-2 duration-300 hover:rounded-md hover:bg-accent-2`}
-              key={i}
+              } w-full cursor-pointer border-b border-accent-2 p-2 pl-4 text-left outline-none duration-300 hover:rounded-md hover:bg-accent-2`}
+              key={username}
             >
               {username}
             </button>
@@ -122,8 +122,12 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
     };
 
     channel.bind("msgEvent", (data: Messages) => handlePusher(data));
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+
+    return () => {
+      pusherClient.unsubscribe(`newMsg_${channelName}`);
+      pusherClient.unbind("msgEvent", (data: Messages) => handlePusher(data));
+    };
+  }, [ctx.chat.getChat, selectedChat, session]);
 
   const msgsRef = useRef<HTMLDivElement>(null);
 
@@ -258,7 +262,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         type="text"
         name="new message"
         autoComplete="off"
-        className="flex-grow rounded-md border border-accent-4 bg-accent-2 px-4 py-2 outline-none drop-shadow-lg"
+        className="flex-grow rounded-md border border-accent-4 bg-accent-2 px-4 py-2 outline-none drop-shadow-lg focus:border-accent-6"
       />
       <button
         onClick={handleSubmit}

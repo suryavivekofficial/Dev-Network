@@ -7,6 +7,7 @@ import FollowingListCard from "~/components/FollowingListCard";
 import Layout from "~/components/Layout";
 import PostComponent from "~/components/Post";
 import ProfileCard from "~/components/ProfileCard";
+import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import { api } from "~/utils/api";
 
 const ProfilePage = () => {
@@ -33,7 +34,11 @@ const Profile = () => {
   const isFollow = data?.isFollow;
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return (
+      <div className="flex flex-grow items-center justify-center rounded-md border border-accent-6 bg-black">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (!user?.username) {
