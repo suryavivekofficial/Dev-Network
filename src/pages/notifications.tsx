@@ -1,7 +1,6 @@
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
-import type { Session } from "next-auth";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect, useState } from "react";
@@ -31,17 +30,20 @@ const NotificationsPage: NextPage = () => {
       <Layout>
         <div className="w-full pr-8">
           <h2 className="mb-4 ml-1 text-xl">Notifications For You</h2>
-          <NotificationsContainer session={session} />
+          <NotificationsContainer />
         </div>
       </Layout>
     </>
   );
 };
 
-const NotificationsContainer = ({ session }: { session: Session }) => {
+const NotificationsContainer = () => {
+  const { data: session } = useSession();
   const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
 
   useEffect(() => {
+    if (!session) return;
+
     const channel = pusherClient.subscribe(
       `notifications_channel_${session.user.username}`
     );
@@ -60,8 +62,7 @@ const NotificationsContainer = ({ session }: { session: Session }) => {
         handlePusher(data)
       );
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [session, notifications]);
 
   if (notifications.length === 0) {
     return (
