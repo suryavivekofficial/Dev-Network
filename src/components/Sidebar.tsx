@@ -1,29 +1,70 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
+import { useEffect, useState, type FC } from "react";
+import toast from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
-import Home from "./icons/HomeIcon";
-import Messages from "./icons/MessagesIcon";
-import Notifications from "./icons/NotificationsIcon";
-import Settings from "./icons/SettingsIcon";
+import HomeIcon from "./icons/HomeIcon";
+import MessagesIcon from "./icons/MessagesIcon";
+import NotificationsIcon from "./icons/NotificationsIcon";
+import SettingsIcon from "./icons/SettingsIcon";
 
 const Sidebar = () => {
+  const { data: session } = useSession();
+
+  const pusherDetails = {
+    channelName: session ? `newUnseenMsg_${session.user.username}` : undefined,
+    eventName: session ? `unseenMsgEvent` : undefined,
+  };
+
+  // const pusherTemp1 = {
+  //   channelName: null,
+  //   eventName: null,
+  // };
+
+  // const pusherTemp2 = {
+  //   channelName: null,
+  //   eventName: null,
+  // };
+
+  // const pusherTemp3 = {
+  //   channelName: null,
+  //   eventName: null,
+  // };
+
   return (
     <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-accent-6 bg-black p-8">
       <SearchBar />
       <div className="py-8">
-        <SidebarItem href="">
-          <Home />
+        <SidebarItem
+          href=""
+          pusherProps={{
+            channelName: undefined,
+            eventName: undefined,
+          }}
+        >
+          <HomeIcon />
         </SidebarItem>
-        <SidebarItem href="messages">
-          <Messages />
+        <SidebarItem href="messages" pusherProps={pusherDetails}>
+          <MessagesIcon />
         </SidebarItem>
-        <SidebarItem href="notifications">
-          <Notifications />
+        <SidebarItem
+          href="notifications"
+          pusherProps={{
+            channelName: undefined,
+            eventName: undefined,
+          }}
+        >
+          <NotificationsIcon />
         </SidebarItem>
-        <SidebarItem href="settings">
-          <Settings size={5} />
+        <SidebarItem
+          href="settings"
+          pusherProps={{
+            channelName: undefined,
+            eventName: undefined,
+          }}
+        >
+          <SettingsIcon size={5} />
         </SidebarItem>
       </div>
     </aside>
@@ -73,37 +114,42 @@ const SearchBar = () => {
   );
 };
 
-const SidebarItem = ({
-  href,
-  children,
-}: {
+interface SidebarItemProps {
   href: string;
   children: JSX.Element;
-}) => {
-  const { data: session } = useSession();
+  pusherProps: {
+    channelName: string | undefined;
+    eventName: string | undefined;
+  };
+}
+
+const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const { pathname } = useRouter();
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!session) return;
+    if (!pusherProps.channelName || !pusherProps.eventName) return;
 
-    const channel = pusherClient.subscribe(
-      `newUnseenMsg_${session.user.username}`
-    );
+    const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    channel.bind("unseenMsgEvent", (data) => {
-      setCount(count + 1);
+    const handlePusher = (data: {
+      message: string;
+      senderUsername: string;
+    }) => {
+      setCount((prevCount) => prevCount + 1);
       console.log(data);
-    });
+      toast(`New message from ${data.senderUsername}: ${data.message}`);
+    };
+
+    channel.bind(pusherProps.eventName, handlePusher);
 
     return () => {
-      pusherClient.unsubscribe(`newUnseenMsg_${session.user.username}`);
-      pusherClient.unbind("unseenMsgEvent", (data) => {
-        setCount(count + 1);
-        console.log(data);
-      });
+      if (!pusherProps.channelName) return;
+
+      pusherClient.unsubscribe(pusherProps.channelName);
+      pusherClient.unbind(pusherProps.eventName, handlePusher);
     };
-  }, [count, session]);
+  }, [pusherProps.channelName, pusherProps.eventName]);
 
   return (
     <Link href={`/${href}`}>
