@@ -32,12 +32,16 @@ model Like {
 }
 
 model Comment {
-    id      String @id @default(cuid())
-    postId  String
-    post    Post   @relation(fields: [postId], references: [id])
-    content String @db.Text
+    id          String   @id @default(cuid())
+    postId      String
+    post        Post     @relation(fields: [postId], references: [id])
+    commentorId String
+    commentor   User     @relation(fields: [commentorId], references: [id])
+    commentedAt DateTime @default(now())
+    content     String   @db.Text
 
     @@index([postId])
+    @@index([commentorId])
 }
 
 model Follows {
@@ -105,6 +109,7 @@ model User {
     sessions       Session[]
     post           Post[]
     like           Like[]
+    comment        Comment[]
     followedBy     Follows[]  @relation("following")
     following      Follows[]  @relation("follower")
     MessageSender  Messages[] @relation("sender")

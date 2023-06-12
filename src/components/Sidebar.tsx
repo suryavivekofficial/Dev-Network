@@ -2,7 +2,7 @@ import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useState, type FC } from "react";
-import toast from "react-hot-toast";
+import { toast } from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
 import HomeIcon from "./icons/HomeIcon";
 import MessagesIcon from "./icons/MessagesIcon";

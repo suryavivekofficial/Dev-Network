@@ -5,7 +5,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { type FC } from "react";
 import Clock from "./icons/ClockIcon";
+import CommentIcon from "./icons/CommentIcon";
 import LikeIcon from "./icons/LikeIcon";
+import ShareIcon from "./icons/ShareIcon";
 
 dayjs.extend(relativeTime);
 
@@ -52,11 +54,15 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
         </span>
       </div>
       <p>{post.content}</p>
-      <LikeIcon
-        isLikedFromServer={post.likes.length === 0 ? false : true}
-        postId={post.id}
-        likeCountFromServer={post._count.likes}
-      />
+      <div className="flex items-center justify-between">
+        <LikeIcon
+          isLikedFromServer={post.likes.length === 0 ? false : true}
+          postId={post.id}
+          likeCountFromServer={post._count.likes}
+        />
+        <CommentIcon />
+        <ShareIcon />
+      </div>
     </div>
   );
 };
