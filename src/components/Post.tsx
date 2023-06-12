@@ -4,6 +4,7 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import Image from "next/image";
 import Link from "next/link";
 import { type FC } from "react";
+import { useCommentSectionStore } from "~/utils/zustand/comments";
 import Clock from "./icons/ClockIcon";
 import CommentIcon from "./icons/CommentIcon";
 import LikeIcon from "./icons/LikeIcon";
@@ -28,6 +29,8 @@ type TPostComponent = {
 };
 
 const PostComponent: FC<TPostComponent> = ({ post }) => {
+  const { isCommentSectionOpen } = useCommentSectionStore();
+
   if (!post.author.username) return null;
 
   if (!post.author.image) {
@@ -63,8 +66,13 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
         <CommentIcon />
         <ShareIcon />
       </div>
+      {isCommentSectionOpen && <CommentSection />}
     </div>
   );
+};
+
+const CommentSection = () => {
+  return <div className="h-24 w-full bg-red-1">comments</div>;
 };
 
 export default PostComponent;

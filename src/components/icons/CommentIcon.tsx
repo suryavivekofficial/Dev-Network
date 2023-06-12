@@ -1,6 +1,13 @@
+import { useCommentSectionStore } from "~/utils/zustand/comments";
+
 const Comment = () => {
+  const { toggleCommentSection } = useCommentSectionStore();
+
   return (
-    <button className="flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2">
+    <button
+      onClick={toggleCommentSection}
+      className="flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2"
+    >
       <svg
         xmlns="http://www.w3.org/2000/svg"
         fill="none"
