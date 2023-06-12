@@ -32,16 +32,16 @@ model Like {
 }
 
 model Comment {
-    id          String   @id @default(cuid())
-    postId      String
-    post        Post     @relation(fields: [postId], references: [id])
-    commentorId String
-    commentor   User     @relation(fields: [commentorId], references: [id])
-    commentedAt DateTime @default(now())
-    content     String   @db.Text
+    id                String   @id @default(cuid())
+    postId            String
+    post              Post     @relation(fields: [postId], references: [id])
+    commentorUsername String
+    commentor         User     @relation(fields: [commentorUsername], references: [username])
+    commentedAt       DateTime @default(now())
+    content           String   @db.Text
 
     @@index([postId])
-    @@index([commentorId])
+    @@index([commentorUsername])
 }
 
 model Follows {
