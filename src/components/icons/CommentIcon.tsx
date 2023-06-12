@@ -1,11 +1,17 @@
-import { useCommentSectionStore } from "~/utils/zustand/comments";
+import type { Dispatch, FC, SetStateAction } from "react";
 
-const Comment = () => {
-  const { toggleCommentSection } = useCommentSectionStore();
+interface CommentProps {
+  isCommentSectionOpen: boolean;
+  setIsCommentSectionOpen: Dispatch<SetStateAction<boolean>>;
+}
 
+const Comment: FC<CommentProps> = ({
+  isCommentSectionOpen,
+  setIsCommentSectionOpen,
+}) => {
   return (
     <button
-      onClick={toggleCommentSection}
+      onClick={() => setIsCommentSectionOpen(!isCommentSectionOpen)}
       className="flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2"
     >
       <svg
