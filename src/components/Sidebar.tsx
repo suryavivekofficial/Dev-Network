@@ -13,6 +13,7 @@ const Sidebar = () => {
   const { data: session } = useSession();
 
   const pusherDetails = {
+    type: "messages",
     channelName: session ? `newUnseenMsg_${session.user.username}` : undefined,
     eventName: session ? `unseenMsgEvent` : undefined,
   };
@@ -39,6 +40,7 @@ const Sidebar = () => {
         <SidebarItem
           href=""
           pusherProps={{
+            type: undefined,
             channelName: undefined,
             eventName: undefined,
           }}
@@ -51,6 +53,7 @@ const Sidebar = () => {
         <SidebarItem
           href="notifications"
           pusherProps={{
+            type: undefined,
             channelName: undefined,
             eventName: undefined,
           }}
@@ -60,6 +63,7 @@ const Sidebar = () => {
         <SidebarItem
           href="settings"
           pusherProps={{
+            type: undefined,
             channelName: undefined,
             eventName: undefined,
           }}
@@ -118,6 +122,7 @@ interface SidebarItemProps {
   href: string;
   children: JSX.Element;
   pusherProps: {
+    type: string | undefined;
     channelName: string | undefined;
     eventName: string | undefined;
   };
@@ -128,17 +133,16 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const [count, setCount] = useState(0);
 
   useEffect(() => {
-    if (!pusherProps.channelName || !pusherProps.eventName) return;
+    if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
+      return;
+    if (pathname === `/${pusherProps.type}`) return;
 
     const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    const handlePusher = (data: {
-      message: string;
-      senderUsername: string;
-    }) => {
+    const handlePusher = (data: { senderUsername: string }) => {
       setCount((prevCount) => prevCount + 1);
       console.log(data);
-      toast(`New message from ${data.senderUsername}: ${data.message}`);
+      toast(`New message from ${data.senderUsername}`);
     };
 
     channel.bind(pusherProps.eventName, handlePusher);
@@ -149,7 +153,12 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
       pusherClient.unsubscribe(pusherProps.channelName);
       pusherClient.unbind(pusherProps.eventName, handlePusher);
     };
-  }, [pusherProps.channelName, pusherProps.eventName]);
+  }, [
+    pathname,
+    pusherProps.channelName,
+    pusherProps.eventName,
+    pusherProps.type,
+  ]);
 
   return (
     <Link href={`/${href}`}>
