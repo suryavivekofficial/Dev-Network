@@ -63,6 +63,7 @@ export const chatRouter = createTRPCRouter({
         "unseenMsgEvent",
         {
           message: `New msg from ${ctx.session.user.username}`,
+          date: Date.now(),
         }
       );
 

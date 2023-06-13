@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import { useEffect, useState, type FC } from "react";
 import { toast } from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
+import { useNotificationStore } from "~/utils/zustand/notifications";
 import HomeIcon from "./icons/HomeIcon";
 import MessagesIcon from "./icons/MessagesIcon";
 import NotificationsIcon from "./icons/NotificationsIcon";
@@ -127,6 +128,7 @@ interface SidebarItemProps {
 const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const { pathname } = useRouter();
   const [count, setCount] = useState(0);
+  const { setNotifications } = useNotificationStore();
 
   useEffect(() => {
     if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
@@ -135,10 +137,15 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
 
     const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    const handlePusher = (data: { message: string }) => {
+    const handlePusher = (data: { message: string; date: number }) => {
       setCount((prevCount) => prevCount + 1);
       console.log(data);
       toast(data.message);
+      if (pusherProps.type === "notifications")
+        setNotifications({
+          notificationContent: data.message,
+          date: data.date,
+        });
     };
 
     channel.bind(pusherProps.eventName, handlePusher);
@@ -154,6 +161,7 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
     pusherProps.channelName,
     pusherProps.eventName,
     pusherProps.type,
+    setNotifications,
   ]);
 
   return (

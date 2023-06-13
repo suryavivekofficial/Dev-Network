@@ -3,15 +3,16 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Layout from "~/components/Layout";
 import { pusherClient } from "~/utils/pusher";
+import { useNotificationStore } from "~/utils/zustand/notifications";
 
 dayjs.extend(relativeTime);
 
 interface TPusherMsg {
   message: string;
-  date: string;
+  date: number;
 }
 
 const NotificationsPage: NextPage = () => {
@@ -39,7 +40,8 @@ const NotificationsPage: NextPage = () => {
 
 const NotificationsContainer = () => {
   const { data: session } = useSession();
-  const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
+  // const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
+  const { notifications, setNotifications } = useNotificationStore();
 
   useEffect(() => {
     if (!session) return;
@@ -49,7 +51,7 @@ const NotificationsContainer = () => {
     );
 
     const handlePusher = (data: TPusherMsg) => {
-      setNotifications((notifications) => [...notifications, data]);
+      setNotifications({ notificationContent: data.message, date: data.date });
     };
 
     channel.bind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
@@ -62,7 +64,7 @@ const NotificationsContainer = () => {
         handlePusher(data)
       );
     };
-  }, [session, notifications]);
+  }, [session, setNotifications]);
 
   if (notifications.length === 0) {
     return (
@@ -80,7 +82,7 @@ const NotificationsContainer = () => {
             className="flex w-full items-center space-x-8 rounded-md border border-accent-6 bg-black p-4"
             key={i}
           >
-            <p className="flex-grow">{notification.message} </p>
+            <p className="flex-grow">{notification.notificationContent} </p>
             <span className="whitespace-nowrap">
               {dayjs(notification.date).fromNow()}
             </span>
