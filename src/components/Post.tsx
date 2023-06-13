@@ -120,7 +120,7 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
             {dayjs(comment.commentedAt).fromNow()}
           </span>
         </div>
-        <p className="break-words">{comment.content}</p>
+        <p className="text-sm">{comment.content}</p>
       </div>
     </div>
   );

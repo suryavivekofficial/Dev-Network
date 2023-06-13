@@ -14,7 +14,11 @@ const Feed = () => {
       ? api.post.getPosts.useQuery()
       : api.post.getFollowingPosts.useQuery();
   if (isLoading) {
-    return <div>loading...</div>;
+    return (
+      <div className="flex flex-grow items-center justify-center">
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (isError) {

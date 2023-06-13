@@ -2,17 +2,30 @@ import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { api } from "~/utils/api";
+import SignIn from "./SignIn";
+import LoadingSpinner from "./icons/LoadingSpinner";
 
 const ProfileCard = () => {
   const { data: session } = useSession();
-  const { data } = api.user.getFollowAndFollowingCount.useQuery();
+  const { data, isLoading } = api.user.getFollowAndFollowingCount.useQuery();
 
   if (!session) {
-    return null;
+    return (
+      <div className="mr-8 rounded-md border border-accent-4 bg-black p-8">
+        <SignIn />
+      </div>
+    );
   }
 
+  if (isLoading)
+    return (
+      <div className="mr-8 flex h-96 items-center justify-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
+        <LoadingSpinner />
+      </div>
+    );
+
   return (
-    <div className="min-h-1/2 mr-8 flex flex-col items-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
+    <div className="mr-8 flex flex-col items-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
       <div className="relative h-20 w-20 overflow-hidden rounded-full">
         {session.user.image && (
           <Image src={session.user.image} alt="profile photo" fill={true} />
