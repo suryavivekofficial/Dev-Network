@@ -11,7 +11,7 @@ const ProfileCard = () => {
 
   if (!session) {
     return (
-      <div className="mr-8 rounded-md border border-accent-4 bg-black p-8">
+      <div className="mr-8 rounded-md border border-blue-2 bg-white p-8 dark:border-accent-4 dark:bg-black">
         <SignIn />
       </div>
     );
@@ -19,17 +19,19 @@ const ProfileCard = () => {
 
   if (isLoading)
     return (
-      <div className="mr-8 flex h-96 items-center justify-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
+      <div className="mr-8 flex h-96 items-center justify-center space-y-4 rounded-md border border-blue-2 bg-white p-6 dark:border-accent-6 dark:bg-black">
         <LoadingSpinner />
       </div>
     );
 
   return (
-    <div className="mr-8 flex flex-col items-center space-y-4 rounded-md border border-accent-6 bg-black p-6">
+    <div className="mr-8 flex flex-col items-center space-y-4 rounded-md border border-blue-2 bg-white p-6 dark:border-accent-6 dark:bg-black">
       <div className="relative h-20 w-20 overflow-hidden rounded-full">
-        {session.user.image && (
-          <Image src={session.user.image} alt="profile photo" fill={true} />
-        )}
+        <Image
+          src={session.user.image ?? "/user.png"}
+          alt="profile photo"
+          fill={true}
+        />
       </div>
       <div className="py-2 text-center">
         <h3 className="text-xl font-bold capitalize">{session.user.name}</h3>

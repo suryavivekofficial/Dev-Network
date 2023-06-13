@@ -13,7 +13,7 @@ const Settings: NextPage = () => {
       </Head>
 
       <Layout>
-        <main>Settings appear here</main>
+        <div>Settings appear here</div>
       </Layout>
     </>
   );

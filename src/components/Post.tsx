@@ -41,7 +41,7 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
   }
 
   return (
-    <div className="space-y-4 rounded-md bg-black p-6">
+    <div className="space-y-4 rounded-md bg-white p-6 dark:bg-black">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
@@ -49,7 +49,10 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
           </div>
           <div className="flex flex-col">
             <span className="font-bold capitalize">{post.author.name}</span>
-            <Link href={`/${post.author.username}`} className="text-sm">
+            <Link
+              href={`/${post.author.username}`}
+              className="text-sm hover:text-blue-2"
+            >
               @{post.author.username}
             </Link>
           </div>
@@ -88,12 +91,15 @@ const CommentSection = ({ postId }: { postId: string }) => {
     );
 
   return (
-    <div className="w-full space-y-4 border-t border-accent-4 pt-4">
+    <div className="w-full space-y-4 border-t border-blue-1 pt-4 dark:border-accent-4">
       <CommentInput postId={postId} />
 
       <div className="space-y-2">
         {data?.map((comment) => (
-          <div className="rounded-md odd:bg-accent-1" key={comment.id}>
+          <div
+            className="rounded-md odd:bg-blue-1 dark:odd:bg-accent-1"
+            key={comment.id}
+          >
             <CommentItem comment={comment} />
           </div>
         ))}
@@ -112,10 +118,13 @@ const CommentItem = ({ comment }: { comment: Comment }) => {
       </div>
       <div className="flex-grow">
         <div className="flex items-center space-x-2 py-2">
-          <Link href={`/${comment.commentorUsername}`}>
+          <Link
+            href={`/${comment.commentorUsername}`}
+            className="hover:text-blue-2"
+          >
             <h6 className="text-xs">{comment.commentorUsername}</h6>
           </Link>
-          <span className="h-1 w-1 rounded-full bg-white" />
+          <span className="h-1 w-1 rounded-full bg-black dark:bg-white" />
           <span className="text-xs">
             {dayjs(comment.commentedAt).fromNow()}
           </span>
@@ -162,11 +171,11 @@ const CommentInput = ({ postId }: { postId: string }) => {
         }}
         onChange={(e) => setNewComment(e.target.value)}
         placeholder="What's your thoughts on this?"
-        className="flex-grow rounded-md border border-accent-4 bg-black px-4 outline-none placeholder:text-sm placeholder:text-opacity-50 focus:border-accent-6"
+        className="flex-grow rounded-md border border-blue-2 bg-blue-1 px-4 outline-none placeholder:text-sm placeholder:text-blue-2 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-white dark:placeholder:text-opacity-50 dark:focus:ring-accent-8"
       />
       <button
         onClick={handleSubmit}
-        className="group rounded-md bg-accent-2 px-2"
+        className="group rounded-md border border-blue-2 bg-blue-1 px-2 text-blue-2 dark:border-accent-6 dark:bg-accent-2 dark:text-accent-8"
       >
         {isLoading ? (
           <div>

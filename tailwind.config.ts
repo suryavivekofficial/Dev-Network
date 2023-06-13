@@ -25,5 +25,6 @@ export default {
       "red-4": "#e60000",
     },
   },
+  darkMode: "class",
   plugins: [],
 } satisfies Config;

@@ -70,7 +70,7 @@ const LikeIcon: FC<TLikeIcon> = ({
   return (
     <button
       onClick={updateLikeCount}
-      className={`flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2 ${
+      className={`flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-blue-1 dark:hover:bg-accent-2 ${
         isLiked ? `text-blue-2` : ``
       }`}
     >
@@ -92,7 +92,7 @@ const LikeIcon: FC<TLikeIcon> = ({
       </svg>
       <span className="text-sm">Like</span>
       <span
-        className={`h-full rounded-full bg-accent-4 px-1.5 text-xs ${
+        className={`h-full rounded-full bg-blue-2 px-1.5 text-xs text-white dark:bg-accent-4 dark:text-accent-8 ${
           isLiked ? "bg-blue-1" : ""
         }`}
       >

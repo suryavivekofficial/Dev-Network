@@ -11,7 +11,7 @@ const Share = () => {
   return (
     <button
       onClick={handleClick}
-      className="flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-accent-2"
+      className="flex items-center space-x-2 rounded-md px-4 py-2 duration-300 hover:bg-blue-1 dark:hover:bg-accent-2"
     >
       <svg
         xmlns="http://www.w3.org/2000/svg"

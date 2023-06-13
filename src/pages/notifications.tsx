@@ -74,6 +74,8 @@ const NotificationsContainer = () => {
     );
   }
 
+  if (!session) return <div>You need to Sign In.</div>;
+
   return (
     <div className="w-full space-y-4">
       {notifications.map((notification, i) => {

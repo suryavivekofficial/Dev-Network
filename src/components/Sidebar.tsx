@@ -5,12 +5,14 @@ import { useEffect, useState, type FC } from "react";
 import { toast } from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
 import { useNotificationStore } from "~/utils/zustand/notifications";
+import { useThemeStore } from "~/utils/zustand/theme";
 import HomeIcon from "./icons/HomeIcon";
 import MessagesIcon from "./icons/MessagesIcon";
 import NotificationsIcon from "./icons/NotificationsIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Sidebar = () => {
+  const { setTheme } = useThemeStore();
   const { data: session } = useSession();
 
   const pusherMsgProps = {
@@ -38,7 +40,7 @@ const Sidebar = () => {
   // };
 
   return (
-    <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-accent-6 bg-black p-8">
+    <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black">
       <SearchBar />
       <div className="py-8">
         <SidebarItem
@@ -68,6 +70,12 @@ const Sidebar = () => {
           <SettingsIcon size={5} />
         </SidebarItem>
       </div>
+      <button
+        onClick={setTheme}
+        className="w-full rounded-md bg-red-2 p-4 dark:bg-blue-2"
+      >
+        Theme
+      </button>
     </aside>
   );
 };
@@ -81,7 +89,7 @@ const SearchBar = () => {
         Search
       </label>
       <div className="relative w-full">
-        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-blue-3 dark:text-accent-8">
           <svg
             aria-hidden="true"
             className="h-5 w-5"
@@ -103,7 +111,7 @@ const SearchBar = () => {
           }}
           type="text"
           id="simple-search"
-          className="block w-full rounded-lg border border-accent-6 bg-black p-2.5 pl-10 text-sm outline-none placeholder:text-accent-6 focus:ring-1 focus:ring-accent-8"
+          className="block w-full rounded-lg border border-blue-2 bg-blue-1 p-2.5 pl-10 text-sm text-blue-2 outline-none placeholder:text-blue-2 placeholder:opacity-70 focus:ring-1 focus:ring-accent-8 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-accent-6"
           placeholder="Search"
           required
         />
@@ -169,9 +177,9 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
       <div
         className={`${
           pathname === `/${href}`
-            ? `relative bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-white before:content-['']`
+            ? `relative bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:text-white dark:before:bg-white`
             : ``
-        } my-4 flex cursor-pointer items-center justify-between rounded-md p-4 duration-200 hover:bg-accent-2`}
+        } my-4 flex cursor-pointer items-center justify-between rounded-md p-4 duration-200 hover:bg-blue-1 dark:hover:bg-accent-2`}
       >
         <div className="flex items-center space-x-2">
           {children}
@@ -179,8 +187,10 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
             {href === "" ? "home" : href}
           </span>
         </div>
-        {href !== "" && (
-          <span className="rounded-full bg-white px-2 text-black">{count}</span>
+        {href !== "settings" && href !== "" && (
+          <span className="rounded-full bg-blue-2 px-2 text-accent-8 dark:bg-white dark:text-black">
+            {count}
+          </span>
         )}
       </div>
     </Link>
