@@ -80,7 +80,12 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
 const CommentSection = ({ postId }: { postId: string }) => {
   const { data, isLoading } = api.post.getCommentsForPost.useQuery({ postId });
 
-  if (isLoading) return <div>loading...</div>;
+  if (isLoading)
+    return (
+      <div className="flex h-16 w-full items-center justify-center border-t border-accent-4">
+        <LoadingSpinner />
+      </div>
+    );
 
   return (
     <div className="w-full space-y-4 border-t border-accent-4 pt-4">
@@ -98,11 +103,6 @@ const CommentSection = ({ postId }: { postId: string }) => {
 };
 
 const CommentItem = ({ comment }: { comment: Comment }) => {
-  // const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-  // const createdTime = new Date(comment.commentedAt).toLocaleString("en-US", {
-  //   timeZone: userTimezone,
-  // });
-
   return (
     <div className="flex justify-between space-x-2 p-4">
       <div className="flex">

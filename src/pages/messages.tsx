@@ -5,6 +5,7 @@ import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect, useRef, useState } from "react";
+import { toast } from "react-hot-toast";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
 import LoadingSpinner from "~/components/icons/LoadingSpinner";
@@ -237,6 +238,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         { otherUsername: receiverUsername },
         prevPostsSnapshot
       );
+      toast(error.message);
     },
 
     onSettled() {
@@ -262,11 +264,11 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         type="text"
         name="new message"
         autoComplete="off"
-        className="flex-grow rounded-md border border-accent-4 bg-accent-2 px-4 py-2 outline-none drop-shadow-lg focus:border-accent-6"
+        className="flex-grow rounded-md border border-accent-4 bg-black px-4 py-2 outline-none drop-shadow-lg focus:border-accent-6"
       />
       <button
         onClick={handleSubmit}
-        className="group rounded-md border border-accent-4 bg-accent-2 p-2"
+        className="group rounded-md border border-accent-4 p-2"
       >
         <SendIcon />
       </button>

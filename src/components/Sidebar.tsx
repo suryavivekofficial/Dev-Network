@@ -12,16 +12,19 @@ import SettingsIcon from "./icons/SettingsIcon";
 const Sidebar = () => {
   const { data: session } = useSession();
 
-  const pusherDetails = {
+  const pusherMsgProps = {
     type: "messages",
     channelName: session ? `newUnseenMsg_${session.user.username}` : undefined,
     eventName: session ? `unseenMsgEvent` : undefined,
   };
 
-  // const pusherTemp1 = {
-  //   channelName: null,
-  //   eventName: null,
-  // };
+  const pusherNotificationProps = {
+    type: "notifications",
+    channelName: session
+      ? `notifications_channel_${session.user.username}`
+      : undefined,
+    eventName: session ? "followEvent" : undefined,
+  };
 
   // const pusherTemp2 = {
   //   channelName: null,
@@ -47,17 +50,10 @@ const Sidebar = () => {
         >
           <HomeIcon />
         </SidebarItem>
-        <SidebarItem href="messages" pusherProps={pusherDetails}>
+        <SidebarItem href="messages" pusherProps={pusherMsgProps}>
           <MessagesIcon />
         </SidebarItem>
-        <SidebarItem
-          href="notifications"
-          pusherProps={{
-            type: undefined,
-            channelName: undefined,
-            eventName: undefined,
-          }}
-        >
+        <SidebarItem href="notifications" pusherProps={pusherNotificationProps}>
           <NotificationsIcon />
         </SidebarItem>
         <SidebarItem
@@ -139,10 +135,10 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
 
     const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    const handlePusher = (data: { senderUsername: string }) => {
+    const handlePusher = (data: { message: string }) => {
       setCount((prevCount) => prevCount + 1);
       console.log(data);
-      toast(`New message from ${data.senderUsername}`);
+      toast(data.message);
     };
 
     channel.bind(pusherProps.eventName, handlePusher);
