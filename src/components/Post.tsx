@@ -1,6 +1,7 @@
-import type { Post } from "@prisma/client";
+import type { Comment, Post } from "@prisma/client";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
+import { useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useState, type FC } from "react";
@@ -8,6 +9,8 @@ import { api } from "~/utils/api";
 import Clock from "./icons/ClockIcon";
 import CommentIcon from "./icons/CommentIcon";
 import LikeIcon from "./icons/LikeIcon";
+import LoadingSpinner from "./icons/LoadingSpinner";
+import SendIcon from "./icons/SendIcon";
 import ShareIcon from "./icons/ShareIcon";
 
 dayjs.extend(relativeTime);
@@ -75,40 +78,104 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
 };
 
 const CommentSection = ({ postId }: { postId: string }) => {
-  const ctx = api.useContext();
-  const [newComment, setNewComment] = useState("");
-
   const { data, isLoading } = api.post.getCommentsForPost.useQuery({ postId });
-  const { mutate, isLoading: isMutationLoading } =
-    api.post.createComment.useMutation({
-      onSuccess: async () => {
-        setNewComment("");
-        await ctx.post.getCommentsForPost.invalidate();
-      },
-    });
 
   if (isLoading) return <div>loading...</div>;
 
-  // if (!data || data.length === 0)
-  //   return <div>Be the first one to comment.</div>;
+  return (
+    <div className="w-full space-y-4 border-t border-accent-4 pt-4">
+      <CommentInput postId={postId} />
 
-  const handleMutate = () => {
-    mutate({ comment: newComment, postId });
-  };
+      <div className="space-y-2">
+        {data?.map((comment) => (
+          <div className="rounded-md odd:bg-accent-1" key={comment.id}>
+            <CommentItem comment={comment} />
+          </div>
+        ))}
+      </div>
+    </div>
+  );
+};
+
+const CommentItem = ({ comment }: { comment: Comment }) => {
+  // const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+  // const createdTime = new Date(comment.commentedAt).toLocaleString("en-US", {
+  //   timeZone: userTimezone,
+  // });
 
   return (
-    <div className="w-full">
+    <div className="flex justify-between space-x-2 p-4">
+      <div className="flex">
+        <div className="relative h-8 w-8 overflow-hidden rounded-full">
+          <Image src={comment.commentorImage} fill={true} alt="Author photo" />
+        </div>
+      </div>
+      <div className="flex-grow">
+        <div className="flex items-center space-x-2 py-2">
+          <Link href={`/${comment.commentorUsername}`}>
+            <h6 className="text-xs">{comment.commentorUsername}</h6>
+          </Link>
+          <span className="h-1 w-1 rounded-full bg-white" />
+          <span className="text-xs">
+            {dayjs(comment.commentedAt).fromNow()}
+          </span>
+        </div>
+        <p className="break-words">{comment.content}</p>
+      </div>
+    </div>
+  );
+};
+
+const CommentInput = ({ postId }: { postId: string }) => {
+  const { data: session } = useSession();
+  const [newComment, setNewComment] = useState("");
+  const ctx = api.useContext();
+  const { mutate, isLoading } = api.post.createComment.useMutation({
+    onSuccess: async () => {
+      await ctx.post.getCommentsForPost.invalidate();
+    },
+  });
+
+  const handleSubmit = () => {
+    mutate({ comment: newComment, postId });
+    setNewComment("");
+  };
+
+  if (!session) return <div>You need to login to comment on a post.</div>;
+
+  if (!session.user.image) {
+    session.user.image = "/user.png";
+  }
+
+  return (
+    <div className="flex w-full justify-between gap-4">
+      <div className="relative h-10 w-10 overflow-hidden rounded-full">
+        <Image src={session.user.image} fill={true} alt="Author photo" />
+      </div>
       <input
         type="text"
         value={newComment}
+        onKeyDown={(e) => {
+          if (e.key === "Enter") {
+            handleSubmit();
+          }
+        }}
         onChange={(e) => setNewComment(e.target.value)}
-        className="text-black"
+        placeholder="What's your thoughts on this?"
+        className="flex-grow rounded-md border border-accent-4 bg-black px-4 outline-none placeholder:text-sm placeholder:text-opacity-50 focus:border-accent-6"
       />
-      <button onClick={handleMutate}>submit</button>
-      {isMutationLoading && <div>New comment writing...</div>}
-      {data?.map((comment) => (
-        <div key={comment.id}>{comment.content}</div>
-      ))}
+      <button
+        onClick={handleSubmit}
+        className="group rounded-md bg-accent-2 px-2"
+      >
+        {isLoading ? (
+          <div>
+            <LoadingSpinner />
+          </div>
+        ) : (
+          <SendIcon />
+        )}
+      </button>
     </div>
   );
 };

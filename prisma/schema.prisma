@@ -37,6 +37,7 @@ model Comment {
     post              Post     @relation(fields: [postId], references: [id])
     commentorUsername String
     commentor         User     @relation(fields: [commentorUsername], references: [username])
+    commentorImage    String
     commentedAt       DateTime @default(now())
     content           String   @db.Text
 

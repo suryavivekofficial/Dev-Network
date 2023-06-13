@@ -6,7 +6,7 @@ const SendIcon = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6 duration-200 group-hover:-rotate-12"
+      className="h-5 w-5 duration-200 group-hover:-rotate-12"
     >
       <path
         strokeLinecap="round"

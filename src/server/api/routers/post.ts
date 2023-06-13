@@ -97,6 +97,9 @@ export const postRouter = createTRPCRouter({
         where: {
           postId: input.postId,
         },
+        orderBy: {
+          commentedAt: "desc",
+        },
       });
       return comments;
     }),
@@ -120,6 +123,7 @@ export const postRouter = createTRPCRouter({
             content: input.comment,
             postId: input.postId,
             commentorUsername: ctx.session.user.username,
+            commentorImage: ctx.session.user.image ?? "/user.png",
           },
         })
     ),
