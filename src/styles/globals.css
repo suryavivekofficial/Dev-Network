@@ -6,6 +6,10 @@ body {
   @apply bg-accent-1 text-accent-8;
 }
 
+button {
+  @apply outline-none;
+}
+
 ::-webkit-scrollbar {
   width: 0.3em;
   margin-block: 1em;

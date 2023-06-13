@@ -17,10 +17,8 @@ const Home: NextPage = () => {
 
       <Layout>
         <>
-          <div className="flex-grow">
-            <Feed />
-          </div>
-          <div className="w-1/3 space-y-8">
+          <Feed />
+          <div className="w-1/3 flex-shrink-0 space-y-8">
             <ProfileCard />
             <FollowingListCard />
           </div>
