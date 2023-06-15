@@ -15,7 +15,7 @@ const Feed = () => {
       : api.post.getFollowingPosts.useQuery();
   if (isLoading) {
     return (
-      <div className="flex flex-grow items-center justify-center">
+      <div className="flex flex-grow items-center justify-center min-h-screen">
         <LoadingSpinner />
       </div>
     );
@@ -23,7 +23,7 @@ const Feed = () => {
 
   if (isError) {
     return (
-      <div>
+      <div className="min-h-screen">
         <h2 className="text-2xl">Error occured!☹️</h2>
         <p>This is due to {error.message} </p>
       </div>
@@ -31,7 +31,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="flex-grow space-y-4">
+    <div className="flex-grow space-y-4 min-h-screen">
       <NewPost />
       {data?.map((post) => {
         return (

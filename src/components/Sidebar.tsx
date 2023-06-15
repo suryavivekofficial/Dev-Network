@@ -29,16 +29,6 @@ const Sidebar = () => {
     eventName: session ? "followEvent" : undefined,
   };
 
-  // const pusherTemp2 = {
-  //   channelName: null,
-  //   eventName: null,
-  // };
-
-  // const pusherTemp3 = {
-  //   channelName: null,
-  //   eventName: null,
-  // };
-
   return (
     <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black">
       <SearchBar />
@@ -111,7 +101,7 @@ const SearchBar = () => {
           }}
           type="text"
           id="simple-search"
-          className="block w-full rounded-lg border border-blue-2 bg-blue-1 p-2.5 pl-10 text-sm text-blue-2 outline-none placeholder:text-blue-2 placeholder:opacity-70 focus:ring-1 focus:ring-accent-8 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-accent-6"
+          className="block w-full rounded-lg border border-blue-2 bg-white p-2.5 pl-10 text-sm text-blue-2 outline-none placeholder:text-blue-2 placeholder:opacity-70 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:ring-accent-8 dark:placeholder:text-accent-6"
           placeholder="Search"
           required
         />

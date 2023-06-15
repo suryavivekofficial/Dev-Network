@@ -13,7 +13,7 @@ const Settings: NextPage = () => {
       </Head>
 
       <Layout>
-        <div>Settings appear here</div>
+        <div className="min-h-screen">Settings appear here</div>
       </Layout>
     </>
   );

@@ -29,7 +29,7 @@ const NotificationsPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="w-full pr-8">
+        <div className="w-full pr-8 min-h-screen">
           <h2 className="mb-4 ml-1 text-xl">Notifications For You</h2>
           <NotificationsContainer />
         </div>
@@ -68,7 +68,7 @@ const NotificationsContainer = () => {
 
   if (notifications.length === 0) {
     return (
-      <div className="flex w-full space-x-4 rounded-md border border-accent-6 bg-black p-4">
+      <div className="flex w-full space-x-4 rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black p-4">
         No new notifications for you.
       </div>
     );
@@ -81,7 +81,7 @@ const NotificationsContainer = () => {
       {notifications.map((notification, i) => {
         return (
           <div
-            className="flex w-full items-center space-x-8 rounded-md border border-accent-6 bg-black p-4"
+            className="flex w-full items-center space-x-8 rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black p-4"
             key={i}
           >
             <p className="flex-grow">{notification.notificationContent} </p>
