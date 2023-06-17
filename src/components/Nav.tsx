@@ -1,10 +1,9 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
-import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
-import { usePostStore } from "~/utils/zustand/posts";
+import Tabs from "./Tabs";
 import Chevron from "./icons/ChevronIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
@@ -12,61 +11,68 @@ const Nav = () => {
   const { data: session } = useSession();
 
   return (
-    <nav className="fixed z-10 flex min-h-max w-screen items-center justify-between border-b border-b-blue-2 bg-white px-8 py-5 dark:border-b-accent-6 dark:bg-black">
-      <Logo />
-      <Tabs />
-      <Toaster />
-      {session ? (
-        <div className="flex w-1/3 items-center justify-end space-x-2">
-          <Profile />
+    <header className="fixed z-10 min-h-max w-screen space-y-4 divide-y divide-blue-1 border-b border-b-blue-2 bg-white px-4 py-2 dark:border-b-accent-6 dark:bg-black md:px-8 md:py-5">
+      <div className="flex items-center justify-between">
+        <Logo />
+        <div className="hidden w-1/3 md:inline-block">
+          <Tabs />
         </div>
-      ) : (
-        <LoginBtn />
-      )}
-    </nav>
-  );
-};
-
-const Tabs = () => {
-  const { data: session } = useSession();
-  const { pathname } = useRouter();
-  const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
-    usePostStore();
-
-  if (!session || pathname !== "/") return null;
-
-  return (
-    <div className="flex h-10 w-1/3 items-center justify-center">
-      <div className="flex h-full min-w-max items-center justify-between rounded-md border border-blue-2 px-2 dark:border-accent-6">
-        <button
-          onClick={changeSelectionToForYou}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm  duration-300 ${
-            selected === "for you"
-              ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
-              : ""
-          }`}
-        >
-          For You
-        </button>
-        <button
-          onClick={changeSelectionToFollowing}
-          className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
-            selected === "following"
-              ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
-              : ""
-          }`}
-        >
-          Following
-        </button>
+        <Toaster />
+        {session ? (
+          <div className="flex w-1/3 items-center justify-end space-x-2">
+            <Profile />
+          </div>
+        ) : (
+          <LoginBtn />
+        )}
       </div>
-    </div>
+      <div className="mt-2 md:hidden">
+        <Tabs />
+      </div>
+    </header>
   );
 };
+
+// const Tabs = () => {
+//   const { data: session } = useSession();
+//   const { pathname } = useRouter();
+//   const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
+//     usePostStore();
+
+//   if (!session || pathname !== "/") return null;
+
+//   return (
+//     <div className="flex h-10 w-1/3 items-center justify-center">
+//       <div className="flex h-full min-w-max items-center justify-between rounded-md border border-blue-2 px-2 dark:border-accent-6">
+//         <button
+//           onClick={changeSelectionToForYou}
+//           className={`whitespace-nowrap rounded px-4 py-1 text-sm  duration-300 ${
+//             selected === "for you"
+//               ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
+//               : ""
+//           }`}
+//         >
+//           For You
+//         </button>
+//         <button
+//           onClick={changeSelectionToFollowing}
+//           className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
+//             selected === "following"
+//               ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
+//               : ""
+//           }`}
+//         >
+//           Following
+//         </button>
+//       </div>
+//     </div>
+//   );
+// };
 
 const Logo = () => {
   return (
-    <div className="flex w-1/3 items-center justify-start space-x-2">
-      <div className="flex h-8 w-8 gap-1">
+    <div className="flex w-1/2 items-center justify-start space-x-2 md:w-1/3">
+      <div className="flex h-6 w-6 gap-1 md:h-8 md:w-8">
         <div className="flex h-full w-1/2 flex-col gap-1">
           <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
           <div className="h-3/5 w-full rounded-sm bg-blue-2"></div>
@@ -76,7 +82,7 @@ const Logo = () => {
           <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
         </div>
       </div>
-      <span className="text-xl font-bold">Dev Network</span>
+      <span className="text-base font-bold md:text-xl">Dev Network</span>
     </div>
   );
 };
@@ -100,7 +106,7 @@ const Profile = () => {
     <>
       <Link
         href={`/${session.user.username}`}
-        className="duration-150 hover:text-blue-2 hover:underline"
+        className="hidden duration-150 hover:text-blue-2 hover:underline md:inline-block"
       >
         <span className="whitespace-nowrap capitalize">
           {session.user.name}
@@ -110,7 +116,7 @@ const Profile = () => {
         <button
           ref={dropdownBtnRef}
           onClick={() => setOpenDropdown(!openDropdown)}
-          className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-blue-2"
+          className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border border-blue-2 md:h-10 md:w-10"
         >
           <Image
             src={session.user.image ?? "/user.png"}
@@ -118,7 +124,7 @@ const Profile = () => {
             fill={true}
           />
         </button>
-        <span className="pointer-events-none absolute bottom-0 left-7 flex h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 border-blue-2 bg-blue-1 text-accent-2">
+        <span className="pointer-events-none absolute bottom-0 left-7 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 border-blue-2 bg-blue-1 text-accent-2 md:flex">
           <Chevron />
         </span>
         {openDropdown && <Dropdown toggleDropdown={toggleDropdown} />}

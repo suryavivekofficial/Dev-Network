@@ -16,7 +16,7 @@ const ProfilePage = () => {
       <>
         <Profile />
 
-        <div className="w-1/3 space-y-8">
+        <div className="min-h-screen w-1/3 flex-shrink-0 space-y-8">
           <ProfileCard />
           <FollowingListCard />
         </div>
@@ -35,7 +35,7 @@ const Profile = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-grow items-center justify-center rounded-md border border-accent-6 bg-black">
+      <div className="flex flex-grow items-center justify-center rounded-md dark:bg-black">
         <LoadingSpinner />
       </div>
     );
@@ -46,9 +46,9 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex-grow rounded-md border border-accent-6 bg-black">
-      <div className="relative h-36 w-full rounded-t-md bg-accent-2">
-        <div className="absolute left-8 top-full -translate-y-1/2 rounded-full bg-black p-1">
+    <div className="flex-grow rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black">
+      <div className="relative h-36 w-full rounded-t-md dark:bg-accent-2">
+        <div className="absolute left-8 top-full -translate-y-1/2 rounded-full p-1 dark:bg-black">
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-none bg-blue-2 outline-none">
             {user.image && (
               <Image src={user?.image} fill={true} alt="Profile picture" />
@@ -169,7 +169,11 @@ const UserPosts = ({ user }: { user: User }) => {
   });
 
   if (isLoading) {
-    return <div>loading...</div>;
+    return (
+      <div>
+        <LoadingSpinner />
+      </div>
+    );
   }
 
   if (isError) {
@@ -185,7 +189,10 @@ const UserPosts = ({ user }: { user: User }) => {
       {data &&
         data.map((post) => {
           return (
-            <div key={post.id} className="border-t border-accent-6">
+            <div
+              key={post.id}
+              className="border-t border-blue-1 dark:border-accent-6"
+            >
               <PostComponent post={post} />
             </div>
           );

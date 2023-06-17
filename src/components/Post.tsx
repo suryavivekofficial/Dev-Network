@@ -171,11 +171,11 @@ const CommentInput = ({ postId }: { postId: string }) => {
         }}
         onChange={(e) => setNewComment(e.target.value)}
         placeholder="What's your thoughts on this?"
-        className="flex-grow rounded-md border border-blue-2 bg-blue-1 px-4 outline-none placeholder:text-sm placeholder:text-blue-2 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-white dark:placeholder:text-opacity-50 dark:focus:ring-accent-8"
+        className="flex-grow rounded-md border border-blue-2 bg-white px-4 outline-none placeholder:text-sm placeholder:text-blue-2 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-white dark:placeholder:text-opacity-50 dark:focus:ring-accent-8"
       />
       <button
         onClick={handleSubmit}
-        className="group rounded-md border border-blue-2 bg-blue-1 px-2 text-blue-2 dark:border-accent-6 dark:bg-accent-2 dark:text-accent-8"
+        className="group rounded-md border border-blue-2 bg-white px-2 text-blue-2 dark:border-accent-6 dark:bg-accent-2 dark:text-accent-8"
       >
         {isLoading ? (
           <div>

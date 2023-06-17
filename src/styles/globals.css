@@ -10,8 +10,12 @@ body {
   @apply h-screen bg-accent-1 text-accent-8;
 }
 
-button {
-  @apply outline-none;
+.light button {
+  @apply focus:outline-blue-2;
+}
+
+.dark button {
+  @apply focus:outline-accent-6;
 }
 
 ::-webkit-scrollbar {
