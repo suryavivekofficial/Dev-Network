@@ -5,14 +5,18 @@ import { useEffect, useState, type FC } from "react";
 import { toast } from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
 import { useNotificationStore } from "~/utils/zustand/notifications";
+// import { useThemeStore } from "~/utils/zustand/theme";
 import { useThemeStore } from "~/utils/zustand/theme";
+import type { TlocalTheme } from "./Layout";
+import DarkThemeIcon from "./icons/DarkThemeIcon";
 import HomeIcon from "./icons/HomeIcon";
+import LightThemeIcon from "./icons/LightThemeIcon";
 import MessagesIcon from "./icons/MessagesIcon";
 import NotificationsIcon from "./icons/NotificationsIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Sidebar = () => {
-  const { setTheme } = useThemeStore();
+  // const { theme, setTheme } = useThemeStore();
   const { data: session } = useSession();
 
   const pusherMsgProps = {
@@ -60,13 +64,38 @@ const Sidebar = () => {
           <SettingsIcon size={5} />
         </SidebarItem>
       </div>
-      <button
-        onClick={setTheme}
-        className="w-full rounded-md bg-red-2 p-4 dark:bg-blue-2"
-      >
-        Theme
-      </button>
+      <ThemeBtn />
     </aside>
+  );
+};
+
+const ThemeBtn = () => {
+  const { isDarkTheme, setTheme } = useThemeStore();
+
+  const [appTheme, setAppTheme] = useState("");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    const localTheme: TlocalTheme | null = storedTheme
+      ? (JSON.parse(storedTheme) as TlocalTheme)
+      : null;
+    if (localTheme?.state.isDarkTheme) {
+      setAppTheme("dark");
+    } else {
+      setAppTheme("light");
+    }
+  }, [isDarkTheme]);
+
+  return (
+    <button
+      onClick={setTheme}
+      className="flex w-full items-center justify-around rounded-md bg-blue-1 p-4 dark:bg-accent-2"
+    >
+      <span>Change Theme</span>
+      <span>
+        {appTheme === "dark" ? <DarkThemeIcon /> : <LightThemeIcon />}
+      </span>
+    </button>
   );
 };
 

@@ -15,7 +15,7 @@ const Feed = () => {
       : api.post.getFollowingPosts.useQuery();
   if (isLoading) {
     return (
-      <div className="flex flex-grow items-center justify-center min-h-screen">
+      <div className="flex min-h-screen flex-grow items-center justify-center">
         <LoadingSpinner />
       </div>
     );
@@ -31,7 +31,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="flex-grow space-y-4 min-h-screen">
+    <div className="min-h-screen flex-grow space-y-4">
       <NewPost />
       {data?.map((post) => {
         return (
@@ -66,7 +66,7 @@ const NewPost = () => {
   };
 
   return (
-    <div className="space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
+    <form className="space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
       <div className="flex items-center space-x-4 ">
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           {session.user.image && (
@@ -97,7 +97,7 @@ const NewPost = () => {
           <span>Post</span>
         </button>
       </div>
-    </div>
+    </form>
   );
 };
 

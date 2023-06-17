@@ -26,7 +26,7 @@ const MessagesPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="mr-8 h-[calc(100vh-10rem)] mb-4 w-full space-y-2">
+        <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full space-y-2">
           <h2 className="-mt-2 ml-1 text-xl">Your chats</h2>
           <ChatView />
         </div>
@@ -56,8 +56,8 @@ const ChatView = () => {
   if (!data) return <div>Follow someone to msg them.</div>;
 
   return (
-    <div className="flex h-full w-full rounded-md border dark:border-accent-6 dark:bg-black bg-white border-blue-2">
-      <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-blue-2 dark:border-accent-6 p-2">
+    <div className="flex h-full w-full rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black">
+      <div className="w-1/4 space-y-2 overflow-y-scroll border-r border-blue-2 p-2 dark:border-accent-6">
         {isLoading && (
           <div>
             <LoadingSpinner />
@@ -68,10 +68,11 @@ const ChatView = () => {
           return (
             <button
               onClick={() => setSelectedChat(username)}
-              className={`${selectedChat === username
-                ? "relative rounded-md bg-blue-1 dark:bg-accent-2 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-sm before:bg-blue-2 dark:before:bg-white before:content-['']"
-                : ""
-                } w-full cursor-pointer border-b dark:border-accent-2 p-2 pl-4 text-left outline-none duration-300 hover:rounded-md dark:hover:bg-accent-2 hover:bg-blue-1 border-blue-1`}
+              className={`${
+                selectedChat === username
+                  ? "relative rounded-md bg-blue-1 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-sm before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:before:bg-white"
+                  : ""
+              } w-full cursor-pointer border-b border-blue-1 p-2 pl-4 text-left outline-none duration-300 hover:rounded-md hover:bg-blue-1 dark:border-accent-2 dark:hover:bg-accent-2`}
               key={username}
             >
               {username}
@@ -167,7 +168,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 const SentMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
-      <span className="my-2 ml-auto w-3/4 max-w-max rounded-md bg-blue-1 dark:bg-accent-2 px-4 py-2">
+      <span className="my-2 ml-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
         <p>{msg.message}</p>
         <div className="flex py-2 text-xs">
           <span className="ml-auto flex space-x-2">
@@ -183,7 +184,7 @@ const SentMsg = ({ msg }: { msg: Messages }) => {
 const RecievedMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
-      <span className="my-2 mr-auto w-3/4 max-w-max rounded-md bg-blue-1 dark:bg-accent-2 px-4 py-2">
+      <span className="my-2 mr-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
         <p>{msg.message}</p>
         <div className="flex py-2 text-xs">
           <span className="ml-auto flex space-x-2">
@@ -251,7 +252,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   };
 
   return (
-    <div className="flex w-full space-x-4 border-t border-blue-2 dark:border-accent-4 p-4">
+    <div className="flex w-full space-x-4 border-t border-blue-2 p-4 dark:border-accent-4">
       <input
         onChange={(e) => setNewMsg(e.target.value)}
         value={newMsg}
@@ -263,11 +264,11 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         type="text"
         name="new message"
         autoComplete="off"
-        className="flex-grow rounded-md border border-blue-2 dark:border-accent-4 bg-white dark:bg-black px-4 py-2 outline-none drop-shadow-lg focus:ring-1 focus:ring-blue-2"
+        className="flex-grow rounded-md border border-blue-2 bg-white px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-4 dark:bg-black"
       />
       <button
         onClick={handleSubmit}
-        className="group rounded-md border border-blue-2 text-blue-2 dark:text-white dark:border-accent-4 p-2"
+        className="group rounded-md border border-blue-2 p-2 text-blue-2 drop-shadow-lg dark:border-accent-4 dark:text-white"
       >
         <SendIcon />
       </button>

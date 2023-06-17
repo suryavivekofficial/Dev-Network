@@ -98,7 +98,10 @@ const Profile = () => {
 
   return (
     <>
-      <Link href={`/${session.user.username}`} className="hover:text-blue-1">
+      <Link
+        href={`/${session.user.username}`}
+        className="duration-150 hover:text-blue-2 hover:underline"
+      >
         <span className="whitespace-nowrap capitalize">
           {session.user.name}
         </span>

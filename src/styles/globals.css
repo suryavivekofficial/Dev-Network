@@ -2,22 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
+.light a {
+  @apply outline-4 outline-blue-2 focus:ring-1 focus:ring-blue-2;
+}
+
 body {
-  @apply bg-accent-1 text-accent-8 h-screen;
+  @apply h-screen bg-accent-1 text-accent-8;
 }
 
 button {
   @apply outline-none;
-}
-
-.light {
-  --scrollbar-track: white;
-  --scrollbar-thumb: #3291ff;
-}
-
-.dark {
-  --scrollbar-track: black;
-  --scrollbar-thumb: #888;
 }
 
 ::-webkit-scrollbar {
