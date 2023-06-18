@@ -1,215 +1,219 @@
-import { signIn, signOut, useSession } from "next-auth/react";
-import Image from "next/image";
+import { useSession } from "next-auth/react";
 import Link from "next/link";
-import { useEffect, useRef, useState } from "react";
-import { Toaster } from "react-hot-toast";
-import Tabs from "./Tabs";
-import Chevron from "./icons/ChevronIcon";
+import { useRouter } from "next/router";
+import { useEffect, useState, type FC } from "react";
+import { toast } from "react-hot-toast";
+import { pusherClient } from "~/utils/pusher";
+import { useNotificationStore } from "~/utils/zustand/notifications";
+// import { useThemeStore } from "~/utils/zustand/theme";
+import { useThemeStore } from "~/utils/zustand/theme";
+import type { TlocalTheme } from "./Layout";
+import DarkThemeIcon from "./icons/DarkThemeIcon";
+import HomeIcon from "./icons/HomeIcon";
+import LightThemeIcon from "./icons/LightThemeIcon";
+import MessagesIcon from "./icons/MessagesIcon";
+import NotificationsIcon from "./icons/NotificationsIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
-const Nav = () => {
+const Sidebar = () => {
+  // const { theme, setTheme } = useThemeStore();
   const { data: session } = useSession();
 
-  return (
-    <header className="fixed z-10 min-h-max w-screen space-y-4 divide-y divide-blue-1 border-b border-b-blue-2 bg-white px-4 py-2 dark:border-b-accent-6 dark:bg-black md:px-8 md:py-5">
-      <div className="flex items-center justify-between">
-        <Logo />
-        <div className="hidden w-1/3 md:inline-block">
-          <Tabs />
-        </div>
-        <Toaster />
-        {session ? (
-          <div className="flex w-1/3 items-center justify-end space-x-2">
-            <Profile />
-          </div>
-        ) : (
-          <LoginBtn />
-        )}
-      </div>
-      <div className="mt-2 md:hidden">
-        <Tabs />
-      </div>
-    </header>
-  );
-};
-
-// const Tabs = () => {
-//   const { data: session } = useSession();
-//   const { pathname } = useRouter();
-//   const { selected, changeSelectionToFollowing, changeSelectionToForYou } =
-//     usePostStore();
-
-//   if (!session || pathname !== "/") return null;
-
-//   return (
-//     <div className="flex h-10 w-1/3 items-center justify-center">
-//       <div className="flex h-full min-w-max items-center justify-between rounded-md border border-blue-2 px-2 dark:border-accent-6">
-//         <button
-//           onClick={changeSelectionToForYou}
-//           className={`whitespace-nowrap rounded px-4 py-1 text-sm  duration-300 ${
-//             selected === "for you"
-//               ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
-//               : ""
-//           }`}
-//         >
-//           For You
-//         </button>
-//         <button
-//           onClick={changeSelectionToFollowing}
-//           className={`whitespace-nowrap rounded px-4 py-1 text-sm duration-300 ${
-//             selected === "following"
-//               ? "bg-blue-2 text-accent-8 dark:bg-accent-2"
-//               : ""
-//           }`}
-//         >
-//           Following
-//         </button>
-//       </div>
-//     </div>
-//   );
-// };
-
-const Logo = () => {
-  return (
-    <div className="flex w-1/2 items-center justify-start space-x-2 md:w-1/3">
-      <div className="flex h-6 w-6 gap-1 md:h-8 md:w-8">
-        <div className="flex h-full w-1/2 flex-col gap-1">
-          <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
-          <div className="h-3/5 w-full rounded-sm bg-blue-2"></div>
-        </div>
-        <div className="flex h-full w-1/2 flex-col gap-1">
-          <div className="h-3/5 w-full rounded-sm bg-blue-2"></div>
-          <div className="h-2/5 w-full rounded-sm bg-blue-1"></div>
-        </div>
-      </div>
-      <span className="text-base font-bold md:text-xl">Dev Network</span>
-    </div>
-  );
-};
-
-const Profile = () => {
-  const { data: session } = useSession();
-  const [openDropdown, setOpenDropdown] = useState(false);
-  const dropdownBtnRef = useRef<HTMLButtonElement>(null);
-
-  const toggleDropdown = (eventTarget: EventTarget) => {
-    if (dropdownBtnRef.current?.contains(eventTarget as Node)) {
-      return;
-    } else {
-      setOpenDropdown(!openDropdown);
-    }
+  const pusherMsgProps = {
+    type: "messages",
+    channelName: session ? `newUnseenMsg_${session.user.username}` : undefined,
+    eventName: session ? `unseenMsgEvent` : undefined,
   };
 
-  if (!session) return null;
+  const pusherNotificationProps = {
+    type: "notifications",
+    channelName: session
+      ? `notifications_channel_${session.user.username}`
+      : undefined,
+    eventName: session ? "followEvent" : undefined,
+  };
 
   return (
-    <>
-      <Link
-        href={`/${session.user.username}`}
-        className="hidden duration-150 hover:text-blue-2 hover:underline md:inline-block"
-      >
-        <span className="whitespace-nowrap capitalize">
-          {session.user.name}
-        </span>
-      </Link>
-      <div className="relative">
-        <button
-          ref={dropdownBtnRef}
-          onClick={() => setOpenDropdown(!openDropdown)}
-          className="relative h-8 w-8 cursor-pointer overflow-hidden rounded-full border border-blue-2 md:h-10 md:w-10"
+    <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black">
+      <SearchBar />
+      <div className="py-8">
+        <SidebarItem
+          href=""
+          pusherProps={{
+            type: undefined,
+            channelName: undefined,
+            eventName: undefined,
+          }}
         >
-          <Image
-            src={session.user.image ?? "/user.png"}
-            alt="User photo"
-            fill={true}
-          />
-        </button>
-        <span className="pointer-events-none absolute bottom-0 left-7 hidden h-4 w-4 cursor-pointer items-center justify-center rounded-full border-2 border-blue-2 bg-blue-1 text-accent-2 md:flex">
-          <Chevron />
-        </span>
-        {openDropdown && <Dropdown toggleDropdown={toggleDropdown} />}
+          <HomeIcon />
+        </SidebarItem>
+        <SidebarItem href="messages" pusherProps={pusherMsgProps}>
+          <MessagesIcon />
+        </SidebarItem>
+        <SidebarItem href="notifications" pusherProps={pusherNotificationProps}>
+          <NotificationsIcon />
+        </SidebarItem>
+        <SidebarItem
+          href="settings"
+          pusherProps={{
+            type: undefined,
+            channelName: undefined,
+            eventName: undefined,
+          }}
+        >
+          <SettingsIcon size={5} />
+        </SidebarItem>
       </div>
-    </>
+      <ThemeBtn />
+    </aside>
   );
 };
 
-const LoginBtn = () => {
+const ThemeBtn = () => {
+  const { isDarkTheme, setTheme } = useThemeStore();
+
+  const [appTheme, setAppTheme] = useState("");
+
+  useEffect(() => {
+    const storedTheme = localStorage.getItem("theme");
+    const localTheme: TlocalTheme | null = storedTheme
+      ? (JSON.parse(storedTheme) as TlocalTheme)
+      : null;
+    if (localTheme?.state.isDarkTheme) {
+      setAppTheme("dark");
+    } else {
+      setAppTheme("light");
+    }
+  }, [isDarkTheme]);
+
   return (
     <button
-      className="rounded-md border border-blue-2 bg-white px-4 py-2 text-blue-2 outline-none duration-150 hover:bg-blue-1 focus-visible:bg-accent-8 focus-visible:text-black focus-visible:ring-2 focus-visible:ring-blue-4 dark:border-accent-8 dark:bg-black dark:text-accent-8 dark:hover:bg-accent-8 dark:hover:text-black"
-      onClick={() => void signIn()}
+      onClick={setTheme}
+      className="flex w-full items-center justify-around rounded-md bg-blue-1 p-4 dark:bg-accent-2"
     >
-      Login
+      <span>Change Theme</span>
+      <span>
+        {appTheme === "dark" ? <DarkThemeIcon /> : <LightThemeIcon />}
+      </span>
     </button>
   );
 };
 
-const Dropdown = ({
-  toggleDropdown,
-}: {
-  toggleDropdown: (eventTarget: EventTarget) => void;
-}) => {
-  const { data: session } = useSession();
-  const dropdownRef = useRef<HTMLDivElement>(null);
+const SearchBar = () => {
+  const [input, setInput] = useState("");
 
-  useEffect(() => {
-    const handleClickOutside = (e: MouseEvent) => {
-      if (
-        dropdownRef.current &&
-        !dropdownRef.current.contains(e.target as Node)
-      ) {
-        e.target && toggleDropdown(e.target);
-      }
-    };
-
-    document.addEventListener("mousedown", handleClickOutside);
-    return () => {
-      document.removeEventListener("mousedown", handleClickOutside);
-    };
-  }, [toggleDropdown]);
-
-  if (!session) return null;
   return (
-    <div
-      ref={dropdownRef}
-      className="absolute right-0 mt-2 origin-top-left space-y-4 rounded-md border border-accent-6 bg-accent-1 p-4"
-    >
-      <div className="flex space-x-2">
-        <div className="relative h-16 w-16 overflow-hidden rounded-full border border-blue-2">
-          <Image
-            src={session.user.image ?? "/user.png"}
-            alt="User profile pic"
-            fill={true}
-          />
-        </div>
-        <span className="flex flex-col items-start justify-center">
-          <h5 className="capitalize">{session.user.name}</h5>
-          <Link
-            href={`/${session.user.username}`}
-            className="hover:text-blue-1"
+    <form className="flex items-center">
+      <label htmlFor="simple-search" className="sr-only">
+        Search
+      </label>
+      <div className="relative w-full">
+        <div className="pointer-events-none absolute inset-y-0 left-0 flex items-center pl-3 text-blue-3 dark:text-accent-8">
+          <svg
+            aria-hidden="true"
+            className="h-5 w-5"
+            fill="currentColor"
+            viewBox="0 0 20 20"
+            xmlns="http://www.w3.org/2000/svg"
           >
-            <small>@{session.user.username}</small>
-          </Link>
-        </span>
+            <path
+              fillRule="evenodd"
+              d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+              clipRule="evenodd"
+            ></path>
+          </svg>
+        </div>
+        <input
+          value={input}
+          onChange={(e) => {
+            setInput(e.target.value);
+          }}
+          type="text"
+          id="simple-search"
+          className="block w-full rounded-lg border border-blue-2 bg-white p-2.5 pl-10 text-sm text-blue-2 outline-none placeholder:text-blue-2 placeholder:opacity-70 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:ring-accent-8 dark:placeholder:text-accent-6"
+          placeholder="Search"
+          required
+        />
       </div>
-      <Link
-        href="/settings"
-        className="flex items-center justify-center space-x-2 rounded-md border border-accent-6 border-opacity-50 p-2 duration-200 hover:bg-accent-2"
-      >
-        <SettingsIcon size={4} />
-        <span className="text-xs">Manage your Account</span>
-      </Link>
-      <hr className="text-accent-6 text-opacity-50" />
-      <div className="flex w-full items-center justify-center">
-        <button
-          onClick={() => void signOut()}
-          className="rounded-md bg-blue-4 px-4 py-2 duration-200 hover:bg-blue-3"
-        >
-          Sign Out
-        </button>
-      </div>
-    </div>
+      <button type="submit">
+        <span className="sr-only">Search</span>
+      </button>
+    </form>
   );
 };
 
-export default Nav;
+interface SidebarItemProps {
+  href: string;
+  children: JSX.Element;
+  pusherProps: {
+    type: string | undefined;
+    channelName: string | undefined;
+    eventName: string | undefined;
+  };
+}
+
+const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
+  const { pathname } = useRouter();
+  const [count, setCount] = useState(0);
+  const { setNotifications } = useNotificationStore();
+
+  useEffect(() => {
+    if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
+      return;
+    if (pathname === `/${pusherProps.type}`) return;
+
+    const channel = pusherClient.subscribe(pusherProps.channelName);
+
+    const handlePusher = (data: { message: string; date: number }) => {
+      setCount((prevCount) => prevCount + 1);
+      console.log(data);
+      toast(data.message);
+      if (pusherProps.type === "notifications")
+        setNotifications({
+          notificationContent: data.message,
+          date: data.date,
+        });
+    };
+
+    channel.bind(pusherProps.eventName, handlePusher);
+
+    return () => {
+      if (!pusherProps.channelName) return;
+
+      pusherClient.unsubscribe(pusherProps.channelName);
+      pusherClient.unbind(pusherProps.eventName, handlePusher);
+    };
+  }, [
+    pathname,
+    pusherProps.channelName,
+    pusherProps.eventName,
+    pusherProps.type,
+    setNotifications,
+  ]);
+
+  return (
+    <Link href={`/${href}`}>
+      <div
+        className={`${
+          pathname === `/${href}`
+            ? `relative bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:text-white dark:before:bg-white`
+            : ``
+        } my-4 flex cursor-pointer items-center justify-between rounded-md p-4 duration-200 hover:bg-blue-1 dark:hover:bg-accent-2`}
+      >
+        <div className="flex items-center space-x-2">
+          {children}
+          <span className="text-base capitalize">
+            {href === "" ? "home" : href}
+          </span>
+        </div>
+        {href !== "settings" && href !== "" && (
+          <span className="rounded-full bg-blue-2 px-2 text-accent-8 dark:bg-white dark:text-black">
+            {count}
+          </span>
+        )}
+      </div>
+    </Link>
+  );
+};
+
+export default Sidebar;
