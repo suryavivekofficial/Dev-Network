@@ -15,7 +15,6 @@ import SearchIcon from "./icons/SearchIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Nav = () => {
-  // const { theme, setTheme } = useThemeStore();
   const { data: session } = useSession();
 
   const pusherMsgProps = {
@@ -217,11 +216,14 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
     setNotifications,
   ]);
 
+  const regex = new RegExp(`^\\/${href}(\\/.*)?$`);
+
   return (
     <Link href={`/${href}`}>
       <div
         className={`${
-          pathname === `/${href}`
+          // pathname === `/${href}`
+          regex.test(pathname)
             ? `relative bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:text-white dark:before:bg-white`
             : ``
         } my-4 flex cursor-pointer items-center justify-between rounded-md p-4 duration-200 hover:bg-blue-1 dark:hover:bg-accent-2`}

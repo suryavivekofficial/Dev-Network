@@ -1,70 +1,40 @@
-import type { Messages } from "@prisma/client";
 import dayjs from "dayjs";
 import relativeTime from "dayjs/plugin/relativeTime";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import {
-  useEffect,
-  useRef,
-  useState,
-  type Dispatch,
-  type FC,
-  type ReactNode,
-  type SetStateAction,
-} from "react";
-import toast from "react-hot-toast";
+import Link from "next/link";
+import { type FC, type ReactNode } from "react";
 import { api } from "~/utils/api";
-import { pusherClient } from "~/utils/pusher";
-import { formatChannelName } from "~/utils/snippets/formatPusher";
-import Clock from "./icons/ClockIcon";
 import LoadingSpinner from "./icons/LoadingSpinner";
-import SendIcon from "./icons/SendIcon";
 
 dayjs.extend(relativeTime);
 
 type ChatProps = {
   children?: ReactNode;
+  selectedChat: string | null;
 };
 
-const Chat: FC<ChatProps> = ({ children }) => {
-  const [selectedChat, setSelectedChat] = useState("");
+const Chat: FC<ChatProps> = ({ children, selectedChat }) => {
+  const { data: session } = useSession();
 
   return (
     <div className="h-full w-full rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:flex md:border">
-      <Usernames
-        selectedChat={selectedChat}
-        setSelectedChat={setSelectedChat}
-      />
-      <div>{children}</div>
-      {/* {selectedChat ? (
-        <div className="flex flex-grow flex-col">
-          <Msgs selectedChat={selectedChat} />
-          <NewMsgInput receiverUsername={selectedChat} />
+      {!session && (
+        <div className="flex h-full w-full items-center justify-center">
+          <span>You need to login first.</span>
         </div>
-      ) : (
-        <div className="flex flex-grow items-center justify-center">
-          <div>Select a chat to view.</div>
-        </div>
-      )} */}
+      )}
+      <Usernames selectedChat={selectedChat} />
+      <div className="flex-grow">{children}</div>
     </div>
   );
 };
 
-const Usernames = ({
-  selectedChat,
-  setSelectedChat,
-}: {
-  selectedChat: string;
-  setSelectedChat: Dispatch<SetStateAction<string>>;
-}) => {
+const Usernames = ({ selectedChat }: { selectedChat: string | null }) => {
   const { data: session } = useSession();
   const { data, isLoading } = api.user.getAllUsers.useQuery();
-  // const [selectedChat, setSelectedChat] = useState<string | null>(null);
 
-  // const temp = new Array<string>(45).fill("username");
-  if (!session) {
-    return <div>You need to sign in.</div>;
-  }
+  if (!session) return null;
 
   if (isLoading)
     return (
@@ -73,10 +43,10 @@ const Usernames = ({
       </div>
     );
 
-  if (!data) return <div>Follow someone to msg them.</div>;
+  if (!data) return <div>No users available to chat.</div>;
 
   return (
-    <div className="w-full space-y-2 overflow-y-scroll border-r border-blue-2 p-2 dark:border-accent-6 md:w-1/4">
+    <div className="w-full flex-shrink-0 space-y-2 divide-y divide-blue-1 overflow-y-scroll border-r border-blue-2 p-2 dark:divide-accent-2 dark:border-accent-6 md:w-1/4">
       {isLoading && (
         <div>
           <LoadingSpinner />
@@ -85,210 +55,26 @@ const Usernames = ({
       {data.map((user) => {
         const username = user.username || "Error";
         return (
-          <button
-            onClick={() => setSelectedChat(username)}
+          <Link
+            href={`/messages/${username}`}
             className={`${
               selectedChat === username
-                ? "relative rounded-md bg-blue-1 before:absolute before:left-0 before:top-1/2 before:h-4 before:w-1 before:-translate-y-1/2 before:rounded-sm before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:before:bg-white"
+                ? 'relative rounded-md bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-4 before:content-[""] dark:bg-accent-2 dark:text-accent-8 dark:before:bg-white'
                 : ""
-            } w-full cursor-pointer border-b border-blue-1 p-2 pl-4 text-left outline-none duration-300 hover:rounded-md hover:bg-blue-1 dark:border-accent-2 dark:hover:bg-accent-2`}
+            } hover:bg- flex w-full items-center space-x-2 p-4 hover:rounded-md hover:bg-blue-1 dark:hover:bg-accent-2`}
             key={username}
           >
-            <div className="flex items-center space-x-2">
-              <div className="relative h-8 w-8 overflow-hidden rounded-full">
-                <Image
-                  src={user.image || "/user.png"}
-                  fill={true}
-                  alt="profile pic"
-                />
-              </div>
-              <span>{username}</span>
+            <div className="relative h-8 w-8 overflow-hidden rounded-full">
+              <Image
+                src={user.image || "/user.png"}
+                fill={true}
+                alt="profile pic"
+              />
             </div>
-          </button>
+            <span>{username}</span>
+          </Link>
         );
       })}
-    </div>
-  );
-};
-
-const Msgs = ({ selectedChat }: { selectedChat: string }) => {
-  const { data: session } = useSession();
-
-  const { data, isLoading } = api.chat.getChat.useQuery({
-    otherUsername: selectedChat,
-  });
-
-  const ctx = api.useContext();
-
-  useEffect(() => {
-    if (!session) return;
-
-    const channelName = formatChannelName(session.user.username, selectedChat);
-    const channel = pusherClient.subscribe(`newMsg_${channelName}`);
-
-    const handlePusher = (newMsgFromPusher: Messages) => {
-      // Modify the react query state (here) only if a msg is recieved.
-      // Because the sender state is modified in the new msg input component. (via optimistic updates)
-      if (newMsgFromPusher.senderUsername === session.user.username) return;
-
-      ctx.chat.getChat.setData({ otherUsername: selectedChat }, (oldMsgs) => {
-        const newMsgsState = Array.isArray(oldMsgs)
-          ? [...oldMsgs, newMsgFromPusher]
-          : [newMsgFromPusher];
-        return newMsgsState;
-      });
-    };
-
-    channel.bind("msgEvent", (data: Messages) => handlePusher(data));
-
-    return () => {
-      pusherClient.unsubscribe(`newMsg_${channelName}`);
-      pusherClient.unbind("msgEvent", (data: Messages) => handlePusher(data));
-    };
-  }, [ctx.chat.getChat, selectedChat, session]);
-
-  const msgsRef = useRef<HTMLDivElement>(null);
-
-  useEffect(() => {
-    msgsRef.current?.scrollIntoView();
-  }, [data]);
-
-  if (isLoading)
-    return (
-      <div className="flex w-full flex-grow items-center justify-center">
-        <LoadingSpinner />
-      </div>
-    );
-
-  if (data?.length === 0 || !data) {
-    return (
-      <div className="flex w-full flex-grow items-center justify-center">
-        Start sending msgs now.
-      </div>
-    );
-  }
-
-  return (
-    <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
-      {data.map((msg) => {
-        if (session?.user.username === msg.senderUsername) {
-          return <SentMsg key={msg.id} msg={msg} />;
-        } else if (session?.user.username === msg.receiverUsername) {
-          return <RecievedMsg key={msg.id} msg={msg} />;
-        }
-      })}
-      <div ref={msgsRef} />
-    </div>
-  );
-};
-
-const SentMsg = ({ msg }: { msg: Messages }) => {
-  return (
-    <div className="flex w-full">
-      <span className="my-2 ml-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
-        <p>{msg.message}</p>
-        <div className="flex py-2 text-xs">
-          <span className="ml-auto flex space-x-2">
-            <Clock size={4} />
-            <p>{dayjs(msg.sentAt).fromNow()}</p>
-          </span>
-        </div>
-      </span>
-    </div>
-  );
-};
-
-const RecievedMsg = ({ msg }: { msg: Messages }) => {
-  return (
-    <div className="flex w-full">
-      <span className="my-2 mr-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
-        <p>{msg.message}</p>
-        <div className="flex py-2 text-xs">
-          <span className="ml-auto flex space-x-2">
-            <Clock size={4} />
-            <p>{dayjs(msg.sentAt).fromNow()}</p>
-          </span>
-        </div>
-      </span>
-    </div>
-  );
-};
-
-const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
-  const [newMsg, setNewMsg] = useState("");
-  const { data: session } = useSession();
-  if (!session) return null;
-
-  const ctx = api.useContext();
-  const { mutate } = api.chat.newMsg.useMutation({
-    onMutate: async ({ msgContent, msgReciever }) => {
-      // cancel any outgoing queries
-      // await ctx.post.getPosts.cancel();
-      await ctx.chat.getChat.cancel();
-
-      // get the data from query cache
-      const prevPostsSnapshot = ctx.chat.getChat.getData();
-
-      // Modify the cache
-      ctx.chat.getChat.setData(
-        { otherUsername: receiverUsername },
-        (oldMsgs) => {
-          const newMsg: Messages = {
-            message: msgContent,
-            senderUsername: session?.user.username,
-            receiverUsername: msgReciever,
-            sentAt: Date.now() as unknown as Date,
-            id: (Math.random() * 10000).toString(),
-          };
-
-          const newMsgsState = Array.isArray(oldMsgs)
-            ? [...oldMsgs, newMsg]
-            : [newMsg];
-          return newMsgsState;
-        }
-      );
-
-      return prevPostsSnapshot;
-    },
-    onError(error, _, prevPostsSnapshot) {
-      ctx.chat.getChat.setData(
-        { otherUsername: receiverUsername },
-        prevPostsSnapshot
-      );
-      toast(error.message);
-    },
-
-    onSettled() {
-      void ctx.chat.getChat.invalidate();
-    },
-  });
-
-  const handleSubmit = () => {
-    setNewMsg("");
-    mutate({ msgContent: newMsg, msgReciever: receiverUsername });
-  };
-
-  return (
-    <div className="flex w-full space-x-4 border-t border-blue-2 p-4 dark:border-accent-4">
-      <input
-        onChange={(e) => setNewMsg(e.target.value)}
-        value={newMsg}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            handleSubmit();
-          }
-        }}
-        type="text"
-        name="new message"
-        autoComplete="off"
-        className="flex-grow rounded-md border border-blue-2 bg-white px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-4 dark:bg-black"
-      />
-      <button
-        onClick={handleSubmit}
-        className="group rounded-md border border-blue-2 p-2 text-blue-2 drop-shadow-lg dark:border-accent-4 dark:text-white"
-      >
-        <SendIcon />
-      </button>
     </div>
   );
 };
