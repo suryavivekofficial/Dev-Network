@@ -1,4 +1,3 @@
-import { useEffect, useState } from "react";
 import { useThemeStore } from "~/utils/zustand/theme";
 // import Nav from "./Nav";
 import Header from "./Header";
@@ -13,23 +12,10 @@ export interface TlocalTheme {
 
 const Layout = ({ children }: { children: JSX.Element }) => {
   const { isDarkTheme } = useThemeStore();
-  const [appTheme, setAppTheme] = useState("");
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const localTheme: TlocalTheme | null = storedTheme
-      ? (JSON.parse(storedTheme) as TlocalTheme)
-      : null;
-    if (localTheme?.state.isDarkTheme) {
-      setAppTheme("dark");
-    } else {
-      setAppTheme("light");
-    }
-  }, [isDarkTheme]);
 
   return (
-    <div className={`overflow-x-hidden ${appTheme}`}>
-      <div className="bg-blue-1 text-accent-2 dark:bg-accent-1 dark:text-accent-8">
+    <div className={`overflow-x-hidden ${isDarkTheme ? "dark" : ""}`}>
+      <div className="hidden bg-blue-1 text-accent-2 dark:bg-accent-1 dark:text-accent-8 md:block">
         <Header />
         <div className="flex justify-between gap-8">
           <Nav />
@@ -37,6 +23,11 @@ const Layout = ({ children }: { children: JSX.Element }) => {
             <main className="flex h-full w-full gap-8 py-8">{children}</main>
           </div>
         </div>
+      </div>
+      <div className="md:hidden">
+        <Header />
+        <div>{children}</div>
+        <Nav />
       </div>
     </div>
   );
