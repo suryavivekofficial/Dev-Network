@@ -143,7 +143,7 @@ const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-0 mt-2 origin-top-left space-y-4 rounded-md border border-accent-6 bg-accent-1 p-4"
+      className="absolute right-0 mt-2 origin-top-left space-y-4 rounded-md border border-blue-2 bg-blue-1 p-4 dark:border-accent-6 dark:bg-accent-1"
     >
       <div className="flex space-x-2">
         <div className="relative h-16 w-16 overflow-hidden rounded-full border border-blue-2">
@@ -157,7 +157,7 @@ const Dropdown = ({
           <h5 className="capitalize">{session.user.name}</h5>
           <Link
             href={`/${session.user.username}`}
-            className="hover:text-blue-1"
+            className="hover:text-blue-2 dark:hover:text-blue-1"
           >
             <small>@{session.user.username}</small>
           </Link>
@@ -165,7 +165,7 @@ const Dropdown = ({
       </div>
       <Link
         href="/settings"
-        className="flex items-center justify-center space-x-2 rounded-md border border-accent-6 border-opacity-50 p-2 duration-200 hover:bg-accent-2"
+        className="flex items-center justify-center space-x-2 rounded-md border border-blue-2 border-opacity-50 p-2 duration-200 hover:bg-white dark:border-accent-6 dark:hover:bg-accent-2"
       >
         <SettingsIcon size={4} />
         <span className="text-xs">Manage your Account</span>
@@ -174,7 +174,7 @@ const Dropdown = ({
       <div className="flex w-full items-center justify-center">
         <button
           onClick={() => void signOut()}
-          className="rounded-md bg-blue-4 px-4 py-2 duration-200 hover:bg-blue-3"
+          className="rounded-md border border-blue-2 bg-white px-4 py-2 text-blue-2 duration-200 hover:bg-blue-3 hover:text-white dark:border-accent-6 dark:bg-accent-8 dark:text-accent-2 dark:hover:brightness-75"
         >
           Sign Out
         </button>

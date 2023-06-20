@@ -18,7 +18,7 @@ const Home: NextPage = () => {
       <Layout>
         <>
           <Feed />
-          <div className="w-1/3 flex-shrink-0 space-y-8">
+          <div className="hidden w-1/3 flex-shrink-0 space-y-8 md:block">
             <ProfileCard />
             <FollowingListCard />
           </div>

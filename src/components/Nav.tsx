@@ -15,7 +15,7 @@ import MessagesIcon from "./icons/MessagesIcon";
 import NotificationsIcon from "./icons/NotificationsIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
-const Sidebar = () => {
+const Nav = () => {
   // const { theme, setTheme } = useThemeStore();
   const { data: session } = useSession();
 
@@ -34,38 +34,44 @@ const Sidebar = () => {
   };
 
   return (
-    <aside className="fixed top-20 h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black">
-      <SearchBar />
-      <div className="py-8">
-        <SidebarItem
-          href=""
-          pusherProps={{
-            type: undefined,
-            channelName: undefined,
-            eventName: undefined,
-          }}
-        >
-          <HomeIcon />
-        </SidebarItem>
-        <SidebarItem href="messages" pusherProps={pusherMsgProps}>
-          <MessagesIcon />
-        </SidebarItem>
-        <SidebarItem href="notifications" pusherProps={pusherNotificationProps}>
-          <NotificationsIcon />
-        </SidebarItem>
-        <SidebarItem
-          href="settings"
-          pusherProps={{
-            type: undefined,
-            channelName: undefined,
-            eventName: undefined,
-          }}
-        >
-          <SettingsIcon size={5} />
-        </SidebarItem>
-      </div>
-      <ThemeBtn />
-    </aside>
+    <nav>
+      <aside className="fixed top-20 hidden h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black md:block">
+        <SearchBar />
+        <div className="py-8">
+          <SidebarItem
+            href=""
+            pusherProps={{
+              type: undefined,
+              channelName: undefined,
+              eventName: undefined,
+            }}
+          >
+            <HomeIcon />
+          </SidebarItem>
+          <SidebarItem href="messages" pusherProps={pusherMsgProps}>
+            <MessagesIcon />
+          </SidebarItem>
+          <SidebarItem
+            href="notifications"
+            pusherProps={pusherNotificationProps}
+          >
+            <NotificationsIcon />
+          </SidebarItem>
+          <SidebarItem
+            href="settings"
+            pusherProps={{
+              type: undefined,
+              channelName: undefined,
+              eventName: undefined,
+            }}
+          >
+            <SettingsIcon size={5} />
+          </SidebarItem>
+        </div>
+        <ThemeBtn />
+      </aside>
+      <footer className="absolute bottom-0 left-0 right-0 h-20 bg-white md:hidden"></footer>
+    </nav>
   );
 };
 
@@ -216,4 +222,4 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   );
 };
 
-export default Sidebar;
+export default Nav;
