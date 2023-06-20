@@ -5,6 +5,8 @@ export default {
   theme: {
     colors: {
       // even numbered accent for dark mode and vice-versa
+      transparent: "transparent",
+      current: "currentColor",
       black: "#000",
       "accent-1": "#111",
       "accent-2": "#333",

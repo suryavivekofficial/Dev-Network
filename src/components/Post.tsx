@@ -62,7 +62,7 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
           <span className="font-thin">{dayjs(post.createdAt).fromNow()}</span>
         </span>
       </div>
-      <p>{post.content}</p>
+      <p className="text-sm md:text-base">{post.content}</p>
       <div className="flex items-center justify-between">
         <LikeIcon
           isLikedFromServer={post.likes.length === 0 ? false : true}
