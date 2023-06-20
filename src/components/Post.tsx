@@ -43,7 +43,10 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
   return (
     <div className="space-y-4 rounded-md bg-white p-6 dark:bg-black">
       <div className="flex items-center justify-between">
-        <div className="flex items-center space-x-4">
+        <Link
+          href={`/${post.author.username}`}
+          className="flex items-center space-x-4"
+        >
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
             <Image src={post.author.image} fill={true} alt="Author photo" />
           </div>
@@ -56,7 +59,7 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
               @{post.author.username}
             </Link>
           </div>
-        </div>
+        </Link>
         <span className="flex items-center space-x-2 text-sm opacity-80">
           <Clock size={4} />
           <span className="font-thin">{dayjs(post.createdAt).fromNow()}</span>

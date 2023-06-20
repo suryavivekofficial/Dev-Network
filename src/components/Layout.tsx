@@ -1,5 +1,6 @@
 import { useThemeStore } from "~/utils/zustand/theme";
 // import Nav from "./Nav";
+import { useRouter } from "next/router";
 import Header from "./Header";
 import Nav from "./Nav";
 
@@ -12,6 +13,8 @@ export interface TlocalTheme {
 
 const Layout = ({ children }: { children: JSX.Element }) => {
   const { isDarkTheme } = useThemeStore();
+  const router = useRouter();
+  const { pathname } = router;
 
   return (
     <div className={`overflow-x-hidden ${isDarkTheme ? "dark" : ""}`}>
@@ -26,7 +29,9 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       </div>
       <div className="md:hidden">
         <Header />
-        <div>{children}</div>
+        <div className={`${pathname === "/" ? "pt-36" : "pt-20"} pb-8`}>
+          {children}
+        </div>
         <Nav />
       </div>
     </div>

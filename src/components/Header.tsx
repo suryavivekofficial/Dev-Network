@@ -1,6 +1,7 @@
 import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
+import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { Toaster } from "react-hot-toast";
 import Tabs from "./Tabs";
@@ -9,6 +10,8 @@ import SettingsIcon from "./icons/SettingsIcon";
 
 const Header = () => {
   const { data: session } = useSession();
+  const router = useRouter();
+  const { pathname } = router;
 
   return (
     <header
@@ -32,9 +35,11 @@ const Header = () => {
           <LoginBtn />
         )}
       </div>
-      <div className="mt-2 md:hidden">
-        <Tabs />
-      </div>
+      {pathname === "/" && (
+        <div className="mt-2 md:hidden">
+          <Tabs />
+        </div>
+      )}
     </header>
   );
 };

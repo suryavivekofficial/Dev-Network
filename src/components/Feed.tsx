@@ -31,7 +31,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="min-h-screen flex-grow space-y-4 px-4 py-36 md:px-0 md:pt-0">
+    <div className="min-h-screen flex-grow space-y-4 px-4 md:px-0">
       <NewPost />
       {data?.map((post) => {
         return (
