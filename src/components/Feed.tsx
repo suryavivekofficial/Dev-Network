@@ -31,7 +31,7 @@ const Feed = () => {
   }
 
   return (
-    <div className="min-h-screen flex-grow space-y-4">
+    <div className="min-h-screen flex-grow space-y-4 px-4 py-36 md:px-0 md:pt-0">
       <NewPost />
       {data?.map((post) => {
         return (
@@ -66,7 +66,7 @@ const NewPost = () => {
   };
 
   return (
-    <form className="space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
+    <form className="hidden space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black md:block">
       <div className="flex items-center space-x-4 ">
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           {session.user.image && (

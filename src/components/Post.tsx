@@ -158,7 +158,7 @@ const CommentInput = ({ postId }: { postId: string }) => {
 
   return (
     <div className="flex w-full justify-between gap-4">
-      <div className="relative h-10 w-10 overflow-hidden rounded-full">
+      <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full md:h-10 md:w-10">
         <Image src={session.user.image} fill={true} alt="Author photo" />
       </div>
       <input
@@ -171,7 +171,7 @@ const CommentInput = ({ postId }: { postId: string }) => {
         }}
         onChange={(e) => setNewComment(e.target.value)}
         placeholder="What's your thoughts on this?"
-        className="flex-grow rounded-md border border-blue-2 bg-white px-4 outline-none placeholder:text-sm placeholder:text-blue-2 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-white dark:placeholder:text-opacity-50 dark:focus:ring-accent-8"
+        className="flex-grow rounded-md border border-blue-2 bg-white px-2 outline-none placeholder:text-xs placeholder:text-blue-2 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:placeholder:text-white dark:placeholder:text-opacity-50 dark:focus:ring-accent-8 md:px-4 md:placeholder:text-sm"
       />
       <button
         onClick={handleSubmit}

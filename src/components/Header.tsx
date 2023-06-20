@@ -12,12 +12,11 @@ const Header = () => {
 
   return (
     <header
-      id="header"
       className={`${
         session
           ? "space-y-4 divide-y divide-blue-1 dark:divide-accent-4"
           : "flex items-center"
-      } absolute top-0 z-10 min-h-max w-screen border-b border-b-blue-2 bg-white p-4 px-6 dark:border-b-accent-6 dark:bg-black md:fixed md:px-8 md:py-5`}
+      } fixed top-0 z-10 min-h-max w-screen border-b border-b-blue-2 bg-white p-4 px-6 dark:border-b-accent-6 dark:bg-black md:fixed md:px-8 md:py-5`}
     >
       <div className="flex w-full items-center justify-between">
         <Logo />

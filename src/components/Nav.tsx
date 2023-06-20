@@ -5,14 +5,13 @@ import { useEffect, useState, type FC } from "react";
 import { toast } from "react-hot-toast";
 import { pusherClient } from "~/utils/pusher";
 import { useNotificationStore } from "~/utils/zustand/notifications";
-// import { useThemeStore } from "~/utils/zustand/theme";
 import { useThemeStore } from "~/utils/zustand/theme";
-import type { TlocalTheme } from "./Layout";
 import DarkThemeIcon from "./icons/DarkThemeIcon";
 import HomeIcon from "./icons/HomeIcon";
 import LightThemeIcon from "./icons/LightThemeIcon";
 import MessagesIcon from "./icons/MessagesIcon";
 import NotificationsIcon from "./icons/NotificationsIcon";
+import SearchIcon from "./icons/SearchIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Nav = () => {
@@ -70,27 +69,50 @@ const Nav = () => {
         </div>
         <ThemeBtn />
       </aside>
-      <footer className="absolute bottom-0 left-0 right-0 h-20 bg-white md:hidden"></footer>
+      <Footer />
     </nav>
+  );
+};
+
+const Footer = () => {
+  const router = useRouter();
+  const { pathname } = router;
+
+  return (
+    <footer className="fixed bottom-0 left-0 right-0 flex justify-between bg-black p-4 md:hidden">
+      <Link href={"/"}>
+        <div className={`${pathname === `/` ? `text-blue-2` : ""}`}>
+          <HomeIcon />
+        </div>
+      </Link>
+      <Link href={"messages"}>
+        <div className={`${pathname === `/messages` ? `text-blue-2` : ""}`}>
+          <MessagesIcon />
+        </div>
+      </Link>
+      <Link href={"/search"}>
+        <div className={`${pathname === `/search` ? `text-blue-2` : ""}`}>
+          <SearchIcon />
+        </div>
+      </Link>
+      <Link href={"/notifications"}>
+        <div
+          className={`${pathname === `/notifications` ? `text-blue-2` : ""}`}
+        >
+          <NotificationsIcon />
+        </div>
+      </Link>
+      <Link href={"/settings"}>
+        <div className={`${pathname === `/settings` ? `text-blue-2` : ""}`}>
+          <SettingsIcon size={5} />
+        </div>
+      </Link>
+    </footer>
   );
 };
 
 const ThemeBtn = () => {
   const { isDarkTheme, setTheme } = useThemeStore();
-
-  const [appTheme, setAppTheme] = useState("");
-
-  useEffect(() => {
-    const storedTheme = localStorage.getItem("theme");
-    const localTheme: TlocalTheme | null = storedTheme
-      ? (JSON.parse(storedTheme) as TlocalTheme)
-      : null;
-    if (localTheme?.state.isDarkTheme) {
-      setAppTheme("dark");
-    } else {
-      setAppTheme("light");
-    }
-  }, [isDarkTheme]);
 
   return (
     <button
@@ -98,9 +120,7 @@ const ThemeBtn = () => {
       className="flex w-full items-center justify-around rounded-md bg-blue-1 p-4 dark:bg-accent-2"
     >
       <span>Change Theme</span>
-      <span>
-        {appTheme === "dark" ? <DarkThemeIcon /> : <LightThemeIcon />}
-      </span>
+      <span>{isDarkTheme ? <DarkThemeIcon /> : <LightThemeIcon />}</span>
     </button>
   );
 };
