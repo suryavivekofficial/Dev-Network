@@ -58,14 +58,24 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 
   useEffect(() => {
     if (!session) return;
-
     const channelName = formatChannelName(session.user.username, selectedChat);
+
     const channel = pusherClient.subscribe(`newMsg_${channelName}`);
 
     const handlePusher = (newMsgFromPusher: Messages) => {
+      const msgState = ctx.chat.getChat.getData({
+        otherUsername: selectedChat,
+      });
+      const ifMsgExists = msgState?.some((m) => m.id === newMsgFromPusher.id);
+      console.log({ ifMsgExists });
+
       // Modify the react query state (here) only if a msg is recieved.
       // Because the sender state is modified in the new msg input component. (via optimistic updates)
-      if (newMsgFromPusher.senderUsername === session.user.username) return;
+      if (
+        newMsgFromPusher.senderUsername === session.user.username ||
+        ifMsgExists
+      )
+        return;
 
       ctx.chat.getChat.setData({ otherUsername: selectedChat }, (oldMsgs) => {
         const newMsgsState = Array.isArray(oldMsgs)
@@ -79,15 +89,17 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 
     return () => {
       pusherClient.unsubscribe(`newMsg_${channelName}`);
-      pusherClient.unbind("msgEvent", (data: Messages) => handlePusher(data));
+      channel.bind("msgEvent", (data: Messages) => handlePusher(data));
     };
-  }, [ctx.chat.getChat, data, selectedChat, session]);
+  }, [ctx.chat.getChat, selectedChat, session]);
 
   const msgsRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     msgsRef.current?.scrollIntoView();
   }, [data]);
+
+  if (!session) return null;
 
   if (isLoading)
     return (
