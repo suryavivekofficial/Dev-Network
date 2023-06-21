@@ -1,9 +1,7 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState, type FC } from "react";
-import { toast } from "react-hot-toast";
-import { pusherClient } from "~/utils/pusher";
+import { useState, type FC } from "react";
 import { useNotificationStore } from "~/utils/zustand/notifications";
 import { useThemeStore } from "~/utils/zustand/theme";
 import DarkThemeIcon from "./icons/DarkThemeIcon";
@@ -182,39 +180,39 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const [count, setCount] = useState(0);
   const { setNotifications } = useNotificationStore();
 
-  useEffect(() => {
-    if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
-      return;
-    if (pathname === `/${pusherProps.type}`) return;
+  // useEffect(() => {
+  //   if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
+  //     return;
+  //   if (pathname === `/${pusherProps.type}`) return;
 
-    const channel = pusherClient.subscribe(pusherProps.channelName);
+  //   const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    const handlePusher = (data: { message: string; date: number }) => {
-      setCount((prevCount) => prevCount + 1);
-      console.log(data);
-      toast(data.message);
-      if (pusherProps.type === "notifications")
-        setNotifications({
-          notificationContent: data.message,
-          date: data.date,
-        });
-    };
+  //   const handlePusher = (data: { message: string; date: number }) => {
+  //     setCount((prevCount) => prevCount + 1);
+  //     console.log(data);
+  //     toast(data.message);
+  //     if (pusherProps.type === "notifications")
+  //       setNotifications({
+  //         notificationContent: data.message,
+  //         date: data.date,
+  //       });
+  //   };
 
-    channel.bind(pusherProps.eventName, handlePusher);
+  //   channel.bind(pusherProps.eventName, handlePusher);
 
-    return () => {
-      if (!pusherProps.channelName) return;
+  //   return () => {
+  //     if (!pusherProps.channelName) return;
 
-      pusherClient.unsubscribe(pusherProps.channelName);
-      pusherClient.unbind(pusherProps.eventName, handlePusher);
-    };
-  }, [
-    pathname,
-    pusherProps.channelName,
-    pusherProps.eventName,
-    pusherProps.type,
-    setNotifications,
-  ]);
+  //     pusherClient.unsubscribe(pusherProps.channelName);
+  //     pusherClient.unbind(pusherProps.eventName, handlePusher);
+  //   };
+  // }, [
+  //   pathname,
+  //   pusherProps.channelName,
+  //   pusherProps.eventName,
+  //   pusherProps.type,
+  //   setNotifications,
+  // ]);
 
   const regex = new RegExp(`^\\/${href}(\\/.*)?$`);
 

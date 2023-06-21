@@ -81,7 +81,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
       pusherClient.unsubscribe(`newMsg_${channelName}`);
       pusherClient.unbind("msgEvent", (data: Messages) => handlePusher(data));
     };
-  }, [ctx.chat.getChat, selectedChat, session]);
+  }, [ctx.chat.getChat, data, selectedChat, session]);
 
   const msgsRef = useRef<HTMLDivElement>(null);
 

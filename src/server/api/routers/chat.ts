@@ -4,17 +4,6 @@ import { formatChannelName } from "~/utils/snippets/formatPusher";
 import { createTRPCRouter, protectedProcedure } from "../trpc";
 
 export const chatRouter = createTRPCRouter({
-  // getChatList: protectedProcedure.query(
-  //   async ({ ctx }) =>
-  //     await ctx.prisma.follows.findMany({
-  //       where: {
-  //         OR: [
-  //           { followerUsername: ctx.session.user.username },
-  //           { followingUsername: ctx.session.user.username },
-  //         ],
-  //       },
-  //     })
-  // ),
   getChat: protectedProcedure
     .input(z.object({ otherUsername: z.string() }))
     .query(async ({ ctx, input }) => {
@@ -49,23 +38,29 @@ export const chatRouter = createTRPCRouter({
         ctx.session.user.username,
         input.msgReciever
       );
-      await pusherServer.trigger(`newMsg_${channelName}`, "msgEvent", {
-        message: input.msgContent,
-        senderUsername: ctx.session.user.username,
-        receiverUsername: input.msgReciever,
-        sentAt: Date.now(),
-        id: (Math.random() * 10000).toString(),
-      });
-
-      // trigger pusher for any message
-      await pusherServer.trigger(
-        `newUnseenMsg_${input.msgReciever}`,
-        "unseenMsgEvent",
+      const newPusherMsg = await pusherServer.trigger(
+        `newMsg_${channelName}`,
+        "msgEvent",
         {
-          message: `New msg from ${ctx.session.user.username}`,
-          date: Date.now(),
+          message: input.msgContent,
+          senderUsername: ctx.session.user.username,
+          receiverUsername: input.msgReciever,
+          sentAt: Date.now(),
+          id: `temp-${Math.random().toString(36).substring(2)}`,
         }
       );
+
+      console.log({ channelName }, { newPusherMsg });
+
+      // trigger pusher for any message
+      // await pusherServer.trigger(
+      //   `newUnseenMsg_${input.msgReciever}`,
+      //   "unseenMsgEvent",
+      //   {
+      //     message: `New msg from ${ctx.session.user.username}`,
+      //     date: Date.now(),
+      //   }
+      // );
 
       const newChat = await ctx.prisma.messages.create({
         data: {
