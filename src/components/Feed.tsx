@@ -1,6 +1,6 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState } from "react";
+import { useState, type Dispatch, type FC, type SetStateAction } from "react";
 import { api } from "~/utils/api";
 import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
@@ -8,6 +8,7 @@ import LoadingSpinner from "./icons/LoadingSpinner";
 
 const Feed = () => {
   const { selected } = usePostStore();
+  const [isModalOpen, setIsModalOpen] = useState(false);
 
   const { data, isLoading, isError, error } =
     selected === "for you"
@@ -30,6 +31,10 @@ const Feed = () => {
     );
   }
 
+  if (isModalOpen) {
+    return <MobileNewPost setIsModalOpen={setIsModalOpen} />;
+  }
+
   return (
     <div className="min-h-screen flex-grow space-y-4 px-4 md:px-0">
       <NewPost />
@@ -43,6 +48,60 @@ const Feed = () => {
           </div>
         );
       })}
+      <button
+        onClick={() => setIsModalOpen(true)}
+        className="fixed bottom-28 right-8 h-10 w-10 rounded-full bg-blue-2 shadow-md md:hidden"
+      >
+        +
+      </button>
+    </div>
+  );
+};
+
+type MobileNewPostProps = {
+  setIsModalOpen: Dispatch<SetStateAction<boolean>>;
+};
+
+const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
+  const { data: session } = useSession();
+
+  const closeModal = () => setIsModalOpen(false);
+
+  if (!session) return null;
+
+  return (
+    <div className="absolute inset-0 z-20 overflow-hidden bg-black">
+      <form className="space-y-4 p-4">
+        <div className="flex items-center justify-between px-2">
+          <button onClick={closeModal} className="text-2xl">
+            &times;
+          </button>
+          <button
+            onClick={closeModal}
+            type="submit"
+            className="rounded-md bg-accent-8 px-4 py-2 text-accent-2"
+          >
+            Post
+          </button>
+        </div>
+        <div className="flex gap-4">
+          <div className="relative h-10 w-10 flex-shrink-0 overflow-hidden rounded-full">
+            <Image
+              src={session.user.image || "/user.png"}
+              alt="profile photo"
+              fill={true}
+            />
+          </div>
+          <textarea
+            name=""
+            id=""
+            cols={20}
+            rows={15}
+            placeholder="What's on your mind?"
+            className="w-full resize-none bg-black pr-2 pt-2 outline-none"
+          />
+        </div>
+      </form>
     </div>
   );
 };
@@ -69,9 +128,11 @@ const NewPost = () => {
     <form className="hidden space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black md:block">
       <div className="flex items-center space-x-4 ">
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
-          {session.user.image && (
-            <Image src={session.user.image} alt="profile photo" fill={true} />
-          )}
+          <Image
+            src={session.user.image || "/user.png"}
+            alt="profile photo"
+            fill={true}
+          />
         </div>
         <input
           value={newPost}
