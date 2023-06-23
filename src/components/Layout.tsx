@@ -29,7 +29,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
       </div>
       <div className="md:hidden">
         <Header />
-        <div className={`${pathname === "/" ? "pt-36" : "pt-20"} pb-8`}>
+        <div className={`${pathname === "/" ? "py-36" : "bg-black py-20"}`}>
           {children}
         </div>
         <Nav />

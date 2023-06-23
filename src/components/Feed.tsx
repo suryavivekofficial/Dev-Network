@@ -64,10 +64,24 @@ type MobileNewPostProps = {
 
 const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
   const { data: session } = useSession();
+  const [newPost, setNewPost] = useState("");
+  const ctx = api.useContext();
 
   const closeModal = () => setIsModalOpen(false);
 
+  const { mutate, isLoading } = api.post.createPost.useMutation({
+    onSuccess: async () => {
+      setNewPost("");
+      await ctx.post.invalidate();
+    },
+  });
+
   if (!session) return null;
+
+  const handleSubmit = () => {
+    mutate({ authorUsername: session.user.username, postContent: newPost });
+    closeModal();
+  };
 
   return (
     <div className="absolute inset-0 z-20 overflow-hidden bg-black">
@@ -77,10 +91,12 @@ const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
             &times;
           </button>
           <button
-            onClick={closeModal}
+            onClick={handleSubmit}
+            disabled={isLoading}
             type="submit"
             className="rounded-md bg-accent-8 px-4 py-2 text-accent-2"
           >
+            {isLoading && <LoadingSpinner />}
             Post
           </button>
         </div>
@@ -93,10 +109,9 @@ const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
             />
           </div>
           <textarea
-            name=""
-            id=""
-            cols={20}
-            rows={15}
+            rows={10}
+            value={newPost}
+            onChange={(e) => setNewPost(e.target.value)}
             placeholder="What's on your mind?"
             className="w-full resize-none bg-black pr-2 pt-2 outline-none"
           />

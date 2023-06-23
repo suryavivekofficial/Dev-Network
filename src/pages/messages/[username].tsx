@@ -3,6 +3,8 @@ import dayjs from "dayjs";
 import { type NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
+import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import toast from "react-hot-toast";
@@ -20,6 +22,14 @@ const UsernameChat: NextPage = () => {
   const { username } = router.query;
   const selectedChat = username as string;
 
+  const { data, isLoading } = api.user.getUser.useQuery({
+    username: selectedChat,
+  });
+
+  if (isLoading) {
+    return <div>Chat is loading...</div>;
+  }
+
   return (
     <>
       <Head>
@@ -34,7 +44,24 @@ const UsernameChat: NextPage = () => {
           <Chat selectedChat={selectedChat}>
             <div className="h-full">
               {selectedChat && (
-                <div className="flex h-full flex-grow flex-col">
+                <div className="fixed inset-0 z-20 flex h-full flex-grow flex-col bg-black md:static md:inset-auto">
+                  <div className="flex w-full space-x-4 border-b border-accent-8 px-4 py-2">
+                    <Link href={`/${selectedChat}`}>
+                      <div className="relative h-12 w-12 overflow-hidden rounded-full">
+                        <Image
+                          src={data?.user?.image || "/user.png"}
+                          fill={true}
+                          alt="profile pic"
+                        />
+                      </div>
+                    </Link>
+                    <Link href={`/${selectedChat}`}>
+                      <div className="flex flex-col items-center justify-center">
+                        <span className="capitalize">{data?.user?.name}</span>
+                        <span className="text-xs">{data?.user?.username}</span>
+                      </div>
+                    </Link>
+                  </div>
                   <Msgs selectedChat={selectedChat} />
                   <NewMsgInput receiverUsername={selectedChat} />
                 </div>

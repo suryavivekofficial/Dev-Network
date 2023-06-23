@@ -62,7 +62,9 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
         </Link>
         <span className="flex items-center space-x-2 text-sm opacity-80">
           <Clock size={4} />
-          <span className="font-thin">{dayjs(post.createdAt).fromNow()}</span>
+          <span className="text-xs font-thin">
+            {dayjs(post.createdAt).fromNow()}
+          </span>
         </span>
       </div>
       <p className="text-sm md:text-base">{post.content}</p>
