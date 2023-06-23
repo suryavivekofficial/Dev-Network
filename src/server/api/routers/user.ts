@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { pusherServer } from "~/server/pusher";
 import { createTRPCRouter, protectedProcedure, publicProcedure } from "../trpc";
 
 export const userRouter = createTRPCRouter({
@@ -105,14 +106,14 @@ export const userRouter = createTRPCRouter({
         });
       } else {
         // trigger a pusher notification
-        // await pusherServer.trigger(
-        //   `notifications_channel_${following}`,
-        //   "followEvent",
-        //   {
-        //     message: `${follower} started following you.`,
-        //     date: Date(),
-        //   }
-        // );
+        await pusherServer.trigger(
+          `notifications_channel_${following}`,
+          "followEvent",
+          {
+            message: `${follower} started following you.`,
+            date: Date(),
+          }
+        );
 
         await ctx.prisma.follows.create({
           data: {

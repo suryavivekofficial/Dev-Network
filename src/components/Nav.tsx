@@ -185,19 +185,19 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   useEffect(() => {
     if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
       return;
-    if (pathname === `/${pusherProps.type}`) return;
+    // if (pathname === `/${pusherProps.type}`) return;
 
     const channel = pusherClient.subscribe(pusherProps.channelName);
 
     const handlePusher = (data: { message: string; date: number }) => {
-      setCount((prevCount) => prevCount + 1);
-      console.log(data);
       toast(data.message);
+      console.log(data);
       if (pusherProps.type === "notifications")
         setNotifications({
           notificationContent: data.message,
           date: data.date,
         });
+      setCount((prevCount) => prevCount + 1);
     };
 
     channel.bind(pusherProps.eventName, handlePusher);
@@ -222,7 +222,6 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
     <Link href={`/${href}`}>
       <div
         className={`${
-          // pathname === `/${href}`
           regex.test(pathname)
             ? `relative bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-2 before:content-[''] dark:bg-accent-2 dark:text-white dark:before:bg-white`
             : ``
