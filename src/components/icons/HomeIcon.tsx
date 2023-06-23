@@ -1,4 +1,10 @@
-export default function Home() {
+import type { FC } from "react";
+
+type HomeIconProps = {
+  size?: number;
+};
+
+const HomeIcon: FC<HomeIconProps> = ({ size = 5 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +12,7 @@ export default function Home() {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-5 w-5"
+      className={`h-${size} w-${size}`}
     >
       <path
         strokeLinecap="round"
@@ -15,4 +21,6 @@ export default function Home() {
       />
     </svg>
   );
-}
+};
+
+export default HomeIcon;

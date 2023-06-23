@@ -1,4 +1,10 @@
-const SearchIcon = () => {
+import { type FC } from "react";
+
+type SearchIconProps = {
+  size?: number;
+};
+
+const SearchIcon: FC<SearchIconProps> = ({ size = 5 }) => {
   return (
     <svg
       xmlns="http://www.w3.org/2000/svg"
@@ -6,7 +12,7 @@ const SearchIcon = () => {
       viewBox="0 0 24 24"
       strokeWidth={1.5}
       stroke="currentColor"
-      className="h-6 w-6"
+      className={`h-${size} w-${size}`}
     >
       <path
         strokeLinecap="round"

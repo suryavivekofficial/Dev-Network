@@ -1,7 +1,9 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, type FC } from "react";
+import { useEffect, useState, type FC } from "react";
+import toast from "react-hot-toast";
+import { pusherClient } from "~/utils/pusher";
 import { useNotificationStore } from "~/utils/zustand/notifications";
 import { useThemeStore } from "~/utils/zustand/theme";
 import DarkThemeIcon from "./icons/DarkThemeIcon";
@@ -76,32 +78,32 @@ const Footer = () => {
   const { pathname } = router;
 
   return (
-    <footer className="fixed bottom-0 left-0 right-0 flex justify-between bg-black p-4 md:hidden">
+    <footer className="fixed bottom-0 left-0 right-0 flex items-center justify-between border-t border-blue-2 bg-white p-4 px-6 dark:border-accent-6 dark:bg-black md:hidden">
       <Link href={"/"}>
         <div className={`${pathname === `/` ? `text-blue-2` : ""}`}>
-          <HomeIcon />
+          <HomeIcon size={8} />
         </div>
       </Link>
       <Link href={"messages"}>
         <div className={`${pathname === `/messages` ? `text-blue-2` : ""}`}>
-          <MessagesIcon />
+          <MessagesIcon size={8} />
         </div>
       </Link>
       <Link href={"/search"}>
         <div className={`${pathname === `/search` ? `text-blue-2` : ""}`}>
-          <SearchIcon />
+          <SearchIcon size={8} />
         </div>
       </Link>
       <Link href={"/notifications"}>
         <div
           className={`${pathname === `/notifications` ? `text-blue-2` : ""}`}
         >
-          <NotificationsIcon />
+          <NotificationsIcon size={8} />
         </div>
       </Link>
       <Link href={"/settings"}>
         <div className={`${pathname === `/settings` ? `text-blue-2` : ""}`}>
-          <SettingsIcon size={5} />
+          <SettingsIcon size={8} />
         </div>
       </Link>
     </footer>
@@ -180,39 +182,39 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const [count, setCount] = useState(0);
   const { setNotifications } = useNotificationStore();
 
-  // useEffect(() => {
-  //   if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
-  //     return;
-  //   if (pathname === `/${pusherProps.type}`) return;
+  useEffect(() => {
+    if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
+      return;
+    if (pathname === `/${pusherProps.type}`) return;
 
-  //   const channel = pusherClient.subscribe(pusherProps.channelName);
+    const channel = pusherClient.subscribe(pusherProps.channelName);
 
-  //   const handlePusher = (data: { message: string; date: number }) => {
-  //     setCount((prevCount) => prevCount + 1);
-  //     console.log(data);
-  //     toast(data.message);
-  //     if (pusherProps.type === "notifications")
-  //       setNotifications({
-  //         notificationContent: data.message,
-  //         date: data.date,
-  //       });
-  //   };
+    const handlePusher = (data: { message: string; date: number }) => {
+      setCount((prevCount) => prevCount + 1);
+      console.log(data);
+      toast(data.message);
+      if (pusherProps.type === "notifications")
+        setNotifications({
+          notificationContent: data.message,
+          date: data.date,
+        });
+    };
 
-  //   channel.bind(pusherProps.eventName, handlePusher);
+    channel.bind(pusherProps.eventName, handlePusher);
 
-  //   return () => {
-  //     if (!pusherProps.channelName) return;
+    return () => {
+      if (!pusherProps.channelName) return;
 
-  //     pusherClient.unsubscribe(pusherProps.channelName);
-  //     pusherClient.unbind(pusherProps.eventName, handlePusher);
-  //   };
-  // }, [
-  //   pathname,
-  //   pusherProps.channelName,
-  //   pusherProps.eventName,
-  //   pusherProps.type,
-  //   setNotifications,
-  // ]);
+      pusherClient.unsubscribe(pusherProps.channelName);
+      channel.unbind(pusherProps.eventName, handlePusher);
+    };
+  }, [
+    pathname,
+    pusherProps.channelName,
+    pusherProps.eventName,
+    pusherProps.type,
+    setNotifications,
+  ]);
 
   const regex = new RegExp(`^\\/${href}(\\/.*)?$`);
 

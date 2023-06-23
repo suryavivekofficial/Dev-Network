@@ -22,13 +22,9 @@ const UsernameChat: NextPage = () => {
   const { username } = router.query;
   const selectedChat = username as string;
 
-  const { data, isLoading } = api.user.getUser.useQuery({
+  const { data } = api.user.getUser.useQuery({
     username: selectedChat,
   });
-
-  if (isLoading) {
-    return <div>Chat is loading...</div>;
-  }
 
   return (
     <>

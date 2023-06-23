@@ -50,7 +50,7 @@ const Feed = () => {
       })}
       <button
         onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-28 right-8 h-10 w-10 rounded-full bg-blue-2 shadow-md md:hidden"
+        className="fixed bottom-28 right-8 h-14 w-14 rounded-full bg-blue-2 text-4xl font-medium text-white shadow-md dark:text-black md:hidden"
       >
         +
       </button>

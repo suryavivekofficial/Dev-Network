@@ -10,6 +10,10 @@ body {
   @apply h-screen bg-accent-1 text-accent-8;
 }
 
+a {
+  @apply outline-none;
+}
+
 .light button {
   @apply focus:outline-blue-2;
 }

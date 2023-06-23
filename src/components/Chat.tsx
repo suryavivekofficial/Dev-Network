@@ -54,19 +54,19 @@ const Usernames = ({ selectedChat }: { selectedChat: string | null }) => {
             href={`/messages/${username}`}
             className={`${
               selectedChat === username
-                ? 'relative rounded-md bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-4 before:content-[""] dark:bg-accent-2 dark:text-accent-8 dark:before:bg-white'
+                ? 'relative rounded-md bg-blue-1 text-blue-2 before:absolute before:left-0 before:top-1/2 before:h-6 before:w-1 before:-translate-y-1/2 before:rounded-md before:bg-blue-2 before:content-[""] dark:bg-accent-2 dark:text-accent-8 dark:before:bg-white'
                 : ""
             } hover:bg- flex w-full items-center space-x-2 p-4 hover:rounded-md hover:bg-blue-1 dark:hover:bg-accent-2`}
             key={username}
           >
-            <div className="relative h-8 w-8 overflow-hidden rounded-full">
+            <div className="relative h-8 w-8 flex-shrink-0 overflow-hidden rounded-full">
               <Image
                 src={user.image || "/user.png"}
                 fill={true}
                 alt="profile pic"
               />
             </div>
-            <span>{username}</span>
+            <span className="truncate">{username}</span>
           </Link>
         );
       })}
