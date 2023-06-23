@@ -44,8 +44,8 @@ const UsernameChat: NextPage = () => {
           <Chat selectedChat={selectedChat}>
             <div className="h-full">
               {selectedChat && (
-                <div className="fixed inset-0 z-20 flex h-full flex-grow flex-col bg-black md:static md:inset-auto">
-                  <div className="flex w-full space-x-4 border-b border-accent-8 px-4 py-2">
+                <div className="fixed inset-0 z-20 flex h-full flex-grow flex-col bg-white dark:bg-black md:static md:inset-auto">
+                  <div className="flex w-full space-x-4 border-b border-blue-2 px-4 py-2 dark:border-accent-6">
                     <Link href={`/${selectedChat}`}>
                       <div className="relative h-12 w-12 overflow-hidden rounded-full">
                         <Image
@@ -56,9 +56,13 @@ const UsernameChat: NextPage = () => {
                       </div>
                     </Link>
                     <Link href={`/${selectedChat}`}>
-                      <div className="flex flex-col items-center justify-center">
-                        <span className="capitalize">{data?.user?.name}</span>
-                        <span className="text-xs">{data?.user?.username}</span>
+                      <div className="flex h-full w-full flex-col justify-center">
+                        <span className="text-sm capitalize text-accent-2 dark:text-accent-8">
+                          {data?.user?.name}
+                        </span>
+                        <span className="text-xs text-accent-2 dark:text-accent-8">
+                          {data?.user?.username}
+                        </span>
                       </div>
                     </Link>
                   </div>
@@ -160,7 +164,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
 const SentMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
-      <span className="my-2 ml-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
+      <span className="my-2 ml-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 text-accent-2 dark:bg-accent-2 dark:text-accent-8">
         <p>{msg.message}</p>
         <div className="flex py-2 text-xs">
           <span className="ml-auto flex space-x-2">
@@ -176,7 +180,7 @@ const SentMsg = ({ msg }: { msg: Messages }) => {
 const RecievedMsg = ({ msg }: { msg: Messages }) => {
   return (
     <div className="flex w-full">
-      <span className="my-2 mr-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 dark:bg-accent-2">
+      <span className="my-2 mr-auto w-3/4 max-w-max rounded-md bg-blue-1 px-4 py-2 text-accent-2 dark:bg-accent-2 dark:text-accent-8">
         <p>{msg.message}</p>
         <div className="flex py-2 text-xs">
           <span className="ml-auto flex space-x-2">
@@ -193,6 +197,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   const [newMsg, setNewMsg] = useState("");
   const { data: session } = useSession();
   const ctx = api.useContext();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const { mutate } = api.chat.newMsg.useMutation({
     onMutate: async ({ msgContent, msgReciever }) => {
@@ -238,8 +243,10 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   });
 
   const handleSubmit = () => {
+    if (newMsg.trim() === "") return;
     setNewMsg("");
-    mutate({ msgContent: newMsg, msgReciever: receiverUsername });
+    mutate({ msgContent: newMsg.trim(), msgReciever: receiverUsername });
+    inputRef.current?.focus();
   };
 
   if (!session) return null;
@@ -247,6 +254,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
   return (
     <div className="flex w-full space-x-4 border-t border-blue-2 p-4 dark:border-accent-4">
       <input
+        ref={inputRef}
         onChange={(e) => setNewMsg(e.target.value)}
         value={newMsg}
         onKeyDown={(e) => {
@@ -257,7 +265,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         type="text"
         name="new message"
         autoComplete="off"
-        className="flex-grow rounded-md border border-blue-2 bg-white px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-4 dark:bg-black dark:focus:ring-accent-8"
+        className="flex-grow rounded-md border border-blue-2 bg-white px-4 py-2 text-accent-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-4 dark:bg-black dark:text-accent-8 dark:focus:ring-accent-8"
       />
       <button
         onClick={handleSubmit}
