@@ -27,35 +27,13 @@ a {
   margin-block: 1em;
 }
 
-body::-webkit-scrollbar-track {
-  background: black;
+::-webkit-scrollbar-track {
+  background: hsl(214, 100%, 90%, 0.1);
   border-radius: 100vw;
   margin-block: 0.1em;
 }
 
-body::-webkit-scrollbar-thumb {
-  background: #555;
-  border-radius: 100vw;
-}
-
-.dark div::-webkit-scrollbar-track {
-  background: black;
-  border-radius: 100vw;
-  margin-block: 0.3em;
-}
-
-.dark div::-webkit-scrollbar-thumb {
-  background: #888;
-  border-radius: 100vw;
-}
-
-.light div::-webkit-scrollbar-track {
-  background: white;
-  border-radius: 100vw;
-  margin-block: 0.3em;
-}
-
-.light div::-webkit-scrollbar-thumb {
-  background: #3291ff;
+::-webkit-scrollbar-thumb {
+  background: hsl(214, 100%, 90%, 0.5);
   border-radius: 100vw;
 }

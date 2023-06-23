@@ -144,7 +144,7 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
   }
 
   return (
-    <div className="w-full flex-grow overflow-y-scroll rounded-md p-4">
+    <div className="w-full flex-grow overflow-y-auto rounded-md p-4">
       {data.map((msg) => {
         if (session?.user.username === msg.senderUsername) {
           return <SentMsg key={msg.id} msg={msg} />;

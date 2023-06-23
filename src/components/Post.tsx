@@ -52,12 +52,9 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
           </div>
           <div className="flex flex-col">
             <span className="font-bold capitalize">{post.author.name}</span>
-            <Link
-              href={`/${post.author.username}`}
-              className="text-sm hover:text-blue-2"
-            >
+            <span className="text-sm hover:text-blue-2">
               @{post.author.username}
-            </Link>
+            </span>
           </div>
         </Link>
         <span className="flex items-center space-x-2 text-sm opacity-80">

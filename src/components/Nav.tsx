@@ -1,10 +1,8 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState, type FC } from "react";
-import toast from "react-hot-toast";
-import { pusherClient } from "~/utils/pusher";
-import { useNotificationStore } from "~/utils/zustand/notifications";
+import { useState, type FC } from "react";
+// import { useNotificationStore } from "~/utils/zustand/notifications";
 import { useThemeStore } from "~/utils/zustand/theme";
 import DarkThemeIcon from "./icons/DarkThemeIcon";
 import HomeIcon from "./icons/HomeIcon";
@@ -180,41 +178,35 @@ interface SidebarItemProps {
 const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const { pathname } = useRouter();
   const [count, setCount] = useState(0);
-  const { setNotifications } = useNotificationStore();
+  // const { setNotifications } = useNotificationStore();
 
-  useEffect(() => {
-    if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
-      return;
-    // if (pathname === `/${pusherProps.type}`) return;
+  // useEffect(() => {
+  //   if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
+  //     return;
+  //   // if (pathname === `/${pusherProps.type}`) return;
 
-    const channel = pusherClient.subscribe(pusherProps.channelName);
+  //   const channel = pusherClient.subscribe(pusherProps.channelName);
 
-    const handlePusher = (data: { message: string; date: number }) => {
-      toast(data.message);
-      console.log(data);
-      if (pusherProps.type === "notifications")
-        setNotifications({
-          notificationContent: data.message,
-          date: data.date,
-        });
-      setCount((prevCount) => prevCount + 1);
-    };
+  //   const handlePusher = (data: { message: string; date: number }) => {
+  //     toast(data.message);
+  //     console.log(data);
+  //     // if (pusherProps.type === "notifications")
+  //     //   setNotifications({
+  //     //     notificationContent: data.message,
+  //     //     date: data.date,
+  //     //   });
+  //     setCount((prevCount) => prevCount + 1);
+  //   };
 
-    channel.bind(pusherProps.eventName, handlePusher);
+  //   channel.bind(pusherProps.eventName, handlePusher);
 
-    return () => {
-      if (!pusherProps.channelName) return;
+  //   return () => {
+  //     if (!pusherProps.channelName) return;
 
-      pusherClient.unsubscribe(pusherProps.channelName);
-      channel.unbind(pusherProps.eventName, handlePusher);
-    };
-  }, [
-    pathname,
-    pusherProps.channelName,
-    pusherProps.eventName,
-    pusherProps.type,
-    setNotifications,
-  ]);
+  //     pusherClient.unsubscribe(pusherProps.channelName);
+  //     channel.unbind(pusherProps.eventName, handlePusher);
+  //   };
+  // }, [pusherProps.channelName, pusherProps.eventName, pusherProps.type]);
 
   const regex = new RegExp(`^\\/${href}(\\/.*)?$`);
 

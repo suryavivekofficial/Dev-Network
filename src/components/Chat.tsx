@@ -46,7 +46,7 @@ const Usernames = ({ selectedChat }: { selectedChat: string | null }) => {
   if (!data) return <div>No users available to chat.</div>;
 
   return (
-    <div className="w-full flex-shrink-0 space-y-2 divide-y divide-blue-1 overflow-y-scroll border-blue-2 p-2 dark:divide-accent-2 dark:border-accent-6 md:w-1/4 md:border-r">
+    <div className="w-full flex-shrink-0 divide-y divide-blue-1 overflow-y-auto border-blue-2 p-2 dark:divide-accent-2 dark:border-accent-6 md:w-1/4 md:border-r">
       {data.map((user) => {
         const username = user.username || "Error";
         return (

@@ -3,10 +3,9 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import Layout from "~/components/Layout";
 import { pusherClient } from "~/utils/pusher";
-import { useNotificationStore } from "~/utils/zustand/notifications";
 
 dayjs.extend(relativeTime);
 
@@ -29,7 +28,7 @@ const NotificationsPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="w-full pr-8 min-h-screen">
+        <div className="min-h-screen w-full pr-8">
           <h2 className="mb-4 ml-1 text-xl">Notifications For You</h2>
           <NotificationsContainer />
         </div>
@@ -40,8 +39,7 @@ const NotificationsPage: NextPage = () => {
 
 const NotificationsContainer = () => {
   const { data: session } = useSession();
-  // const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
-  const { notifications, setNotifications } = useNotificationStore();
+  const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
 
   useEffect(() => {
     if (!session) return;
@@ -51,7 +49,10 @@ const NotificationsContainer = () => {
     );
 
     const handlePusher = (data: TPusherMsg) => {
-      setNotifications({ notificationContent: data.message, date: data.date });
+      setNotifications((prev) => [
+        ...prev,
+        { message: data.message, date: data.date },
+      ]);
     };
 
     channel.bind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
@@ -60,15 +61,13 @@ const NotificationsContainer = () => {
       pusherClient.unsubscribe(
         `notifications_channel_${session.user.username}`
       );
-      pusherClient.unbind(`followEvent`, (data: TPusherMsg) =>
-        handlePusher(data)
-      );
+      channel.unbind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
     };
-  }, [session, setNotifications]);
+  }, [session]);
 
   if (notifications.length === 0) {
     return (
-      <div className="flex w-full space-x-4 rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black p-4">
+      <div className="flex w-full space-x-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
         No new notifications for you.
       </div>
     );
@@ -81,10 +80,10 @@ const NotificationsContainer = () => {
       {notifications.map((notification, i) => {
         return (
           <div
-            className="flex w-full items-center space-x-8 rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black p-4"
+            className="flex w-full items-center space-x-8 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black"
             key={i}
           >
-            <p className="flex-grow">{notification.notificationContent} </p>
+            <p className="flex-grow">{notification.message} </p>
             <span className="whitespace-nowrap">
               {dayjs(notification.date).fromNow()}
             </span>
