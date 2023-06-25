@@ -1,6 +1,8 @@
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 
 import Head from "next/head";
+import Image from "next/image";
 import Layout from "~/components/Layout";
 
 const Settings: NextPage = () => {
@@ -13,9 +15,55 @@ const Settings: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="min-h-screen">Settings appear here</div>
+        <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full">
+          <SettingsWrapper />
+        </div>
       </Layout>
     </>
+  );
+};
+
+const SettingsWrapper = () => {
+  const { data: session } = useSession();
+
+  if (!session) return <div>You have to log in.</div>;
+
+  return (
+    <div className="h-full w-full space-y-4 rounded-md bg-white p-4">
+      <h2 className="text-xl">Edit your profile settings</h2>
+      <div className="flex justify-between">
+        <div className="relative h-20 w-20 cursor-pointer overflow-hidden rounded-full border border-blue-2">
+          <Image
+            src={session.user.image ?? "/user.png"}
+            fill={true}
+            alt="User photo"
+          />
+        </div>
+        <div className="w-4/5 py-2">
+          <label>
+            <span>Name</span>
+            <input
+              type="text"
+              className="w-full rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2"
+            />
+          </label>
+          <label>
+            <span>Username</span>
+            <input
+              type="text"
+              className="w-full rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2"
+            />
+          </label>
+          <label>
+            <span>Bio</span>
+            <input
+              type="text"
+              className="w-full rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2"
+            />
+          </label>
+        </div>
+      </div>
+    </div>
   );
 };
 
