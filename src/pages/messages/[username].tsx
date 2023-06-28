@@ -7,7 +7,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import toast from "react-hot-toast";
 import Chat from "~/components/Chat";
 import Layout from "~/components/Layout";
 import Clock from "~/components/icons/ClockIcon";
@@ -230,7 +229,7 @@ const NewMsgInput = ({ receiverUsername }: { receiverUsername: string }) => {
         { otherUsername: receiverUsername },
         prevPostsSnapshot
       );
-      toast(error.message);
+      // toast(error.message);
     },
 
     onSettled() {

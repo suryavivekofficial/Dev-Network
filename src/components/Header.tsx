@@ -3,7 +3,6 @@ import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { Toaster } from "react-hot-toast";
 import Tabs from "./Tabs";
 import Chevron from "./icons/ChevronIcon";
 import SettingsIcon from "./icons/SettingsIcon";
@@ -26,7 +25,6 @@ const Header = () => {
         <div className="hidden w-1/3 md:inline-block">
           <Tabs />
         </div>
-        <Toaster />
         {session ? (
           <div className="flex w-1/3 items-center justify-end space-x-2">
             <Profile />

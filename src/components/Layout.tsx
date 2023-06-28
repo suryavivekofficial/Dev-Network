@@ -1,6 +1,6 @@
-import { useThemeStore } from "~/utils/zustand/theme";
-// import Nav from "./Nav";
 import { useRouter } from "next/router";
+import { ToastContainer } from "react-toastify";
+import { useThemeStore } from "~/utils/zustand/theme";
 import Header from "./Header";
 import Nav from "./Nav";
 
@@ -38,6 +38,7 @@ const Layout = ({ children }: { children: JSX.Element }) => {
         </div>
         <Nav />
       </div>
+      <ToastContainer theme={isDarkTheme ? "dark" : "light"} />
     </div>
   );
 };
