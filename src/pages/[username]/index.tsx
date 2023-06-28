@@ -71,10 +71,7 @@ const Profile = () => {
             />
           )}
         </div>
-        <p className="py-4">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit. Reiciendis,
-          nihil?
-        </p>
+        <p className="py-4">{user.bio}</p>
         <div className="space-x-4">
           <span>
             <span className="font-bold">{user._count.followedBy} </span>

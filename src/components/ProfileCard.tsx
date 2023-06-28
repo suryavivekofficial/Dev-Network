@@ -38,9 +38,7 @@ const ProfileCard = () => {
         <Link href={session.user.username} className="text-sm">
           @{session.user.username}
         </Link>
-        <p className="mt-2 text-sm">
-          Lorem ipsum dolor sit amet consectetur adipisicing elit.
-        </p>
+        <p className="mt-2 text-sm">{session.user.bio}</p>
       </div>
       <div className="flex space-x-8 text-center">
         <div>
