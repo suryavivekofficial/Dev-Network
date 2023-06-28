@@ -1,126 +1,127 @@
 generator client {
-    provider = "prisma-client-js"
+  provider = "prisma-client-js"
 }
 
 datasource db {
-    provider     = "mysql"
-    url          = env("DATABASE_URL")
-    relationMode = "prisma"
+  provider     = "mysql"
+  url          = env("DATABASE_URL")
+  relationMode = "prisma"
 }
 
 model Post {
-    id             String    @id @default(cuid())
-    createdAt      DateTime  @default(now())
-    content        String    @db.Text
-    likes          Like[]
-    comments       Comment[]
-    authorUsername String
-    author         User      @relation(fields: [authorUsername], references: [username])
+  id             String    @id @default(cuid())
+  createdAt      DateTime  @default(now())
+  content        String    @db.Text
+  likes          Like[]
+  comments       Comment[]
+  authorUsername String
+  author         User      @relation(fields: [authorUsername], references: [username])
 
-    @@index([authorUsername])
+  @@index([authorUsername])
 }
 
 model Like {
-    post   Post   @relation(fields: [postId], references: [id])
-    postId String
-    user   User   @relation(fields: [userId], references: [id])
-    userId String
+  post   Post   @relation(fields: [postId], references: [id])
+  postId String
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 
-    @@id([postId, userId])
-    @@index([userId])
-    @@index([postId])
+  @@id([postId, userId])
+  @@index([userId])
+  @@index([postId])
 }
 
 model Comment {
-    id                String   @id @default(cuid())
-    postId            String
-    post              Post     @relation(fields: [postId], references: [id])
-    commentorUsername String
-    commentor         User     @relation(fields: [commentorUsername], references: [username])
-    commentorImage    String
-    commentedAt       DateTime @default(now())
-    content           String   @db.Text
+  id                String   @id @default(cuid())
+  postId            String
+  post              Post     @relation(fields: [postId], references: [id])
+  commentorUsername String
+  commentor         User     @relation(fields: [commentorUsername], references: [username])
+  commentorImage    String
+  commentedAt       DateTime @default(now())
+  content           String   @db.Text
 
-    @@index([postId])
-    @@index([commentorUsername])
+  @@index([postId])
+  @@index([commentorUsername])
 }
 
 model Follows {
-    follower          User   @relation("follower", fields: [followerUsername], references: [username])
-    followerUsername  String
-    following         User   @relation("following", fields: [followingUsername], references: [username])
-    followingUsername String
+  follower          User   @relation("follower", fields: [followerUsername], references: [username])
+  followerUsername  String
+  following         User   @relation("following", fields: [followingUsername], references: [username])
+  followingUsername String
 
-    @@id([followerUsername, followingUsername])
-    @@index([followerUsername])
-    @@index([followingUsername])
+  @@id([followerUsername, followingUsername])
+  @@index([followerUsername])
+  @@index([followingUsername])
 }
 
 model Messages {
-    id               String   @id @default(cuid())
-    sender           User     @relation("sender", fields: [senderUsername], references: [username])
-    senderUsername   String
-    receiver         User     @relation("receiver", fields: [receiverUsername], references: [username])
-    receiverUsername String
-    message          String   @db.Text
-    sentAt           DateTime @default(now())
+  id               String   @id @default(cuid())
+  sender           User     @relation("sender", fields: [senderUsername], references: [username])
+  senderUsername   String
+  receiver         User     @relation("receiver", fields: [receiverUsername], references: [username])
+  receiverUsername String
+  message          String   @db.Text
+  sentAt           DateTime @default(now())
 
-    @@index([senderUsername])
-    @@index([receiverUsername])
+  @@index([senderUsername])
+  @@index([receiverUsername])
 }
 
 // Necessary for Next auth
 model Account {
-    id                String  @id @default(cuid())
-    userId            String
-    type              String
-    provider          String
-    providerAccountId String
-    refresh_token     String? @db.Text
-    access_token      String? @db.Text
-    expires_at        Int?
-    token_type        String?
-    scope             String?
-    id_token          String? @db.Text
-    session_state     String?
-    user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id                String  @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@unique([provider, providerAccountId])
-    @@index([userId])
+  @@unique([provider, providerAccountId])
+  @@index([userId])
 }
 
 model Session {
-    id           String   @id @default(cuid())
-    sessionToken String   @unique
-    userId       String
-    expires      DateTime
-    user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-    @@index([userId])
+  @@index([userId])
 }
 
 model User {
-    id             String     @id @default(cuid())
-    name           String?
-    email          String     @unique
-    username       String?    @unique
-    emailVerified  DateTime?
-    image          String?
-    accounts       Account[]
-    sessions       Session[]
-    post           Post[]
-    like           Like[]
-    comment        Comment[]
-    followedBy     Follows[]  @relation("following")
-    following      Follows[]  @relation("follower")
-    MessageSender  Messages[] @relation("sender")
-    MessageReciver Messages[] @relation("receiver")
+  id             String     @id @default(cuid())
+  name           String?
+  email          String     @unique
+  username       String?    @unique
+  emailVerified  DateTime?
+  image          String?
+  bio            String?    @db.VarChar(255)
+  accounts       Account[]
+  sessions       Session[]
+  post           Post[]
+  like           Like[]
+  comment        Comment[]
+  followedBy     Follows[]  @relation("following")
+  following      Follows[]  @relation("follower")
+  MessageSender  Messages[] @relation("sender")
+  MessageReciver Messages[] @relation("receiver")
 }
 
 model VerificationToken {
-    identifier String
-    token      String   @unique
-    expires    DateTime
+  identifier String
+  token      String   @unique
+  expires    DateTime
 
-    @@unique([identifier, token])
+  @@unique([identifier, token])
 }

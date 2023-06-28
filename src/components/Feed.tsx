@@ -1,6 +1,12 @@
 import { useSession } from "next-auth/react";
 import Image from "next/image";
-import { useState, type Dispatch, type FC, type SetStateAction } from "react";
+import {
+  useState,
+  type Dispatch,
+  type FC,
+  type FormEvent,
+  type SetStateAction,
+} from "react";
 import { api } from "~/utils/api";
 import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
@@ -135,7 +141,8 @@ const NewPost = () => {
 
   if (!session) return null;
 
-  const handleSubmit = () => {
+  const handleSubmit = (e: FormEvent) => {
+    e.preventDefault();
     mutate({ authorUsername: session.user.username, postContent: newPost });
   };
 
@@ -154,7 +161,7 @@ const NewPost = () => {
           onChange={(e) => setNewPost(e.target.value)}
           onKeyDown={(e) => {
             if (e.key === "Enter") {
-              handleSubmit();
+              handleSubmit(e);
             }
           }}
           type="text"
