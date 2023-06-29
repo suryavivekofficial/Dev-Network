@@ -37,6 +37,36 @@ export const postRouter = createTRPCRouter({
           },
         })
     ),
+  getSinglePost: publicProcedure.input(z.object({ postId: z.string() })).query(
+    async ({ ctx, input }) =>
+      await ctx.prisma.post.findUnique({
+        where: {
+          id: input.postId,
+        },
+        include: {
+          author: {
+            select: {
+              name: true,
+              username: true,
+              image: true,
+            },
+          },
+          likes: {
+            where: {
+              userId: ctx.session?.user.id,
+            },
+            select: {
+              userId: true,
+            },
+          },
+          _count: {
+            select: {
+              likes: true,
+            },
+          },
+        },
+      })
+  ),
   getFollowingPosts: protectedProcedure.query(async ({ ctx }) => {
     const following = await ctx.prisma.follows.findMany({
       where: {

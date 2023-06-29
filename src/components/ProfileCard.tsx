@@ -35,7 +35,10 @@ const ProfileCard = () => {
       </div>
       <div className="py-2 text-center">
         <h3 className="text-xl font-bold capitalize">{session.user.name}</h3>
-        <Link href={session.user.username} className="text-sm">
+        <Link
+          href={session.user.username}
+          className="text-sm hover:text-blue-2"
+        >
           @{session.user.username}
         </Link>
         <p className="mt-2 text-sm">{session.user.bio}</p>

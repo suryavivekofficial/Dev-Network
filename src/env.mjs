@@ -27,6 +27,7 @@ const server = z.object({
   PUSHER_SECRET: z.string(),
   PUSHER_KEY: z.string(),
   PUSHER_CLUSTER: z.string(),
+
   // Add `.min(1) on ID and SECRET if you want to make sure they're not empty
 });
 
@@ -36,6 +37,7 @@ const server = z.object({
  */
 const client = z.object({
   // NEXT_PUBLIC_CLIENTVAR: z.string().min(1),
+  NEXT_PUBLIC_VERCEL_URL: z.string(),
 });
 
 /**
@@ -58,6 +60,7 @@ const processEnv = {
   PUSHER_KEY: process.env.PUSHER_KEY,
   PUSHER_CLUSTER: process.env.PUSHER_CLUSTER,
   // NEXT_PUBLIC_CLIENTVAR: process.env.NEXT_PUBLIC_CLIENTVAR,
+  NEXT_PUBLIC_VERCEL_URL: process.env.NEXT_PUBLIC_VERCEL_URL,
 };
 
 // Don't touch the part below

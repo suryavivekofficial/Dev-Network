@@ -1,11 +1,20 @@
+import { type FC } from "react";
 import { toast } from "react-toastify";
+import { env } from "~/env.mjs";
 
-const Share = () => {
+type ShareIconProps = {
+  username: string;
+  postId: string;
+};
+
+const Share: FC<ShareIconProps> = ({ username, postId }) => {
+  const url = env.NEXT_PUBLIC_VERCEL_URL;
+
   const handleClick = () => {
     navigator.clipboard
-      .writeText("some link into clipboard")
-      .then(() => toast("link copied to clipboard"))
-      .catch(() => toast("Failed to copy to clipboard"));
+      .writeText(`${url}/${username}/post/${postId}`)
+      .then(() => toast.success("link copied to clipboard"))
+      .catch(() => toast.error("Failed to copy to clipboard"));
   };
 
   return (

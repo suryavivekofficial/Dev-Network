@@ -29,10 +29,16 @@ type TPostComponent = {
       image: string | null;
     };
   };
+  isCommentSectionOpenByDefault?: boolean;
 };
 
-const PostComponent: FC<TPostComponent> = ({ post }) => {
-  const [isCommentSectionOpen, setIsCommentSectionOpen] = useState(false);
+const PostComponent: FC<TPostComponent> = ({
+  post,
+  isCommentSectionOpenByDefault,
+}) => {
+  const [isCommentSectionOpen, setIsCommentSectionOpen] = useState(
+    isCommentSectionOpenByDefault || false
+  );
 
   if (!post.author.username) return null;
 
@@ -75,7 +81,7 @@ const PostComponent: FC<TPostComponent> = ({ post }) => {
           isCommentSectionOpen={isCommentSectionOpen}
           setIsCommentSectionOpen={setIsCommentSectionOpen}
         />
-        <ShareIcon />
+        <ShareIcon postId={post.id} username={post.authorUsername} />
       </div>
       {isCommentSectionOpen && <CommentSection postId={post.id} />}
     </div>

@@ -33,3 +33,4 @@ env:
   PUSHER_SECRET: "fake-pusher-secret"
   PUSHER_KEY: "fake-pusher-key"
   PUSHER_CLUSTER: "fake-pusher-cluster"
+  NEXT_PUBLIC_VERCEL_URL: "fake.com"
