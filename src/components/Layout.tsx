@@ -38,7 +38,10 @@ const Layout = ({ children }: { children: JSX.Element }) => {
         </div>
         <Nav />
       </div>
-      <ToastContainer theme={isDarkTheme ? "dark" : "light"} />
+      <ToastContainer
+        theme={isDarkTheme ? "dark" : "light"}
+        position="top-center"
+      />
     </div>
   );
 };

@@ -60,7 +60,7 @@ const SettingsWrapper = () => {
     e.preventDefault();
 
     if (!userInfo.username || !userInfo.name || !userInfo.bio) {
-      alert("Empty fields are not accepted");
+      toast.warn("Empty fields are not accepted");
       return;
     }
 
@@ -69,13 +69,13 @@ const SettingsWrapper = () => {
       userInfo.bio === session.user.bio &&
       userInfo.username === session.user.username
     ) {
-      alert("You should change atleast one field!");
+      toast.warn("You should change atleast one field!");
       return;
     }
 
-    // if (userInfo.bio.length >= 160) {
-
-    // }
+    if (userInfo.bio.length > 160) {
+      toast.warn("Bio length should be less than 160 characters.");
+    }
 
     mutate({
       username: userInfo.username,
@@ -122,6 +122,7 @@ const SettingsWrapper = () => {
                 <span>Username</span>
                 <input
                   type="text"
+                  disabled={isLoading}
                   value={userInfo.username}
                   onChange={(e) =>
                     setUserInfo({
@@ -130,7 +131,7 @@ const SettingsWrapper = () => {
                       bio: userInfo.bio,
                     })
                   }
-                  className="w-full rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-accent-2 dark:focus:ring-accent-8"
+                  className="w-full rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-accent-6 dark:bg-accent-2 dark:focus:ring-accent-8"
                 />
               </label>
             </div>
@@ -138,6 +139,8 @@ const SettingsWrapper = () => {
               <label>
                 <span>Bio</span>
                 <textarea
+                  disabled={isLoading}
+                  rows={3}
                   value={userInfo.bio}
                   onChange={(e) =>
                     setUserInfo({
@@ -146,8 +149,13 @@ const SettingsWrapper = () => {
                       username: userInfo.username,
                     })
                   }
-                  className="w-full resize-none rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-accent-2 dark:focus:ring-accent-8"
+                  className="w-full resize-none rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-accent-6 dark:bg-accent-2 dark:focus:ring-accent-8"
                 />
+                {userInfo.bio.length > 160 && (
+                  <p className="text-xs text-red-4">
+                    Bio should be less than 160 characters.
+                  </p>
+                )}
               </label>
             </div>
             <div className="flex w-full justify-end space-x-4">
