@@ -31,13 +31,9 @@ const SettingsWrapper = () => {
   const ctx = api.useContext();
   const { mutate, isLoading } = api.user.updateUserInfo.useMutation({
     onSuccess: async () => {
-      toast.success("Updated Successfully", {
-        position: toast.POSITION.TOP_CENTER,
-      });
       await ctx.user.invalidate();
       await updateSession();
     },
-    onError: () => toast.error("Something went wrong!"),
   });
 
   const [userInfo, setUserInfo] = useState({
@@ -55,6 +51,19 @@ const SettingsWrapper = () => {
       });
     }
   }, [session]);
+
+  const resetUserInfo = () => {
+    if (!session || !session.user.name) {
+      toast.error("Something went wrong!");
+      return;
+    }
+
+    setUserInfo({
+      bio: session?.user.bio,
+      name: session?.user.name,
+      username: session?.user.username,
+    });
+  };
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
@@ -77,19 +86,40 @@ const SettingsWrapper = () => {
       toast.warn("Bio length should be less than 160 characters.");
     }
 
-    mutate({
-      username: userInfo.username,
-      name: userInfo.name,
-      bio: userInfo.bio,
-    });
+    const id = toast.loading("Updating, please wait...");
+    mutate(
+      {
+        username: userInfo.username,
+        name: userInfo.name,
+        bio: userInfo.bio,
+      },
+      {
+        onSuccess: () =>
+          toast.update(id, {
+            render: "Updated Successfully",
+            type: "success",
+            isLoading: false,
+            autoClose: 2000,
+            hideProgressBar: true,
+          }),
+        onError: () =>
+          toast.update(id, {
+            render: "Something went wrong",
+            type: "error",
+            isLoading: false,
+            autoClose: 2000,
+            hideProgressBar: true,
+          }),
+      }
+    );
   };
 
   if (!session) return <div>You have to log in.</div>;
 
   return (
-    <div className="flex h-full w-full flex-col space-y-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-8 dark:bg-black">
-      <h2 className="text-xl">Edit your profile settings</h2>
-      <div className="flex flex-grow justify-between space-x-8 p-4">
+    <div className="flex h-full w-full flex-col space-y-4 rounded-md border-blue-2 bg-white p-4 dark:border-accent-8 dark:bg-black md:border">
+      <h2 className="ml-4 text-xl">Edit your profile settings</h2>
+      <div className="flex flex-grow flex-col justify-between p-4 md:flex-row md:space-x-8">
         <div className="relative h-24 w-24 flex-shrink-0 cursor-pointer overflow-hidden rounded-full border border-blue-2">
           <Image
             src={session.user.image ?? "/user.png"}
@@ -161,6 +191,7 @@ const SettingsWrapper = () => {
             <div className="flex w-full justify-end space-x-4">
               <button
                 type="reset"
+                onClick={resetUserInfo}
                 className="rounded-md border border-blue-2 px-4 py-2"
               >
                 Cancel

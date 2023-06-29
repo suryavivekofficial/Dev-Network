@@ -28,8 +28,8 @@ const NotificationsPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="min-h-screen w-full pr-8">
-          <h2 className="mb-4 ml-1 text-xl">Notifications For You</h2>
+        <div className="min-h-screen w-full pl-4 pr-8">
+          <h2 className="mb-4 text-xl">Notifications For You</h2>
           <NotificationsContainer />
         </div>
       </Layout>

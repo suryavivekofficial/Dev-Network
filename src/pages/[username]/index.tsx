@@ -47,8 +47,8 @@ const Profile = () => {
 
   return (
     <div className="flex-grow rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black">
-      <div className="relative h-36 w-full rounded-t-md dark:bg-accent-2">
-        <div className="absolute left-8 top-full -translate-y-1/2 rounded-full p-1 dark:bg-black">
+      <div className="relative h-36 w-full rounded-t-md bg-accent-2/20 dark:bg-accent-2">
+        <div className="absolute left-8 top-full -translate-y-1/2 rounded-full bg-white p-1 dark:bg-black">
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-none bg-blue-2 outline-none">
             {user.image && (
               <Image src={user?.image} fill={true} alt="Profile picture" />
@@ -91,7 +91,7 @@ const Profile = () => {
 
 const EditProfileBtn = () => {
   return (
-    <button className="rounded-md border border-accent-8 px-4 py-2 font-bold text-accent-8 duration-200 hover:border-blue-2 hover:text-blue-2">
+    <button className="rounded-md border px-4 py-2 font-bold duration-200 hover:bg-blue-2 hover:text-white dark:border-accent-8 dark:text-accent-8 dark:hover:border-blue-2 dark:hover:bg-black dark:hover:text-blue-2">
       Edit profile
     </button>
   );
@@ -167,7 +167,7 @@ const UserPosts = ({ user }: { user: User }) => {
 
   if (isLoading) {
     return (
-      <div>
+      <div className="border-t border-blue-1 pt-4 text-center dark:border-accent-6">
         <LoadingSpinner />
       </div>
     );

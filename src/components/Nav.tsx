@@ -79,29 +79,29 @@ const Footer = () => {
     <footer className="fixed bottom-0 left-0 right-0 flex items-center justify-between border-t border-blue-2 bg-white p-4 px-6 dark:border-accent-6 dark:bg-black md:hidden">
       <Link href={"/"}>
         <div className={`${pathname === `/` ? `text-blue-2` : ""}`}>
-          <HomeIcon size={8} />
+          <HomeIcon size={6} />
         </div>
       </Link>
       <Link href={"messages"}>
         <div className={`${pathname === `/messages` ? `text-blue-2` : ""}`}>
-          <MessagesIcon size={8} />
+          <MessagesIcon size={6} />
         </div>
       </Link>
       <Link href={"/search"}>
         <div className={`${pathname === `/search` ? `text-blue-2` : ""}`}>
-          <SearchIcon size={8} />
+          <SearchIcon size={6} />
         </div>
       </Link>
       <Link href={"/notifications"}>
         <div
           className={`${pathname === `/notifications` ? `text-blue-2` : ""}`}
         >
-          <NotificationsIcon size={8} />
+          <NotificationsIcon size={6} />
         </div>
       </Link>
       <Link href={"/settings"}>
         <div className={`${pathname === `/settings` ? `text-blue-2` : ""}`}>
-          <SettingsIcon size={8} />
+          <SettingsIcon size={6} />
         </div>
       </Link>
     </footer>
