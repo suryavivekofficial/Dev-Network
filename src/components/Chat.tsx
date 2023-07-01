@@ -5,6 +5,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { type FC, type ReactNode } from "react";
 import { api } from "~/utils/api";
+import SignIn from "./SignIn";
 import LoadingSpinner from "./icons/LoadingSpinner";
 
 dayjs.extend(relativeTime);
@@ -21,7 +22,7 @@ const Chat: FC<ChatProps> = ({ children, selectedChat }) => {
     <div className="h-full w-full rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:flex md:border">
       {!session && (
         <div className="flex h-full w-full items-center justify-center">
-          <span>You need to login first.</span>
+          <SignIn />
         </div>
       )}
       <Usernames selectedChat={selectedChat} />

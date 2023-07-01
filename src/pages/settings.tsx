@@ -5,10 +5,12 @@ import Image from "next/image";
 import { useEffect, useState, type FormEvent } from "react";
 import { toast } from "react-toastify";
 import Layout from "~/components/Layout";
+import SignIn from "~/components/SignIn";
 import LoadingSpinner from "~/components/icons/LoadingSpinner";
 import { api } from "~/utils/api";
 
 const Settings: NextPage = () => {
+  const { data: session } = useSession();
   return (
     <>
       <Head>
@@ -19,7 +21,13 @@ const Settings: NextPage = () => {
 
       <Layout>
         <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full">
-          <SettingsWrapper />
+          {session ? (
+            <SettingsWrapper />
+          ) : (
+            <div className="flex h-full w-full items-center justify-center rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:border">
+              <SignIn />
+            </div>
+          )}
         </div>
       </Layout>
     </>

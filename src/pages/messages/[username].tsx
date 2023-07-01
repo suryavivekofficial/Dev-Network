@@ -25,6 +25,8 @@ const UsernameChat: NextPage = () => {
     username: selectedChat,
   });
 
+  const { data: session } = useSession();
+
   return (
     <>
       <Head>
@@ -38,7 +40,7 @@ const UsernameChat: NextPage = () => {
           <h2 className="-mt-2 ml-1 hidden text-xl md:block">Your chats</h2>
           <Chat selectedChat={selectedChat}>
             <div className="h-full">
-              {selectedChat && (
+              {selectedChat && session && (
                 <div className="fixed inset-0 z-20 flex h-full flex-grow flex-col bg-white dark:bg-black md:static md:inset-auto">
                   <div className="flex w-full space-x-4 border-b border-blue-2 px-4 py-2 dark:border-accent-6">
                     <Link href={`/${selectedChat}`}>

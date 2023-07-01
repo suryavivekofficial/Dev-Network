@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import Head from "next/head";
 import { useEffect } from "react";
 import Layout from "~/components/Layout";
+import SignIn from "~/components/SignIn";
 import { pusherClient } from "~/utils/pusher";
 import {
   useNotificationStore,
@@ -16,8 +17,6 @@ dayjs.extend(relativeTime);
 const NotificationsPage: NextPage = () => {
   const { data: session } = useSession();
 
-  if (!session) return null;
-
   return (
     <>
       <Head>
@@ -27,9 +26,17 @@ const NotificationsPage: NextPage = () => {
       </Head>
 
       <Layout>
-        <div className="min-h-screen w-full pl-4 pr-8">
-          <h2 className="mb-4 text-xl">Notifications For You</h2>
-          <NotificationsContainer />
+        <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full">
+          {session ? (
+            <>
+              <h2 className="mb-4 text-xl">Notifications For You</h2>
+              <NotificationsContainer />
+            </>
+          ) : (
+            <div className="flex h-full w-full items-center justify-center rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:border">
+              <SignIn />
+            </div>
+          )}
         </div>
       </Layout>
     </>

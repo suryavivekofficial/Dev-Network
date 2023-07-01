@@ -1,9 +1,11 @@
 import type { NextPage } from "next";
+import { useSession } from "next-auth/react";
 import Head from "next/head";
 import Chat from "~/components/Chat";
 import Layout from "~/components/Layout";
 
 const Messages: NextPage = () => {
+  const { data: session } = useSession();
   return (
     <>
       <Head>
@@ -14,7 +16,9 @@ const Messages: NextPage = () => {
 
       <Layout>
         <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full space-y-2">
-          <h2 className="-mt-2 ml-1 hidden text-xl md:block">Your chats</h2>
+          {session && (
+            <h2 className="-mt-2 ml-1 hidden text-xl md:block">Your chats</h2>
+          )}
           <Chat selectedChat={null} />
         </div>
       </Layout>

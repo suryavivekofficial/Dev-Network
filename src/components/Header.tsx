@@ -148,7 +148,7 @@ const Dropdown = ({
       className="absolute right-0 mt-2 origin-top-left space-y-4 rounded-md border border-blue-2 bg-blue-1 p-4 dark:border-accent-6 dark:bg-accent-1"
     >
       <div className="flex space-x-2">
-        <div className="relative h-16 w-16 overflow-hidden rounded-full border border-blue-2">
+        <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border border-blue-2">
           <Image
             src={session.user.image ?? "/user.png"}
             alt="User profile pic"
@@ -156,7 +156,7 @@ const Dropdown = ({
           />
         </div>
         <span className="flex flex-col items-start justify-center">
-          <h5 className="capitalize">{session.user.name}</h5>
+          <h5 className="whitespace-nowrap capitalize">{session.user.name}</h5>
           <Link
             href={`/${session.user.username}`}
             className="hover:text-blue-2 dark:hover:text-blue-1"
@@ -170,7 +170,7 @@ const Dropdown = ({
         className="flex items-center justify-center space-x-2 rounded-md border border-blue-2 border-opacity-50 p-2 duration-200 hover:bg-white dark:border-accent-6 dark:hover:bg-accent-2"
       >
         <SettingsIcon size={4} />
-        <span className="text-xs">Manage your Account</span>
+        <span className="whitespace-nowrap text-xs">Manage your Account</span>
       </Link>
       <hr className="text-accent-6 text-opacity-50" />
       <div className="flex w-full items-center justify-center">
