@@ -123,6 +123,7 @@ const ThemeBtn = () => {
 
 const SearchBar = () => {
   const [input, setInput] = useState("");
+  const [isFocused, setIsFocused] = useState(false);
 
   return (
     <div className="relative">
@@ -152,6 +153,9 @@ const SearchBar = () => {
               setInput(e.target.value);
             }}
             type="text"
+            autoComplete="off"
+            onFocus={() => setIsFocused(true)}
+            onBlur={() => setIsFocused(false)}
             id="simple-search"
             className="block w-full rounded-lg border border-blue-2 bg-white p-2.5 pl-10 text-sm text-blue-2 outline-none placeholder:text-blue-2 placeholder:opacity-70 focus:ring-1 focus:ring-blue-2 dark:border-accent-6 dark:bg-black dark:text-accent-8 dark:ring-accent-8 dark:placeholder:text-accent-6"
             placeholder="Search"
@@ -162,7 +166,9 @@ const SearchBar = () => {
           <span className="sr-only">Search</span>
         </button>
       </form>
-      {input.trim().length !== 0 && <SearchResults searchTerm={input} />}
+      {input.trim().length !== 0 && isFocused && (
+        <SearchResults searchTerm={input} />
+      )}
     </div>
   );
 };
@@ -174,20 +180,20 @@ const SearchResults = ({ searchTerm }: { searchTerm: string }) => {
 
   if (isLoading)
     return (
-      <div className="absolute left-0 right-0 mt-2 origin-top-left rounded-md border border-accent-6 bg-accent-1 p-4 text-center">
+      <div className="absolute left-0 right-0 z-10 mt-2 origin-top-left rounded-md border border-blue-2 bg-blue-1 p-4 text-center dark:border-accent-6 dark:bg-accent-1">
         <LoadingSpinner />
       </div>
     );
 
   if (!data || data.length === 0)
     return (
-      <div className="absolute left-0 right-0 mt-2 origin-top-left rounded-md border border-accent-6 bg-accent-1 p-4 text-center">
+      <div className="absolut bg-blue-1e left-0 right-0 z-10 mt-2 origin-top-left rounded-md border border-blue-2 p-4 text-center dark:border-accent-6 dark:bg-accent-1">
         No results for this search!
       </div>
     );
 
   return (
-    <div className="absolute left-0 right-0 mt-2 origin-top-left rounded-md border border-accent-6 bg-accent-1">
+    <div className="absolute left-0 right-0 z-10 mt-2 origin-top-left rounded-md border border-blue-2 bg-blue-1 dark:border-accent-6 dark:bg-accent-1">
       {data.map((user) => {
         if (!user.username) return null;
         if (!user.image) {
