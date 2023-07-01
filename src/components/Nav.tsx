@@ -177,6 +177,10 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const { notifications } = useNotificationStore();
 
   useEffect(() => {
+    void useNotificationStore.persist.rehydrate();
+  }, []);
+
+  useEffect(() => {
     if (!pusherProps) return;
 
     const channel = pusherClient.subscribe(pusherProps.channelName);

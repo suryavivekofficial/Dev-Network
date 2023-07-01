@@ -19,7 +19,6 @@ export const useNotificationStore = create(
     (set) => ({
       notifications: [],
       setNotifications: (newNotification) => {
-        // console.log("adding notification ", newNotification);
         set((state) => {
           if (!state.notifications.includes(newNotification)) {
             return { notifications: [newNotification, ...state.notifications] };
@@ -30,6 +29,7 @@ export const useNotificationStore = create(
     }),
     {
       name: "notifications",
+      skipHydration: true,
     }
   )
 );
