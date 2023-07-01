@@ -13,6 +13,7 @@ import PostComponent from "./Post";
 import LoadingSpinner from "./icons/LoadingSpinner";
 
 const Feed = () => {
+  const { data: session } = useSession();
   const { selected } = usePostStore();
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -37,7 +38,7 @@ const Feed = () => {
     );
   }
 
-  if (isModalOpen) {
+  if (isModalOpen && session) {
     return <MobileNewPost setIsModalOpen={setIsModalOpen} />;
   }
 
@@ -54,12 +55,14 @@ const Feed = () => {
           </div>
         );
       })}
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="fixed bottom-28 right-8 h-14 w-14 rounded-full bg-blue-2 text-4xl font-medium text-white shadow-md dark:text-black md:hidden"
-      >
-        +
-      </button>
+      {session && (
+        <button
+          onClick={() => setIsModalOpen(true)}
+          className="fixed bottom-28 right-8 h-14 w-14 rounded-full bg-blue-2 text-4xl font-medium text-white shadow-md dark:text-black md:hidden"
+        >
+          +
+        </button>
+      )}
     </div>
   );
 };

@@ -2,9 +2,18 @@ import { signIn, signOut, useSession } from "next-auth/react";
 import Image from "next/image";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import {
+  useEffect,
+  useRef,
+  useState,
+  type Dispatch,
+  type SetStateAction,
+} from "react";
+import { useThemeStore } from "~/utils/zustand/theme";
 import Tabs from "./Tabs";
 import Chevron from "./icons/ChevronIcon";
+import DarkThemeIcon from "./icons/DarkThemeIcon";
+import LightThemeIcon from "./icons/LightThemeIcon";
 import SettingsIcon from "./icons/SettingsIcon";
 
 const Header = () => {
@@ -63,6 +72,7 @@ const Logo = () => {
 const Profile = () => {
   const { data: session } = useSession();
   const [openDropdown, setOpenDropdown] = useState(false);
+  const [isMobileSidebarOpen, setIsMobileSidebarOpen] = useState(false);
   const dropdownBtnRef = useRef<HTMLButtonElement>(null);
 
   const toggleDropdown = (eventTarget: EventTarget) => {
@@ -88,7 +98,10 @@ const Profile = () => {
       <div className="relative">
         <button
           ref={dropdownBtnRef}
-          onClick={() => setOpenDropdown(!openDropdown)}
+          onClick={() => {
+            setOpenDropdown(!openDropdown);
+            setIsMobileSidebarOpen(true);
+          }}
           className="relative h-10 w-10 cursor-pointer overflow-hidden rounded-full border border-blue-2"
         >
           <Image
@@ -101,8 +114,39 @@ const Profile = () => {
           <Chevron />
         </span>
         {openDropdown && <Dropdown toggleDropdown={toggleDropdown} />}
+        {isMobileSidebarOpen && (
+          <MobileSidebar setIsMobileSidebarOpen={setIsMobileSidebarOpen} />
+        )}
       </div>
     </>
+  );
+};
+
+const MobileSidebar = ({
+  setIsMobileSidebarOpen,
+}: {
+  setIsMobileSidebarOpen: Dispatch<SetStateAction<boolean>>;
+}) => {
+  const { setTheme, isDarkTheme } = useThemeStore();
+  const { data: session } = useSession();
+
+  if (!session) return null;
+
+  return (
+    <div className="fixed inset-0 animate-slide-in bg-white p-4 dark:bg-black md:hidden">
+      <div className="text-2xl">
+        <button onClick={() => setIsMobileSidebarOpen(false)}>&times;</button>
+      </div>
+      <div className="flex h-3/5 flex-col items-center justify-around">
+        <Link href={`/${session.user.username}`}>Go to your Account</Link>
+        <Link href={"/settings"}>Manage your Account</Link>
+        <button onClick={setTheme} className="flex justify-center space-x-4">
+          <span>Change Theme</span>
+          {isDarkTheme ? <DarkThemeIcon /> : <LightThemeIcon />}
+        </button>
+        <button onClick={() => void signOut()}>Sign Out</button>
+      </div>
+    </div>
   );
 };
 
@@ -145,7 +189,7 @@ const Dropdown = ({
   return (
     <div
       ref={dropdownRef}
-      className="absolute right-0 mt-2 origin-top-left space-y-4 rounded-md border border-blue-2 bg-blue-1 p-4 dark:border-accent-6 dark:bg-accent-1"
+      className="absolute right-0 mt-2 hidden origin-top-left space-y-4 rounded-md border border-blue-2 bg-blue-1 p-4 dark:border-accent-6 dark:bg-accent-1 md:block"
     >
       <div className="flex space-x-2">
         <div className="relative h-16 w-16 flex-shrink-0 overflow-hidden rounded-full border border-blue-2">

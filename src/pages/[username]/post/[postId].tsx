@@ -27,7 +27,7 @@ const Post = ({ postId }: { postId: string }) => {
 
   if (isLoading)
     return (
-      <div className="mt-8 flex w-full items-start justify-center">
+      <div className="mt-8 flex h-screen w-full items-start justify-center">
         <LoadingSpinner />
       </div>
     );
