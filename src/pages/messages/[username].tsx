@@ -95,7 +95,6 @@ const Msgs = ({ selectedChat }: { selectedChat: string }) => {
         otherUsername: selectedChat,
       });
       const ifMsgExists = msgState?.some((m) => m.id === newMsgFromPusher.id);
-      console.log({ ifMsgExists });
 
       // Modify the react query state (here) only if a msg is recieved.
       // Because the sender state is modified in the new msg input component. (via optimistic updates)

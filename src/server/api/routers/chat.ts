@@ -38,19 +38,13 @@ export const chatRouter = createTRPCRouter({
         ctx.session.user.username,
         input.msgReciever
       );
-      const newPusherMsg = await pusherServer.trigger(
-        `newMsg_${channelName}`,
-        "msgEvent",
-        {
-          message: input.msgContent,
-          senderUsername: ctx.session.user.username,
-          receiverUsername: input.msgReciever,
-          sentAt: Date.now(),
-          id: `temp-${Math.random().toString(36).substring(2)}`,
-        }
-      );
-
-      console.log({ channelName }, { newPusherMsg });
+      await pusherServer.trigger(`newMsg_${channelName}`, "msgEvent", {
+        message: input.msgContent,
+        senderUsername: ctx.session.user.username,
+        receiverUsername: input.msgReciever,
+        sentAt: Date.now(),
+        id: `temp-${Math.random().toString(36).substring(2)}`,
+      });
 
       // trigger pusher for any message
       await pusherServer.trigger(

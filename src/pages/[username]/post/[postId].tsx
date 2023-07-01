@@ -8,13 +8,12 @@ import { api } from "~/utils/api";
 
 const PostPage = () => {
   const router = useRouter();
-  console.log(router.query);
   const postId = router.query.postId as string;
   return (
     <Layout>
       <>
         <Post postId={postId} />
-        <div className="min-h-screen w-1/3 flex-shrink-0 space-y-8">
+        <div className="hidden min-h-screen w-1/3 flex-shrink-0 space-y-8 md:block">
           <ProfileCard />
           <FollowingListCard />
         </div>
@@ -35,8 +34,8 @@ const Post = ({ postId }: { postId: string }) => {
 
   if (!data) {
     return (
-      <div className="w-full">
-        <div className="flex h-36 items-center justify-center rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black">
+      <div className="h-screen w-full">
+        <div className="flex h-36 items-center justify-center rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:border">
           This post does not exist!
         </div>
       </div>
@@ -44,8 +43,8 @@ const Post = ({ postId }: { postId: string }) => {
   }
 
   return (
-    <div className="w-full">
-      <div className="rounded-md border border-blue-2 dark:border-accent-6">
+    <div className="h-screen w-full">
+      <div className="rounded-md border-blue-2 dark:border-accent-6 md:border">
         <PostComponent post={data} isCommentSectionOpenByDefault={true} />
       </div>
     </div>
