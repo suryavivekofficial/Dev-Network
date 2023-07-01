@@ -29,7 +29,7 @@ const FollowingListCard = () => {
         <Link
           href={`/${user.followingUsername}`}
           key={user.followingUsername}
-          className="flex w-full items-center justify-start space-x-4 rounded-md p-4 hover:bg-accent-2"
+          className="flex w-full items-center justify-start space-x-4 rounded-md p-4 hover:bg-blue-1 dark:hover:bg-accent-2"
         >
           <div className="relative h-10 w-10 overflow-hidden rounded-full">
             <Image
