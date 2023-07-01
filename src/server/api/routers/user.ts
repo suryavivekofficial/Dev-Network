@@ -63,6 +63,22 @@ export const userRouter = createTRPCRouter({
         isFollow,
       };
     }),
+  getUserFollows: protectedProcedure.query(async ({ ctx }) => {
+    return await ctx.prisma.follows.findMany({
+      where: {
+        followerUsername: ctx.session.user.username,
+      },
+      select: {
+        followingUsername: true,
+        following: {
+          select: {
+            image: true,
+            name: true,
+          },
+        },
+      },
+    });
+  }),
   getFollowAndFollowingCount: protectedProcedure
     // .input(z.object({username: z.string()}))
     .query(
