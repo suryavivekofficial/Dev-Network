@@ -1,8 +1,10 @@
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useState, type FC } from "react";
-// import { useNotificationStore } from "~/utils/zustand/notifications";
+import { useEffect, useState, type FC } from "react";
+import { toast } from "react-toastify";
+import { pusherClient } from "~/utils/pusher";
+import { useNotificationStore } from "~/utils/zustand/notifications";
 import { useThemeStore } from "~/utils/zustand/theme";
 import DarkThemeIcon from "./icons/DarkThemeIcon";
 import HomeIcon from "./icons/HomeIcon";
@@ -15,52 +17,46 @@ import SettingsIcon from "./icons/SettingsIcon";
 const Nav = () => {
   const { data: session } = useSession();
 
-  const pusherMsgProps = {
-    type: "messages",
-    channelName: session ? `newUnseenMsg_${session.user.username}` : undefined,
-    eventName: session ? `unseenMsgEvent` : undefined,
-  };
-
-  const pusherNotificationProps = {
-    type: "notifications",
-    channelName: session
-      ? `notifications_channel_${session.user.username}`
-      : undefined,
-    eventName: session ? "followEvent" : undefined,
-  };
-
   return (
     <nav>
       <aside className="fixed top-20 hidden h-[calc(100vh-5rem)] w-1/4 border-r border-r-blue-2 bg-white p-8 dark:border-r-accent-6 dark:bg-black md:block">
         <SearchBar />
         <div className="py-8">
-          <SidebarItem
-            href=""
-            pusherProps={{
-              type: undefined,
-              channelName: undefined,
-              eventName: undefined,
-            }}
-          >
+          <SidebarItem href="">
             <HomeIcon />
           </SidebarItem>
-          <SidebarItem href="messages" pusherProps={pusherMsgProps}>
+
+          <SidebarItem
+            href="messages"
+            pusherProps={
+              session
+                ? {
+                    type: "messages",
+                    channelName: `newUnseenMsg_${session.user.username}`,
+                    eventName: "unseenMsgEvent",
+                  }
+                : undefined
+            }
+          >
             <MessagesIcon />
           </SidebarItem>
+
           <SidebarItem
             href="notifications"
-            pusherProps={pusherNotificationProps}
+            pusherProps={
+              session
+                ? {
+                    type: "notifications",
+                    channelName: `notifications_channel_${session.user.username}`,
+                    eventName: "followEvent",
+                  }
+                : undefined
+            }
           >
             <NotificationsIcon />
           </SidebarItem>
-          <SidebarItem
-            href="settings"
-            pusherProps={{
-              type: undefined,
-              channelName: undefined,
-              eventName: undefined,
-            }}
-          >
+
+          <SidebarItem href="settings">
             <SettingsIcon size={5} />
           </SidebarItem>
         </div>
@@ -168,45 +164,35 @@ const SearchBar = () => {
 interface SidebarItemProps {
   href: string;
   children: JSX.Element;
-  pusherProps: {
-    type: string | undefined;
-    channelName: string | undefined;
-    eventName: string | undefined;
+  pusherProps?: {
+    type: string;
+    channelName: string;
+    eventName: string;
   };
 }
 
 const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
   const { pathname } = useRouter();
   const [count, setCount] = useState(0);
-  // const { setNotifications } = useNotificationStore();
+  const { notifications } = useNotificationStore();
 
-  // useEffect(() => {
-  //   if (!pusherProps.channelName || !pusherProps.eventName || !pusherProps.type)
-  //     return;
-  //   // if (pathname === `/${pusherProps.type}`) return;
+  useEffect(() => {
+    if (!pusherProps) return;
 
-  //   const channel = pusherClient.subscribe(pusherProps.channelName);
+    const channel = pusherClient.subscribe(pusherProps.channelName);
+    channel.bind(pusherProps.eventName, () => {
+      setCount((count) => count + 1);
+      toast(`You have new ${pusherProps.type}`, { toastId: count });
+    });
 
-  //   const handlePusher = (data: { message: string; date: number }) => {
-  //     toast(data.message);
-  //     console.log(data);
-  //     // if (pusherProps.type === "notifications")
-  //     //   setNotifications({
-  //     //     notificationContent: data.message,
-  //     //     date: data.date,
-  //     //   });
-  //     setCount((prevCount) => prevCount + 1);
-  //   };
-
-  //   channel.bind(pusherProps.eventName, handlePusher);
-
-  //   return () => {
-  //     if (!pusherProps.channelName) return;
-
-  //     pusherClient.unsubscribe(pusherProps.channelName);
-  //     channel.unbind(pusherProps.eventName, handlePusher);
-  //   };
-  // }, [pusherProps.channelName, pusherProps.eventName, pusherProps.type]);
+    return () => {
+      pusherClient.unsubscribe(pusherProps.channelName);
+      channel.unbind(pusherProps.eventName, () => {
+        setCount((count) => count + 1);
+        toast(`You have new ${pusherProps.type}`, { toastId: count });
+      });
+    };
+  }, [count, pusherProps]);
 
   const regex = new RegExp(`^\\/${href}(\\/.*)?$`);
 
@@ -225,9 +211,14 @@ const SidebarItem: FC<SidebarItemProps> = ({ href, pusherProps, children }) => {
             {href === "" ? "home" : href}
           </span>
         </div>
-        {href !== "settings" && href !== "" && (
+        {href === "messages" && (
           <span className="rounded-full bg-blue-2 px-2 text-accent-8 dark:bg-white dark:text-black">
             {count}
+          </span>
+        )}
+        {href === "notifications" && (
+          <span className="rounded-full bg-blue-2 px-2 text-accent-8 dark:bg-white dark:text-black">
+            {notifications.length}
           </span>
         )}
       </div>

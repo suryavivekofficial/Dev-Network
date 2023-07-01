@@ -3,16 +3,15 @@ import relativeTime from "dayjs/plugin/relativeTime";
 import type { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import Head from "next/head";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import Layout from "~/components/Layout";
 import { pusherClient } from "~/utils/pusher";
+import {
+  useNotificationStore,
+  type TNotification,
+} from "~/utils/zustand/notifications";
 
 dayjs.extend(relativeTime);
-
-interface TPusherMsg {
-  message: string;
-  date: number;
-}
 
 const NotificationsPage: NextPage = () => {
   const { data: session } = useSession();
@@ -39,7 +38,8 @@ const NotificationsPage: NextPage = () => {
 
 const NotificationsContainer = () => {
   const { data: session } = useSession();
-  const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
+  // const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
+  const { notifications, setNotifications } = useNotificationStore();
 
   useEffect(() => {
     if (!session) return;
@@ -48,22 +48,20 @@ const NotificationsContainer = () => {
       `notifications_channel_${session.user.username}`
     );
 
-    const handlePusher = (data: TPusherMsg) => {
-      setNotifications((prev) => [
-        ...prev,
-        { message: data.message, date: data.date },
-      ]);
-    };
-
-    channel.bind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
+    channel.bind(`followEvent`, (data: TNotification) =>
+      setNotifications(data)
+    );
 
     return () => {
       pusherClient.unsubscribe(
         `notifications_channel_${session.user.username}`
       );
-      channel.unbind(`followEvent`, (data: TPusherMsg) => handlePusher(data));
+
+      channel.unbind(`followEvent`, (data: TNotification) =>
+        setNotifications(data)
+      );
     };
-  }, [session]);
+  }, [session, setNotifications]);
 
   if (notifications.length === 0) {
     return (

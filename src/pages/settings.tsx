@@ -192,14 +192,14 @@ const SettingsWrapper = () => {
               <button
                 type="reset"
                 onClick={resetUserInfo}
-                className="rounded-md border border-blue-2 px-4 py-2"
+                className="rounded-md border border-blue-2 px-4 py-2 duration-150 hover:text-blue-2 dark:border-accent-6 dark:hover:border-blue-2 dark:hover:text-accent-6"
               >
                 Cancel
               </button>
               <button
                 type="submit"
                 onClick={(e) => handleSubmit(e)}
-                className="flex items-center space-x-2 rounded-md border border-blue-2 bg-blue-2 px-4 py-2 text-white duration-150 hover:brightness-90"
+                className="flex items-center space-x-2 rounded-md border border-blue-2 bg-blue-2 px-4 py-2 text-white duration-150 hover:brightness-90 dark:border-accent-6 dark:bg-accent-8 dark:text-accent-2"
               >
                 {isLoading && <LoadingSpinner />}
                 <span>Update</span>
