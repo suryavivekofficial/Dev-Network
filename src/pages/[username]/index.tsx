@@ -16,7 +16,7 @@ const ProfilePage = () => {
       <>
         <Profile />
 
-        <div className="min-h-screen w-1/3 flex-shrink-0 space-y-8">
+        <div className="hidden min-h-screen w-1/3 flex-shrink-0 space-y-8 md:block">
           <ProfileCard />
           <FollowingListCard />
         </div>
@@ -46,8 +46,8 @@ const Profile = () => {
   }
 
   return (
-    <div className="flex-grow rounded-md border border-blue-2 bg-white dark:border-accent-6 dark:bg-black">
-      <div className="relative h-36 w-full rounded-t-md bg-accent-2/20 dark:bg-accent-2">
+    <div className="flex-grow rounded-md border-blue-2 bg-white dark:border-accent-6 dark:bg-black md:border">
+      <div className="relative -mt-4 h-36 w-full rounded-t-md bg-accent-2/20 dark:bg-accent-2 md:mt-0">
         <div className="absolute left-8 top-full -translate-y-1/2 rounded-full bg-white p-1 dark:bg-black">
           <div className="relative h-24 w-24 overflow-hidden rounded-full border-none bg-blue-2 outline-none">
             {user.image && (
