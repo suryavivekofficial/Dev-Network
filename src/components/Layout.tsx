@@ -1,4 +1,5 @@
 import { useRouter } from "next/router";
+import { useEffect } from "react";
 import { ToastContainer } from "react-toastify";
 import { useThemeStore } from "~/utils/zustand/theme";
 import Header from "./Header";
@@ -15,6 +16,10 @@ const Layout = ({ children }: { children: JSX.Element }) => {
   const { isDarkTheme } = useThemeStore();
   const router = useRouter();
   const { pathname } = router;
+
+  useEffect(() => {
+    void useThemeStore.persist.rehydrate();
+  }, []);
 
   return (
     <div className={`overflow-x-hidden ${isDarkTheme ? "dark" : ""}`}>
