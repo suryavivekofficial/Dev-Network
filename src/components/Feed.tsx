@@ -93,7 +93,7 @@ const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
   };
 
   return (
-    <div className="absolute inset-0 z-20 overflow-hidden bg-black">
+    <div className="absolute inset-0 z-20 overflow-hidden bg-white dark:bg-black">
       <form className="space-y-4 p-4">
         <div className="flex items-center justify-between px-2">
           <button onClick={closeModal} className="text-2xl">
@@ -103,7 +103,7 @@ const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
             onClick={handleSubmit}
             disabled={isLoading}
             type="submit"
-            className="rounded-md bg-accent-8 px-4 py-2 text-accent-2"
+            className="rounded-md bg-blue-2 px-4 py-2 text-accent-8 dark:bg-accent-8 dark:text-accent-2"
           >
             {isLoading && <LoadingSpinner />}
             Post
@@ -122,7 +122,7 @@ const MobileNewPost: FC<MobileNewPostProps> = ({ setIsModalOpen }) => {
             value={newPost}
             onChange={(e) => setNewPost(e.target.value)}
             placeholder="What's on your mind?"
-            className="w-full resize-none bg-black pr-2 pt-2 outline-none"
+            className="w-full resize-none bg-white pr-2 pt-2 outline-none dark:bg-black"
           />
         </div>
       </form>

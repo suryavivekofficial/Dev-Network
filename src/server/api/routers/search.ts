@@ -7,6 +7,9 @@ export const searchRouter = createTRPCRouter({
     .query(async ({ ctx, input }) => {
       const result = await ctx.prisma.user.findMany({
         where: {
+          NOT: {
+            username: ctx.session?.user.username,
+          },
           username: {
             startsWith: input.searchTerm,
           },

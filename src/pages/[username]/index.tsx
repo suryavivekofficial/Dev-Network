@@ -13,14 +13,14 @@ import { api } from "~/utils/api";
 const ProfilePage = () => {
   return (
     <Layout>
-      <>
+      <div className="flex min-h-screen gap-8">
         <Profile />
 
         <div className="hidden min-h-screen w-1/3 flex-shrink-0 space-y-8 md:block">
           <ProfileCard />
           <FollowingListCard />
         </div>
-      </>
+      </div>
     </Layout>
   );
 };
@@ -151,7 +151,7 @@ const FollowBtn: FC<FollowBtnProps> = ({ isFollowedFromServer, username }) => {
   return (
     <button
       onClick={handleClick}
-      className="rounded-md bg-accent-8 px-4 py-2 font-bold text-accent-2 hover:brightness-75 disabled:cursor-not-allowed"
+      className="rounded-md bg-blue-2 px-4 py-2 font-bold text-accent-8 hover:brightness-75 disabled:cursor-not-allowed dark:bg-accent-8 dark:text-accent-2"
     >
       {isFollowed ? "Unfollow" : "Follow"}
     </button>
@@ -178,7 +178,7 @@ const UserPosts = ({ user }: { user: User }) => {
   }
 
   if (data?.length === 0) {
-    return <div>no data to show</div>;
+    return <div className="text-center">no data to show</div>;
   }
 
   return (

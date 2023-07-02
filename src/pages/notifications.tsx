@@ -29,7 +29,7 @@ const NotificationsPage: NextPage = () => {
         <div className="mb-4 mr-8 h-[calc(100vh-10rem)] w-full">
           {session ? (
             <>
-              <h2 className="mb-4 text-xl">Notifications For You</h2>
+              <h2 className="m-4 text-xl">Notifications For You</h2>
               <NotificationsContainer />
             </>
           ) : (
@@ -45,7 +45,6 @@ const NotificationsPage: NextPage = () => {
 
 const NotificationsContainer = () => {
   const { data: session } = useSession();
-  // const [notifications, setNotifications] = useState<TPusherMsg[]>([]);
   const { notifications, setNotifications } = useNotificationStore();
 
   useEffect(() => {
@@ -72,8 +71,10 @@ const NotificationsContainer = () => {
 
   if (notifications.length === 0) {
     return (
-      <div className="flex w-full space-x-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
-        No new notifications for you.
+      <div className="px-4">
+        <div className="flex w-full space-x-4 rounded-md border border-blue-2 bg-white p-4 dark:border-accent-6 dark:bg-black">
+          No new notifications for you.
+        </div>
       </div>
     );
   }
@@ -81,7 +82,7 @@ const NotificationsContainer = () => {
   if (!session) return <div>You need to Sign In.</div>;
 
   return (
-    <div className="w-full space-y-4">
+    <div className="w-full space-y-4 p-4">
       {notifications.map((notification, i) => {
         return (
           <div
