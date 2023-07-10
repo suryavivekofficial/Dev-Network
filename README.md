@@ -1,6 +1,6 @@
 # Dev Network
 
-This is a social media clone built using Next.js, NextAuth.js, Prisma, Tailwind CSS, tRPC and WebSockets.
+This is a social media clone built using T3 stack and pusher.
 
 ## Features
 
@@ -24,25 +24,25 @@ Before running this project, make sure you have the following installed on your 
 1. Clone the repository:
 
 ```bash
-    git clone https://github.com/thesuryavivek/Dev-Network
+  git clone https://github.com/thesuryavivek/Dev-Network
 ```
 
 2. Navigate to the project directory:
 
 ```bash
-    cd Dev-Network
+  cd Dev-Network
 ```
 
 3. Install the dependencies
 
 ```bash
-    npm install
+  npm install
 ```
 
 4. Rename .env.example to .env
 
 ```bash
-    mv .env.example .env
+  mv .env.example .env
 ```
 
 5. Update the environment variables in the .env file to match your local environment setup.
@@ -50,13 +50,13 @@ Before running this project, make sure you have the following installed on your 
 6. Run the database migrations:
 
 ```bash
-    npx prisma migrate dev
+  npx prisma migrate dev
 ```
 
 7. Start the development server:
 
 ```bash
-    npm run dev
+  npm run dev
 ```
 
 ## Acknowledgements
