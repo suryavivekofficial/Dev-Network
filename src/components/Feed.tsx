@@ -11,6 +11,7 @@ import { api } from "~/utils/api";
 import { usePostStore } from "~/utils/zustand/posts";
 import PostComponent from "./Post";
 import LoadingSpinner from "./icons/LoadingSpinner";
+import { toast } from "react-toastify";
 
 const Feed = () => {
   const { data: session } = useSession();
@@ -21,6 +22,7 @@ const Feed = () => {
     selected === "for you"
       ? api.post.getPosts.useQuery()
       : api.post.getFollowingPosts.useQuery();
+
   if (isLoading) {
     return (
       <div className="flex min-h-screen flex-grow items-center justify-center">
@@ -142,10 +144,14 @@ const NewPost = () => {
     },
   });
 
-  if (!session) return null;
+  // if (!session) return null;
 
   const handleSubmit = (e: FormEvent) => {
     e.preventDefault();
+    if (!session) {
+      toast("You need to login to post");
+      return;
+    }
     mutate({ authorUsername: session.user.username, postContent: newPost });
   };
 
@@ -154,7 +160,7 @@ const NewPost = () => {
       <div className="flex items-center space-x-4 ">
         <div className="relative h-10 w-10 overflow-hidden rounded-full">
           <Image
-            src={session.user.image || "/user.png"}
+            src={session?.user.image || "/user.png"}
             alt="profile photo"
             fill={true}
           />

@@ -2,9 +2,13 @@ import Image from "next/image";
 import Link from "next/link";
 import { api } from "~/utils/api";
 import LoadingSpinner from "./icons/LoadingSpinner";
+import { useSession } from "next-auth/react";
 
 const FollowingListCard = () => {
+  const { data: session } = useSession();
   const { data, isLoading } = api.user.getUserFollows.useQuery();
+
+  if (!session) return null;
 
   if (isLoading) {
     return (

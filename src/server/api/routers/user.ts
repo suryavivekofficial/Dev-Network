@@ -79,24 +79,22 @@ export const userRouter = createTRPCRouter({
       },
     });
   }),
-  getFollowAndFollowingCount: protectedProcedure
-    // .input(z.object({username: z.string()}))
-    .query(
-      async ({ ctx }) =>
-        await ctx.prisma.user.findUnique({
-          where: {
-            username: ctx.session.user.username,
-          },
-          select: {
-            _count: {
-              select: {
-                followedBy: true,
-                following: true,
-              },
+  getFollowAndFollowingCount: protectedProcedure.query(
+    async ({ ctx }) =>
+      await ctx.prisma.user.findUnique({
+        where: {
+          username: ctx.session.user.username,
+        },
+        select: {
+          _count: {
+            select: {
+              followedBy: true,
+              following: true,
             },
           },
-        })
-    ),
+        },
+      })
+  ),
   updateUserInfo: protectedProcedure
     .input(
       z.object({
