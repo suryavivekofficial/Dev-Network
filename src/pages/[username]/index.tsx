@@ -1,6 +1,7 @@
 import type { User } from "@prisma/client";
 import { useSession } from "next-auth/react";
 import Image from "next/image";
+import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState, type FC } from "react";
 import FollowingListCard from "~/components/FollowingListCard";
@@ -13,7 +14,7 @@ import { api } from "~/utils/api";
 const ProfilePage = () => {
   return (
     <Layout>
-      <div className="flex min-h-screen gap-8">
+      <div className="flex min-h-screen w-full justify-between gap-8">
         <Profile />
 
         <div className="hidden min-h-screen w-1/3 flex-shrink-0 space-y-8 md:block">
@@ -35,7 +36,7 @@ const Profile = () => {
 
   if (isLoading) {
     return (
-      <div className="flex flex-grow items-center justify-center rounded-md dark:bg-black">
+      <div className="flex flex-grow items-center justify-center rounded-md border-blue-2 dark:border-accent-6 dark:bg-black md:border">
         <LoadingSpinner />
       </div>
     );
@@ -91,9 +92,12 @@ const Profile = () => {
 
 const EditProfileBtn = () => {
   return (
-    <button className="rounded-md border px-4 py-2 font-bold duration-200 hover:bg-blue-2 hover:text-white dark:border-accent-8 dark:text-accent-8 dark:hover:border-blue-2 dark:hover:bg-black dark:hover:text-blue-2">
+    <Link
+      href="/settings"
+      className="rounded-md border px-4 py-2 font-bold duration-200 hover:bg-blue-2 hover:text-white dark:border-accent-8 dark:text-accent-8 dark:hover:border-blue-2 dark:hover:bg-black dark:hover:text-blue-2"
+    >
       Edit profile
-    </button>
+    </Link>
   );
 };
 

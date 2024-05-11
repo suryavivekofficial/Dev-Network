@@ -189,7 +189,7 @@ const SettingsWrapper = () => {
                   }
                   className="w-full resize-none rounded-md border border-blue-2 px-4 py-2 outline-none focus:ring-1 focus:ring-blue-2 disabled:cursor-not-allowed disabled:opacity-50 dark:border-accent-6 dark:bg-accent-2 dark:focus:ring-accent-8"
                 />
-                {userInfo.bio.length > 160 && (
+                {userInfo.bio?.length > 160 && (
                   <p className="text-xs text-red-4">
                     Bio should be less than 160 characters.
                   </p>

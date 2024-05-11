@@ -9,6 +9,13 @@ const ProfileCard = () => {
   const { data: session } = useSession();
   const { data, isLoading } = api.user.getFollowAndFollowingCount.useQuery();
 
+  if (isLoading)
+    return (
+      <div className="mr-8 flex h-96 items-center justify-center space-y-4 rounded-md border border-blue-2 bg-white p-6 dark:border-accent-6 dark:bg-black">
+        <LoadingSpinner />
+      </div>
+    );
+
   if (!session) {
     return (
       <div className="mr-8 rounded-md border border-blue-2 bg-white p-8 dark:border-accent-4 dark:bg-black">
@@ -16,13 +23,6 @@ const ProfileCard = () => {
       </div>
     );
   }
-
-  if (isLoading)
-    return (
-      <div className="mr-8 flex h-96 items-center justify-center space-y-4 rounded-md border border-blue-2 bg-white p-6 dark:border-accent-6 dark:bg-black">
-        <LoadingSpinner />
-      </div>
-    );
 
   return (
     <div className="mr-8 flex flex-col items-center space-y-4 rounded-md border border-blue-2 bg-white p-6 dark:border-accent-6 dark:bg-black">
